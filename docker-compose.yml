@@ -1,0 +1,12 @@
+services:
+  dynamic-webpages:
+    image: denoland/deno:alpine
+    restart: unless-stopped
+    working_dir: /app
+    command: ["deno", "run", "--node-modules-dir=none", "--allow-net", "--allow-read", "--allow-write=/app/logs", "--allow-env", "index.js"]
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env

@@ -1,0 +1,145 @@
+/* CSS placed here will be applied to all skins */
+
+/* Colors */
+
+@media (prefers-color-scheme: light) {
+	:root {
+		--primary-bg: #F2E2C4;
+		--primary-fg: #0D0D0D;
+		--primary-hi: #590202;
+		--primary-inner-bg: #F2DFCE;
+
+		--secondary-bg: #400101;
+		--secondary-fg: #F2E2C4;
+		--secondary-hi: #F2DFCE;
+
+		--tertiary-bg: #590202;
+		--tertiary-fg: #F2E2C4;
+		--tertiary-hi: #F2DFCE;
+
+		--mw-fg: #000000;
+		--mw-bg: #FFFFFF;
+
+		--log-bg: #000000;
+		--log-fg: #ffffff;
+		--log-hi: #ffff00;
+	}
+}
+
+@media not (prefers-color-scheme: light) {
+	:root {
+		--primary-bg: #0c1a26;
+		--primary-fg: #fcfaf9;
+		--primary-hi: #f5e6eb;
+		--primary-inner-bg: #023059;
+
+		--secondary-bg: #023059;
+		--secondary-fg: #fcfaf9;
+		--secondary-hi: #f5e6eb;
+
+		--tertiary-bg: #03588c;
+		--tertiary-fg: #fcfaf9;
+		--tertiary-hi: #f5e6eb;
+
+		--mw-fg: #000000;
+		--mw-bg: #ffffff;
+
+		--log-bg: #000000;
+		--log-fg: #ffffff;
+		--log-hi: #ffff00;
+	}
+}
+
+body {
+	background: var(--primary-bg);
+	background-size: cover, auto;
+	color: var(--primary-fg);
+	text-shadow: none;
+
+	--s: 82px;
+	--c1: var(--primary-bg);
+	--c2: hsl(from var(--primary-bg) h s calc(l + 5));
+	--c3: hsl(from var(--primary-bg) h s calc(l - 5));
+	--_g: var(--c3) 0 120deg,#0000 0;
+	background:
+		conic-gradient(from -60deg at 50% calc(100%/3),var(--_g)),
+		conic-gradient(from 120deg at 50% calc(200%/3),var(--_g)),
+		conic-gradient(from	60deg at calc(200%/3),var(--c3) 60deg,var(--c2) 0 120deg,#0000 0),
+		conic-gradient(from 180deg at calc(100%/3),var(--c1) 60deg,var(--_g)),
+		linear-gradient(90deg,var(--c1)	 calc(100%/6),var(--c2) 0 50%,
+													var(--c1) 0 calc(500%/6),var(--c2) 0);
+	background-size: calc(1.732*var(--s)) var(--s);
+}
+
+h1, h2, h3, h4, h5, h6 {
+	color: var(--primary-fg);
+}
+
+header {
+	background: var(--secondary-bg);
+	background: linear-gradient(120deg, var(--secondary-bg), hsl(from var(--secondary-bg) h s calc(l + 10)));
+	color: var(--secondary-fg);
+	text-shadow: none;
+	height: 200px;
+}
+
+header::before {
+	background: url(https://convergence.mushhaven.com/images/6/67/Umisticker.webp);
+	background-size: contain;
+	content: " ";
+	width: 200px;
+	height:200px;
+	display: block;
+	float: left;
+}
+
+header a, header a:active, header a:visited, header a:hover,
+header a.external, header a:active.external, header a:visited.external, header a:hover.external {
+	color: var(--secondary-hi);
+	text-shadow: none;
+}
+
+header nav {
+	margin-left: 220px;
+	width: calc(100% - 220px);
+	height: 100%;
+	vertical-align: middle;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+header nav .nav-brand {
+	font-size: 2em;
+	font-weight: bold;
+	padding-bottom: 10px;
+}
+
+header nav .nav-brand a {
+	text-decoration: none;
+}
+
+header nav .nav-links {
+	display: flex;
+	flex-direction: row;
+	gap: 20px;
+}
+
+main {
+	background: var(--primary-inner-bg);
+	color: var(--primary-fg);
+	text-shadow: none;
+	border: dotted 1px var(--primary-hi);
+}
+
+a, a:active, a:visited, a:hover,
+a.external, a:active.external, a:visited.external, a:hover.external {
+	color: var(--primary-hi);
+	text-shadow: none;
+}
+
+main a, main a:active, main a:visited, main a:hover {
+	color: var(--primary-hi);
+	text-shadow: none;
+}
