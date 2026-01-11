@@ -1,0 +1,10 @@
+services:
+  rhost:
+    build: .
+    restart: unless-stopped
+    working_dir: /app
+    command: ["/bin/sh", "-c", "/app/start.sh"]
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
