@@ -5,6 +5,7 @@ services:
     working_dir: /app
     command: ["/bin/sh", "-c", "/app/start.sh"]
     volumes:
-      - .:/app
+      - ./app:/app
     ports:
-      - "8000:8000"
+      - "10001:10001"
+      - "10000:10000"

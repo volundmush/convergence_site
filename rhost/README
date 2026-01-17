@@ -1,0 +1,15 @@
+== Put your actual game configs into app/data ==
+
+data/netrhost.db.flat
+txt/*.txt
+alias.conf
+alternate_netrhost.conf
+codesuite.conf
+compat.conf
+muxalias.conf
+netrhost.conf
+objects.conf
+pennalias.conf
+rhost_ingame.conf
+rhost_mysql.conf
+tm3alias.conf

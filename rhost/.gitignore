@@ -1,1 +1,4 @@
 app/rhost
+app/data/*.conf
+app/data/data/*.flat
+app/data/txt/*.txt
