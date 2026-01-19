@@ -1,12 +1,11 @@
 import { Application, Router, send } from "jsr:@oak/oak@17.1.6"
 import Handlebars from "npm:handlebars@^4.7.8"
 
-const rhost = Deno.env["RHOST_ENDPOINT"] || "http://%2322222umicupcake@127.0.0.1:2061/"
+const rhost = Deno.env.get("RHOST_ENDPOINT") || "http://%2322222umicupcake@127.0.0.1:2061/"
 
 async function rhostExec(exec) {
 	try {
 		const response = await fetch(rhost, {
-			method: "GET",
 			headers: {
 				parse: 'ansiparse',
 				encode: 'yes',
@@ -32,7 +31,6 @@ async function rhostExec(exec) {
 async function rhostLua(exec) {
 	try {
 		const response = await fetch(rhost, {
-			method: "GET",
 			headers: {
 				"x-lua64": btoa(exec)
 			}
@@ -45,7 +43,7 @@ async function rhostLua(exec) {
 			try {
 				return JSON.parse(final)
 			} catch(e) {
-				console.log("[rhostLua] error: ", e, final)
+				console.log("[rhostLua] Failed to parse JSON: ", e, final)
 				return {
 					error: final
 				}
@@ -104,7 +102,19 @@ async function initializeHandlebars() {
 		console.log("No partials directory or files found:", error.message)
 	}
 
-	console.log("Handlebars initialized with templates and partials")
+	// Helpers
+	Handlebars.registerHelper("characters", async function(object, property, def, opts) {
+		try {
+			const list = await rhostLua(`ret = {}; playersRaw = rhost.strfunc("search", "type=player"); ret.players = {}; for str in string.gmatch(playersRaw, "([^%s]+)") do
+; table.insert(ret.players, str); end; return json.encode(ret)`)
+			return list
+		} catch(e) {
+			console.log("[handlebars characters] error:", e)
+			return []
+		}
+	})
+
+	console.log("Handlebars initialized with templates, partials, and helpers")
 
 	return siteTemplate
 }
