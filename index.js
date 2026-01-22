@@ -30,6 +30,8 @@ async function rhostExec(exec) {
 
 async function rhostLua(exec) {
 	try {
+		exec = exec.replace(/^\t+/gm, (match) => match.replaceAll("\t", "    "))
+
 		const response = await fetch(rhost, {
 			headers: {
 				"x-lua64": btoa(exec)
@@ -104,9 +106,17 @@ async function initializeHandlebars() {
 
 	// Helpers
 	Handlebars.registerHelper("characters", async function(object, property, def, opts) {
+		const luaScript = `
+ret = {}
+playersRaw = rhost.strfunc("search", "type=player")
+ret.players = {}
+for str in string.gmatch(playersRaw, "([^%s]+)") do
+	table.insert(ret.players, str)
+end
+return json.encode(ret)
+`
 		try {
-			const list = await rhostLua(`ret = {}; playersRaw = rhost.strfunc("search", "type=player"); ret.players = {}; for str in string.gmatch(playersRaw, "([^%s]+)") do
-; table.insert(ret.players, str); end; return json.encode(ret)`)
+			const list = await rhostLua(luaScript)
 			return list
 		} catch(e) {
 			console.log("[handlebars characters] error:", e)
