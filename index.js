@@ -104,26 +104,6 @@ async function initializeHandlebars() {
 		console.log("No partials directory or files found:", error.message)
 	}
 
-	// Helpers
-	Handlebars.registerHelper("characters", async function(object, property, def, opts) {
-		const luaScript = `
-ret = {}
-playersRaw = rhost.strfunc("search", "type=player")
-ret.players = {}
-for str in string.gmatch(playersRaw, "([^%s]+)") do
-	table.insert(ret.players, str)
-end
-return json.encode(ret)
-`
-		try {
-			const list = await rhostLua(luaScript)
-			return list
-		} catch(e) {
-			console.log("[handlebars characters] error:", e)
-			return []
-		}
-	})
-
 	console.log("Handlebars initialized with templates, partials, and helpers")
 
 	return siteTemplate
@@ -229,6 +209,36 @@ async function main() {
 			ctx.response.status = 500
 			ctx.response.body = { error: "Failed to get character" }
 		}
+	})
+
+	router.get("/characters/get/", async (ctx) => {
+		const luaScript = `
+ret = {}
+playersRaw = rhost.strfunc("search", "type=player")
+for dbref in string.gmatch(playersRaw, "([^%s]+)") do
+	pc = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",PC)]")
+	character = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",CHARACTER)]")
+	if character == "1" then
+		char = {}
+		char.name = rhost.strfunc("name", dbref)
+		char.cname = rhost.strfunc("cname", dbref)
+		char.dbref = dbref
+		char.pc = pc == "1"
+		table.insert(ret, char)
+	end
+end
+return json.encode(ret)
+`
+		var ret = []
+		try {
+			ret = await rhostLua(luaScript)
+		} catch(e) {
+			console.log("[/characters/get/] error:", e)
+			ret = []
+		}
+
+		ctx.response.status = 200
+		ctx.response.body = ret
 	})
 
 	router.get("/characters/:key/", async (ctx) => {

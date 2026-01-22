@@ -1,4 +1,22 @@
 <!-- {"title": "Convergence Mush Characters", "slug": "characters"} -->
 
 <h1>Convergence MUSH characters</h1>
+
+<ul id="characterList">
+</ul>
+
 <p><a href="/">Go back to the home page.</a></p>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+	const res = await fetch("/characters/get/")
+	const characters = await res.json()
+	const list = document.querySelector("#characterList")
+	console.log(characters)
+	for(char of characters) {
+		const item = document.createElement("li")
+		item.innerHTML = `${char.name} ${char.dbref}`
+		list.appendChild(item)
+	}
+})
+</script>
