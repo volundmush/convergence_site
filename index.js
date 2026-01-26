@@ -211,19 +211,21 @@ async function main() {
 		}
 	})
 
-	router.get("/characters/get/", async (ctx) => {
+	router.get("/api/characters/get/", async (ctx) => {
 		const luaScript = `
 ret = {}
 playersRaw = rhost.strfunc("search", "type=player")
 for dbref in string.gmatch(playersRaw, "([^%s]+)") do
-	pc = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",PC)]")
-	character = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",CHARACTER)]")
-	if character == "1" then
+	pc = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",PC)]") == '1'
+	character = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",CHARACTER)]") == '1'
+	if character then
 		char = {}
 		char.name = rhost.strfunc("name", dbref)
 		char.cname = rhost.strfunc("cname", dbref)
+		char.bittype = rhost.strfunc("bittype", dbref)
+		char.approved = rhost.strfunc("eval", "[hasflag(" .. dbref .. ",WANDERER)]") == '0'
 		char.dbref = dbref
-		char.pc = pc == "1"
+		char.pc = pc
 		table.insert(ret, char)
 	end
 end
@@ -233,7 +235,7 @@ return json.encode(ret)
 		try {
 			ret = await rhostLua(luaScript)
 		} catch(e) {
-			console.log("[/characters/get/] error:", e)
+			console.log("[/api/characters/get/] error:", e)
 			ret = []
 		}
 
