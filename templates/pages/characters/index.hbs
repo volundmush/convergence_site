@@ -1,22 +1,43 @@
 <!-- {"title": "Convergence Mush Characters", "slug": "characters"} -->
 
-<h1>Convergence MUSH characters</h1>
+<h2>Convergence MUSH characters</h3>
+<div class="characterlists">
+	<div>
+		<h3>Player Characters</h3>
+		<ul id="approved">
+		</ul>
+	</div>
 
-<ul id="characterList">
-</ul>
+	<div>
+		<h3>Staff</h3>
+		<ul id="staff">
+		</ul>
+	</div>
+</div>
 
 <p><a href="/">Go back to the home page.</a></p>
 
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
-	const res = await fetch("/characters/get/")
-	const characters = await res.json()
-	const list = document.querySelector("#characterList")
+	const res = await fetch("/api/characters/get/")
+	const characters = (await res.json()).sort((x, y) => x.name.localeCompare(y.name))
+	const approved = document.querySelector("#approved")
+	const staff = document.querySelector("#staff")
 	console.log(characters)
-	for(char of characters) {
+	for(character of characters) {
+		if(!character.pc) {
+			continue
+		}
+
 		const item = document.createElement("li")
-		item.innerHTML = `${char.name} ${char.dbref}`
-		list.appendChild(item)
+		const path = character.dbref.replace('#', '')
+		item.innerHTML = `<a href="/characters/${path}/">${character.name}</a>`
+
+		if(character.bittype > 1) {
+			staff.appendChild(item)
+		} else if(character.approved) {
+			approved.appendChild(item)
+		}
 	}
 })
 </script>
