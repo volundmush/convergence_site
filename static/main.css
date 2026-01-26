@@ -1,4 +1,5 @@
 /* CSS placed here will be applied to all skins */
+@import url('https://fonts.googleapis.com/css2?family=Francois+One&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
 /* Colors */
 
@@ -142,4 +143,59 @@ a.external, a:active.external, a:visited.external, a:hover.external {
 main a, main a:active, main a:visited, main a:hover {
 	color: var(--primary-hi);
 	text-shadow: none;
+}
+
+@media (min-width: 1024px) {
+	.automated main {
+		max-width: 980px;
+	}
+}
+
+.automated {
+	font-family: "Open Sans", Arial, Sans;
+}
+
+.automated .nav-brand,
+.automated h1,
+.automated h2,
+.automated h3,
+.automated h4,
+.automated h5,
+.automated h6 {
+	font-family: "Francois One", Arial, Sans;
+	font-weight: 400;
+}
+
+.automated .nav-brand {
+	font-size: 48px;
+}
+
+.automated h2 {
+	border-bottom: solid 1px #777;
+}
+
+.automated header a,
+.automated header a:visited,
+.automated header a:hover,
+.automated header a:active {
+	text-decoration: none;
+}
+
+.automated h1 {
+	font-size: 48px;
+}
+
+.automated main {
+	margin: 30px auto;
+	padding: 10px;
+}
+
+.automated main .characterlists {
+	display: flex;
+	flex-direction: row;
+}
+
+.automated ul {
+	padding-left: 0;
+	list-style: none;
 }
