@@ -87,11 +87,20 @@ header {
 header::before {
 	background: url(https://convergence.mushhaven.com/images/6/67/Umisticker.webp);
 	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
 	content: " ";
-	width: 200px;
-	height:200px;
+	width: 95px;
+	height: 100%;
 	display: block;
 	float: left;
+}
+
+@media (min-width: 1024px) {
+	header::before {
+		width: 200px;
+		height: 200px;
+	}
 }
 
 header a, header a:active, header a:visited, header a:hover,
@@ -101,14 +110,23 @@ header a.external, header a:active.external, header a:visited.external, header a
 }
 
 header nav {
-	margin-left: 220px;
-	width: calc(100% - 220px);
+	width: 100%;
 	height: 100%;
 	vertical-align: middle;
 
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+
+	margin-left: 100px;
+	width: calc(100% - 100px);
+}
+
+@media (min-width: 1024px) {
+	header nav {
+		margin-left: 220px;
+		width: calc(100% - 220px);
+	}
 }
 
 header nav .nav-brand {
@@ -167,7 +185,13 @@ main a, main a:active, main a:visited, main a:hover {
 }
 
 .automated .nav-brand {
-	font-size: 48px;
+	font-size: 24px;
+}
+
+@media (min-width: 1024px) {
+	.automated .nav-brand {
+		font-size: 48px;
+	}
 }
 
 .automated h2 {
@@ -190,12 +214,101 @@ main a, main a:active, main a:visited, main a:hover {
 	padding: 10px;
 }
 
+.automated ul {
+	padding-left: 0;
+	list-style: none;
+}
+
 .automated main .characterlists {
 	display: flex;
 	flex-direction: row;
 }
 
-.automated ul {
-	padding-left: 0;
-	list-style: none;
+.automated main .character {
+	display: flex;
+	flex-direction: column;
+}
+
+.automated main .character .banner {
+	height: 180px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	background-color: rgba(0, 0, 0, .05);
+	margin-bottom: 10px;
+}
+
+.automated main .character .body {
+	display: flex;
+	flex-direction: column;
+}
+
+@media (min-width: 1024px) {
+	.automated main .character .body {
+		flex-direction: row;
+	}
+}
+
+.automated main .character .profile h3 {
+	text-align: center;
+}
+
+.automated main .character .profile {
+	order: 1;
+
+	border: solid 2px var(--primary-hi);
+	margin: 2px;
+	padding: 5px;
+}
+
+.automated main .character .profile .staff {
+	display: none;
+}
+
+.automated main .character .profile.staff .staff {
+	display: none;
+}
+
+.automated main .character .data {
+	width: 100%;
+	order: 2;
+	padding: 5px;
+}
+
+.automated main .character .profile {
+	width: calc(100% - 8px);
+
+	box-shadow: rgba(0, 0, 0, .2) 5px 5px 5px;
+}
+
+.automated main .character .profile .finger tr:not(:first-child) td {
+	padding-top: 5px;
+}
+
+.automated main .character .profile .finger tr:not(:last-child) td {
+	padding-bottom: 5px;
+	border-bottom: solid 1px var(--primary-fg);
+}
+
+.automated main .character .profile .finger .key {
+	font-variant: all-small-caps;
+	font-weight: bold;
+	padding-right: 1em;
+}
+
+.automated main .character .profile .finger .value {
+}
+
+
+@media (min-width: 1024px) {
+	.automated main .character .profile {
+		order: 3;
+		width: calc(33% - 8px);
+	}
+
+	.automated main .character .data {
+		width: 67%;
+	}
 }

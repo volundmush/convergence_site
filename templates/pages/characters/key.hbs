@@ -1,0 +1,63 @@
+<!-- {"title": "Convergence Mush Character Page", "slug": "characters/:key"} -->
+
+<div class="character">
+	<div class="banner">
+		<h2 class="name"></h2>
+	</div>
+	<div class="body">
+		<div class="profile">
+			<h3>Profile</h3>
+			<div class="staff">
+				STAFF
+			</div>
+			<div class="portrait">
+			</div>
+			<table class="finger">
+			</table>
+		</div>
+		<div class="data">
+			<div class="sheet">
+				<h3>Sheet</h3>
+			</div>
+			<div class="gallery">
+				<h3>Gallery</h3>
+			</div>
+			<div class="logs">
+				<h3>Logs</h3>
+			</div>
+		</div>
+	</div>
+</div>
+
+<p><a href="/">Go back to the home page.</a></p>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+	const res = await fetch(`/api/characters/get/${encodeURIComponent("{{ dbref }}")}`)
+	const character = await res.json()
+	window.character = character
+
+	const oldTitle = document.querySelector("title").innerText
+	document.querySelector("title").innerText = `${character.name} — ${oldTitle}`
+
+	document.querySelector(".character .banner .name").innerText = character.name
+
+	if(character.bittype != "1") {
+		document.querySelector(".character .body .profile").classes.add("staff")
+	}
+
+	for(key of Object.keys(character.finger).sort()) {
+		const value = character.finger[key]
+		const entry = document.createElement("tr")
+		const entryKey = document.createElement("td")
+		entryKey.classList.add("key")
+		entryKey.innerText = key
+		const entryValue = document.createElement("td")
+		entryValue.innerText = value
+		entryValue.classList.add("value")
+		entry.appendChild(entryKey)
+		entry.appendChild(entryValue)
+		document.querySelector(".character .body .profile .finger").appendChild(entry)
+	}
+})
+</script>

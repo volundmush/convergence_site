@@ -243,22 +243,61 @@ return json.encode(ret)
 		ctx.response.body = ret
 	})
 
-	router.get("/characters/:key/", async (ctx) => {
+	router.get("/api/characters/get/:key", async (ctx) => {
+		const dbref = `${ctx.params.key}`
+		const luaScript = `
+char = {}
+dbref = "${dbref}"
+pc = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",PC)]") == '1'
+approved = rhost.strfunc("eval", "[hasflag(" .. dbref .. ",WANDERER)]") == '0'
+bittype = rhost.strfunc("bittype", dbref)
+if not (pc and (approved or (bittype ~= "0"))) then
+	char = { error = 404 }
+else
+	char.finger = {}
+	fingersRaw = rhost.strfunc("lattr", dbref .. "/finger.*")
+	for attr in string.gmatch(fingersRaw, "([^%s]+)") do
+		value = rhost.strfunc("get", dbref .. "/" .. attr)
+		key = string.gsub(attr, "FINGER.", "")
+		char.finger[key] = value
+	end
+
+	char.name = rhost.strfunc("name", dbref)
+	char.cname = rhost.strfunc("cname", dbref)
+	char.bittype = rhost.strfunc("bittype", dbref)
+	char.approved = rhost.strfunc("eval", "[hasflag(" .. dbref .. ",WANDERER)]") == '0'
+	char.dbref = dbref
+	char.pc = pc
+end
+return json.encode(char)
+`
+		var ret = {}
 		try {
-			const characterKey = ctx.params.key
-			const characterDoc = await character.findCharacterByKey(characterKey)
-			
-			if (!characterDoc) {
-				ctx.response.status = 404
-				ctx.response.body = { error: "Character not found" }
-				return
+			ret = await rhostLua(luaScript)
+		} catch(e) {
+			console.log("[/api/characters/get/] error:", e)
+			ret = {}
+		}
+
+		ctx.response.status = 200
+		ctx.response.body = ret
+	})
+
+	router.get("/characters/:key/", async (ctx) => {
+		const dbref = `#${ctx.params.key}`
+
+		try {
+			const data = {
+				user: ctx.state.user || null,
+				dbref
 			}
-			
-			ctx.response.body = { character: characterDoc }
+
+			const html = await renderPage(siteTemplate, "/app/templates/pages/characters/key.hbs", data)
+			ctx.response.headers.set("Content-Type", "text/html")
+			ctx.response.body = html
 		} catch (error) {
-			await logError(error, "Get admin character by key")
-			ctx.response.status = 500
-			ctx.response.body = { error: "Failed to get character" }
+			await logError(error, "/characters/:key")
+			throw error
 		}
 	})
 
