@@ -46,7 +46,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 		document.querySelector(".character .body .profile").classList.add("staff")
 	}
 
-	for(key of Object.keys(character.finger).sort()) {
+	character.finger.sex = character.sex
+	character.finger.theme = character.theme
+	character.finger.factions = character.factions.map(fac => fac.name).join(", ")
+
+	for(key of Object.keys(character.finger).sort((a, b) => a.localeCompare(b, "en", {'sensitivity': "base"}))) {
 		const value = character.finger[key]
 		const entry = document.createElement("tr")
 		const entryKey = document.createElement("td")
