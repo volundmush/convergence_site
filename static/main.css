@@ -257,6 +257,7 @@ main a, main a:active, main a:visited, main a:hover {
 
 .automated main .character .profile {
 	order: 1;
+	height: fit-content;
 
 	border: solid 2px var(--primary-hi);
 	margin: 2px;

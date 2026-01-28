@@ -63,6 +63,49 @@ document.addEventListener("DOMContentLoaded", async () => {
 		entry.appendChild(entryValue)
 		document.querySelector(".character .body .profile .finger").appendChild(entry)
 	}
+
+
+	const categories = [
+		"Theme",
+		"Faction",
+		"Abilities",
+		"Copied Powers",
+		"Resources",
+		"NPCs",
+		"Extra Data",
+		"Complications",
+		"Info Files"
+	]
+
+	const sheetsection = document.querySelector(".sheet")
+	for(cat of categories) {
+		const items = character.data[cat]
+		if(!items || !items.length) continue
+
+		const catsection = document.createElement("expandable-item")
+		catsection.setAttribute("name", cat)
+		catsection.setAttribute("summary", "")
+
+		for(item of items) {
+			const itemsection = document.createElement("expandable-item")
+			const display = (() => {
+				if(item.value) {
+					return `${item.name} (${item.value})`
+				} else {
+					return item.name
+				}
+			})()
+			itemsection.setAttribute("name", display)
+			itemsection.setAttribute("summary", item.summary)
+			for(const para of item.body.split(/\n+/)) {
+				const itembody = document.createElement("div")
+				itembody.innerText = para
+				itemsection.appendChild(itembody)
+			}
+			catsection.appendChild(itemsection)
+		}
+		sheetsection.appendChild(catsection)
+	}
 })
 
 // Expandable web component
@@ -88,7 +131,7 @@ class ExpandableItem extends HTMLElement {
 				}
 				
 				.expandable-item {
-					border: 1px solid #ccc;
+					border: 1px solid var(--secondary-hi);
 					border-radius: 4px;
 					margin-bottom: 1rem;
 					overflow: hidden;
@@ -99,13 +142,8 @@ class ExpandableItem extends HTMLElement {
 					justify-content: space-between;
 					align-items: center;
 					padding: 1rem;
-					background-color: #f5f5f5;
+					background-color: var(--secondary-bg);
 					cursor: pointer;
-					transition: background-color 0.2s ease;
-				}
-				
-				.expandable-header:hover {
-					background-color: #efefef;
 				}
 				
 				.expandable-content-preview {
@@ -115,11 +153,12 @@ class ExpandableItem extends HTMLElement {
 				.expandable-name {
 					margin: 0 0 0.5rem 0;
 					font-size: 1.1rem;
+					color: var(--secondary-fg);
 				}
 				
 				.expandable-summary {
 					margin: 0;
-					color: #666;
+					color: var(--secondary-fg);
 					font-size: 0.95rem;
 				}
 				
@@ -128,7 +167,7 @@ class ExpandableItem extends HTMLElement {
 					margin-left: 1rem;
 					transition: transform 0.3s ease;
 					font-size: 0.8rem;
-					color: #333;
+					color: var(--secondary-hi);
 				}
 				
 				.expandable-arrow.expanded {
@@ -137,8 +176,9 @@ class ExpandableItem extends HTMLElement {
 				
 				.expandable-body {
 					padding: 1rem;
-					background-color: #fafafa;
-					border-top: 1px solid #ccc;
+					color: var(--tertiary-fg);
+					background-color: var(--tertiary-bg);
+					border-top: 1px solid var(--tertiary-hi);
 					display: none;
 				}
 				
