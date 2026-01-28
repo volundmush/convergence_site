@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	document.querySelector(".character .banner .name").innerText = character.name
 
 	if(character.bittype != "1") {
-		document.querySelector(".character .body .profile").classes.add("staff")
+		document.querySelector(".character .body .profile").classList.add("staff")
 	}
 
 	for(key of Object.keys(character.finger).sort()) {
@@ -60,4 +60,113 @@ document.addEventListener("DOMContentLoaded", async () => {
 		document.querySelector(".character .body .profile .finger").appendChild(entry)
 	}
 })
+
+// Expandable web component
+
+// <expandable-item name="Component Name" summary="Summary text goes here">
+//	<p>Full content appears here when expanded.</p>
+//</expandable-item>
+
+class ExpandableItem extends HTMLElement {
+	constructor() {
+		super()
+		this.attachShadow({ mode: "open" })
+	}
+
+	connectedCallback() {
+		const name = this.getAttribute("name") || "Item"
+		const summary = this.getAttribute("summary") || ""
+		
+		this.shadowRoot.innerHTML = `
+			<style>
+				:host {
+					display: block;
+				}
+				
+				.expandable-item {
+					border: 1px solid #ccc;
+					border-radius: 4px;
+					margin-bottom: 1rem;
+					overflow: hidden;
+				}
+				
+				.expandable-header {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					padding: 1rem;
+					background-color: #f5f5f5;
+					cursor: pointer;
+					transition: background-color 0.2s ease;
+				}
+				
+				.expandable-header:hover {
+					background-color: #efefef;
+				}
+				
+				.expandable-content-preview {
+					flex: 1;
+				}
+				
+				.expandable-name {
+					margin: 0 0 0.5rem 0;
+					font-size: 1.1rem;
+				}
+				
+				.expandable-summary {
+					margin: 0;
+					color: #666;
+					font-size: 0.95rem;
+				}
+				
+				.expandable-arrow {
+					display: inline-block;
+					margin-left: 1rem;
+					transition: transform 0.3s ease;
+					font-size: 0.8rem;
+					color: #333;
+				}
+				
+				.expandable-arrow.expanded {
+					transform: rotate(90deg);
+				}
+				
+				.expandable-body {
+					padding: 1rem;
+					background-color: #fafafa;
+					border-top: 1px solid #ccc;
+					display: none;
+				}
+				
+				.expandable-body.expanded {
+					display: block;
+				}
+			</style>
+			
+			<div class="expandable-item">
+				<div class="expandable-header">
+					<div class="expandable-content-preview">
+						<h4 class="expandable-name">${name}</h4>
+						<p class="expandable-summary">${summary}</p>
+					</div>
+					<span class="expandable-arrow">▶</span>
+				</div>
+				<div class="expandable-body">
+					<slot></slot>
+				</div>
+			</div>
+		`
+		
+		const header = this.shadowRoot.querySelector(".expandable-header")
+		const body = this.shadowRoot.querySelector(".expandable-body")
+		const arrow = this.shadowRoot.querySelector(".expandable-arrow")
+		
+		header.addEventListener("click", () => {
+			body.classList.toggle("expanded")
+			arrow.classList.toggle("expanded")
+		})
+	}
+}
+
+customElements.define("expandable-item", ExpandableItem)
 </script>
