@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const characters = (await res.json()).sort((x, y) => x.name.localeCompare(y.name))
 	const approved = document.querySelector("#approved")
 	const staff = document.querySelector("#staff")
-	console.log(characters)
 	for(character of characters) {
 		if(!character.pc) {
 			continue
