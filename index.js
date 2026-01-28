@@ -246,6 +246,18 @@ return json.encode(ret)
 	router.get("/api/characters/get/:key", async (ctx) => {
 		const dbref = `${ctx.params.key}`
 		const luaScript = `
+datatypes = {
+	["Info Files"] = "#info",
+	["Theme"] = "#theme",
+	["Faction"] = "#faction",
+	["Abilities"] = "#abi_info",
+	["Copied Powers"] = "#copy_info",
+	["Resources"] = "#res_info",
+	["NPCs"] = "#npc_info",
+	["Extra Data"] = "#ext_info",
+	["Complications"] = "#com_info"
+}
+
 char = {}
 dbref = "${dbref}"
 pc = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",PC)]") == '1'
@@ -262,6 +274,26 @@ else
 		char.finger[key] = value
 	end
 
+	char.data = {}
+	for name, ref in pairs(datatypes) do
+		category = {}
+
+		attrs = rhost.strfunc("eval", "[u(" .. ref .. "/FN.LIST_ATTRS_ORDER," .. dbref .. ")]")
+
+		for attr in string.gmatch(attrs, "([^%s]+)") do
+			rec = {}
+			local baseget = dbref .. "/" .. attr
+			rec.name = rhost.strfunc("get", baseget .. ".NAME")
+			rec.value = rhost.strfunc("get", baseget .. ".VALUE")
+			rec.body = rhost.strfunc("get", baseget .. ".BODY")
+			rec.summary = rhost.strfunc("get", baseget .. ".SUMMARY")
+			table.insert(category, rec)
+		end
+
+		char.data[name] = category
+	end
+
+	char.sex = rhost.strfunc("get", dbref .. "/SEX")
 	char.name = rhost.strfunc("name", dbref)
 	char.cname = rhost.strfunc("cname", dbref)
 	char.bittype = rhost.strfunc("bittype", dbref)
