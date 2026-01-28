@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	}
 
 	for(key of Object.keys(character.finger).sort()) {
-		const value = character.finger[key]
+		const value =u character.finger[key]
 		const entry = document.createElement("tr")
 		const entryKey = document.createElement("td")
 		entryKey.classList.add("key")
@@ -63,9 +63,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Expandable web component
 
-// <expandable-item name="Component Name" summary="Summary text goes here">
-//	<p>Full content appears here when expanded.</p>
-//</expandable-item>
+<!-- Expandable Component Example
+<expandable-item name="Component Name" summary="Summary text goes here">
+	<p>Full content appears here when expanded.</p>
+</expandable-item>
+-->
+
 
 class ExpandableItem extends HTMLElement {
 	constructor() {
