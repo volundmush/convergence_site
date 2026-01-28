@@ -293,6 +293,22 @@ else
 		char.data[name] = category
 	end
 
+	themeref = rhost.strfunc("get", dbref .. "/game.theme")
+	char.theme = rhost.strfunc("name", themeref)
+
+	char.factions = {}
+	factionrefs = rhost.strfunc("get", dbref .. "/fac.memberships")
+	for factionref in string.gmatch(factionrefs, "([^%s]+)") do
+		hidden = rhost.strfunc("eval", "[getconf(" .. factionref .. ", HIDDEN)") == "1"
+		private = rhost.strfunc("eval", "[getconf(" .. factionref .. ", PRIVATE)") == "1"
+		if not hidden and not private then
+			faction = {
+				name = rhost.strfunc("name", factionref)
+			}
+			table.insert(char.factions, faction)
+		end
+	end
+
 	char.sex = rhost.strfunc("get", dbref .. "/SEX")
 	char.name = rhost.strfunc("name", dbref)
 	char.cname = rhost.strfunc("cname", dbref)
