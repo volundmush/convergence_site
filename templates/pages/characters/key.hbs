@@ -21,6 +21,8 @@
 			</div>
 			<div class="gallery">
 				<h3>Gallery</h3>
+				<div class="contents">
+				</div>
 			</div>
 			<div class="logs">
 				<h3>Logs</h3>
@@ -105,6 +107,38 @@ document.addEventListener("DOMContentLoaded", async () => {
 			catsection.appendChild(itemsection)
 		}
 		sheetsection.appendChild(catsection)
+	}
+
+	if(character.data["Info Files"]) {
+		const portrait = character.data["Info Files"].find((inf) => inf.name.toLowerCase() == "portrait")
+		const banner = character.data["Info Files"].find((inf) => inf.name.toLowerCase() == "banner")
+		const gallery = character.data["Info Files"].find((inf) => inf.name.toLowerCase() == "gallery")
+
+		if(portrait) {
+			const img = document.createElement("img")
+			img.setAttribute("src", portrait.body)
+			document.querySelector(".profile :nth-child(1)").insertAdjacentElement("afterend", img)
+		}
+
+		if(banner) {
+			const bannerElement = document.querySelector(".banner")
+			if(bannerElement) {
+				bannerElement.style.backgroundImage = `url('${banner.body}')`
+				bannerElement.style.backgroundSize = "cover"
+				bannerElement.style.backgroundPosition = "center"
+			}
+		}
+
+		if(gallery) {
+			for(url of gallery.body.split(/\s+/)) {
+				const img = document.createElement("img")
+				img.setAttribute("src", url)
+				document.querySelector(".gallery .contents").insertAdjacentElement("beforeend", img)
+			}
+		}
+
+
+
 	}
 })
 

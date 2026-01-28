@@ -302,6 +302,9 @@ main a, main a:active, main a:visited, main a:hover {
 .automated main .character .profile .finger .value {
 }
 
+.automated main .character .profile img {
+	max-width: 100%;
+}
 
 @media (min-width: 1024px) {
 	.automated main .character .profile {
@@ -313,3 +316,24 @@ main a, main a:active, main a:visited, main a:hover {
 		width: 67%;
 	}
 }
+
+.automated main .character .gallery .contents {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 5px 5px;
+	flex-wrap: wrap;
+}
+
+.automated main .character .gallery .contents img {
+	max-width: 100%;
+	height: auto;
+}
+
+@media (min-width: 1024px) {
+	.automated main .character .gallery .contents img {
+		max-width: 30%;
+	}
+}
+
+
