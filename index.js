@@ -221,7 +221,7 @@ for dbref in string.gmatch(playersRaw, "([^%s]+)") do
 	if character then
 		char = {}
 		char.name = rhost.strfunc("name", dbref)
-		char.cname = rhost.strfunc("cname", dbref)
+		char.cname = rhost.parseansi(rhost.strfunc("cname", dbref))
 		char.bittype = rhost.strfunc("bittype", dbref)
 		char.approved = rhost.strfunc("eval", "[hasflag(" .. dbref .. ",WANDERER)]") == '0'
 		char.dbref = dbref
@@ -269,7 +269,7 @@ else
 	char.finger = {}
 	fingersRaw = rhost.strfunc("lattr", dbref .. "/finger.*")
 	for attr in string.gmatch(fingersRaw, "([^%s]+)") do
-		value = rhost.strfunc("get", dbref .. "/" .. attr)
+		value = rhost.parseansi(rhost.strfunc("get", dbref .. "/" .. attr))
 		key = string.gsub(attr, "FINGER.", "")
 		char.finger[key] = value
 	end
@@ -285,8 +285,8 @@ else
 			local baseget = dbref .. "/" .. attr
 			rec.name = rhost.strfunc("get", baseget .. ".NAME")
 			rec.value = rhost.strfunc("get", baseget .. ".VALUE")
-			rec.body = rhost.strfunc("get", baseget .. ".BODY")
-			rec.summary = rhost.strfunc("get", baseget .. ".SUMMARY")
+			rec.body = rhost.parseansi(rhost.strfunc("get", baseget .. ".BODY"))
+			rec.summary = rhost.parseansi(rhost.strfunc("get", baseget .. ".SUMMARY"))
 			table.insert(category, rec)
 		end
 
@@ -311,7 +311,7 @@ else
 
 	char.sex = rhost.strfunc("get", dbref .. "/SEX")
 	char.name = rhost.strfunc("name", dbref)
-	char.cname = rhost.strfunc("cname", dbref)
+	char.cname = rhost.parseansi(rhost.strfunc("cname", dbref))
 	char.bittype = rhost.strfunc("bittype", dbref)
 	char.approved = rhost.strfunc("eval", "[hasflag(" .. dbref .. ",WANDERER)]") == '0'
 	char.dbref = dbref
