@@ -35,6 +35,19 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
+	window.ansi = (await import("/static/ansi.js")).default
+	window.optionalANSI = function(str) {
+		str = str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
+		if(str.includes("\u001b")) {
+			console.log(str, "has esc")
+			return window.ansi.html(str)
+		} else {
+			console.log(str, "OMITS Esc")
+			return str
+		}
+	}
+
 	const res = await fetch(`/api/characters/get/${encodeURIComponent("{{ dbref }}")}`)
 	const character = await res.json()
 	window.character = character
@@ -42,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const oldTitle = document.querySelector("title").innerText
 	document.querySelector("title").innerText = `${character.name} — ${oldTitle}`
 
-	document.querySelector(".character .banner .name").innerText = character.name
+	document.querySelector(".character .banner .name").innerHTML = optionalANSI(character.cname)
 
 	if(character.bittype != "1") {
 		document.querySelector(".character .body .profile").classList.add("staff")
@@ -59,7 +72,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 		entryKey.classList.add("key")
 		entryKey.innerText = key
 		const entryValue = document.createElement("td")
-		entryValue.innerText = value
+		entryValue.innerHTML = optionalANSI(value)
 		entryValue.classList.add("value")
 		entry.appendChild(entryKey)
 		entry.appendChild(entryValue)
@@ -98,10 +111,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 				}
 			})()
 			itemsection.setAttribute("name", display)
-			itemsection.setAttribute("summary", item.summary)
+			itemsection.setAttribute("summary", optionalANSI(item.summary))
 			for(const para of item.body.split(/\n+/)) {
 				const itembody = document.createElement("div")
-				itembody.innerText = para
+				itembody.innerHTML = optionalANSI(para)
 				itemsection.appendChild(itembody)
 			}
 			catsection.appendChild(itemsection)
