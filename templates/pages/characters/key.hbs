@@ -40,10 +40,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 		str = str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
 		if(str.includes("\u001b")) {
-			console.log(str, "has esc")
 			return window.ansi.html(str)
 		} else {
-			console.log(str, "OMITS Esc")
 			return str
 		}
 	}
