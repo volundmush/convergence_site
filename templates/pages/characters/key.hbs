@@ -100,6 +100,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 		catsection.setAttribute("summary", "")
 
 		for(item of items) {
+			if(cat == "Info Files" &&
+			   ["portrait", "banner", "gallery", "css"].includes(item.name.toLowerCase())) {
+				continue
+			}
+
 			const itemsection = document.createElement("expandable-item")
 			const display = (() => {
 				if(item.value) {
@@ -124,6 +129,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 		const portrait = character.data["Info Files"].find((inf) => inf.name.toLowerCase() == "portrait")
 		const banner = character.data["Info Files"].find((inf) => inf.name.toLowerCase() == "banner")
 		const gallery = character.data["Info Files"].find((inf) => inf.name.toLowerCase() == "gallery")
+		const css = character.data["Info Files"].find((inf) => inf.name.toLowerCase() == "css")
 
 		if(portrait) {
 			const img = document.createElement("img")
@@ -148,8 +154,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 			}
 		}
 
-
-
+		if(css) {
+			const stylesheet = document.createElement("style")
+			stylesheet.innerText = css
+			body.appendChild(stylesheet)
+		}
 	}
 })
 
