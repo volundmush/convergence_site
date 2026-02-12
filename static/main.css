@@ -85,7 +85,7 @@ header {
 }
 
 header::before {
-	background: url(https://convergence.mushhaven.com/images/6/67/Umisticker.webp);
+	background: url(/images/6/67/Umisticker.webp);
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
