@@ -116,9 +116,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 			itemsection.setAttribute("name", display)
 			itemsection.setAttribute("summary", optionalANSI(item.summary))
 			for(const para of item.body.split(/\n+/)) {
-				if(para == "") {
-					para = "&nbsp;"
-				}
 				const itembody = document.createElement("div")
 				itembody.innerHTML = optionalANSI(para)
 				itemsection.appendChild(itembody)
@@ -237,6 +234,10 @@ class ExpandableItem extends HTMLElement {
 					background-color: var(--tertiary-bg);
 					border-top: 1px solid var(--tertiary-hi);
 					display: none;
+				}
+
+				.expandable-body div:not(:first-child) {
+					min-height: 1em;
 				}
 				
 				.expandable-body.expanded {
