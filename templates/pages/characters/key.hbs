@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 		if(css) {
 			const stylesheet = document.createElement("style")
-			stylesheet.innerText = css.body
+			stylesheet.innerText = css.body.replace(/(\r|\n)/g, " ")
 			document.body.appendChild(stylesheet)
 		}
 	}
