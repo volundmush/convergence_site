@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 			itemsection.setAttribute("name", display)
 			itemsection.setAttribute("summary", optionalANSI(item.summary))
 			for(const para of item.body.split(/\n+/)) {
-				const itembody = document.createElement("div")
+				const itembody = document.createElement("p")
 				itembody.innerHTML = optionalANSI(para)
 				itemsection.appendChild(itembody)
 			}
@@ -236,10 +236,6 @@ class ExpandableItem extends HTMLElement {
 					display: none;
 				}
 
-				.expandable-body div:not(:first-child) {
-					min-height: 1em;
-				}
-				
 				.expandable-body.expanded {
 					display: block;
 				}
