@@ -241,15 +241,15 @@ class ExpandableItem extends HTMLElement {
 				}
 			</style>
 			
-			<div class="expandable-item">
-				<div class="expandable-header">
-					<div class="expandable-content-preview">
-						<h4 class="expandable-name">${name}</h4>
-						<p class="expandable-summary">${summary}</p>
+			<div class="expandable-item" part="base">
+				<div class="expandable-header" part="header">
+					<div class="expandable-content-preview" part="preview">
+						<h4 class="expandable-name" part="name">${name}</h4>
+						<p class="expandable-summary" part="summary">${summary}</p>
 					</div>
-					<span class="expandable-arrow">▶</span>
+					<span class="expandable-arrow" part="arrow">▶</span>
 				</div>
-				<div class="expandable-body">
+				<div class="expandable-body" part="body">
 					<slot></slot>
 				</div>
 			</div>
