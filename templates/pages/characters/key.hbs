@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 		const entry = document.createElement("tr")
 		const entryKey = document.createElement("td")
 		entryKey.classList.add("key")
-		entryKey.innerText = key.toLowerCase()
+		entryKey.innerText = key
 		const entryValue = document.createElement("td")
 		entryValue.innerHTML = optionalANSI(value)
 		entryValue.classList.add("value")
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 		const value = character.finger[key]
 
 		const profilesection = document.createElement("expandable-item")
-		profilesection.setAttribute("name", key)
+		profilesection.setAttribute("name", key.toLowerCase())
 		profilesection.setAttribute("summary", "")
 
 		const profilebody = document.createElement("p")
