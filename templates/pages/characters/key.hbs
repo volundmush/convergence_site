@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 		const entry = document.createElement("tr")
 		const entryKey = document.createElement("td")
 		entryKey.classList.add("key")
-		entryKey.innerText = key
+		entryKey.innerText = key.toLowerCase()
 		const entryValue = document.createElement("td")
 		entryValue.innerHTML = optionalANSI(value)
 		entryValue.classList.add("value")
