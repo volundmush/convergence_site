@@ -88,6 +88,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 		const profilesection = document.createElement("expandable-item")
 		profilesection.setAttribute("name", key.toLowerCase())
 		profilesection.setAttribute("summary", "")
+		profilesection.setAttribute("expanded", "true")
 
 		const profilebody = document.createElement("p")
 		profilebody.innerHTML = optionalANSI(value)
@@ -194,6 +195,7 @@ class ExpandableItem extends HTMLElement {
 	connectedCallback() {
 		const name = this.getAttribute("name") || "Item"
 		const summary = this.getAttribute("summary") || ""
+		const initiallyExpanded = this.getAttribute("expanded")
 		
 		this.shadowRoot.innerHTML = `
 			<style>
@@ -277,10 +279,14 @@ class ExpandableItem extends HTMLElement {
 		const body = this.shadowRoot.querySelector(".expandable-body")
 		const arrow = this.shadowRoot.querySelector(".expandable-arrow")
 		
-		header.addEventListener("click", () => {
+		const clicker = () => {
 			body.classList.toggle("expanded")
 			arrow.classList.toggle("expanded")
 		})
+		header.addEventListener("click", clicker)
+		if(initiallyExpanded) {
+			clicker()
+		}
 	}
 }
 
