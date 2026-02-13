@@ -10,8 +10,6 @@
 			<div class="staff">
 				STAFF
 			</div>
-			<div class="portrait">
-			</div>
 			<table class="finger">
 			</table>
 		</div>
@@ -63,7 +61,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 	character.finger.theme = character.theme
 	character.finger.factions = character.factions.map(fac => fac.name).join(", ")
 
+	const specialProfiles = ["profile", "skills"]
+
 	for(key of Object.keys(character.finger).sort((a, b) => a.localeCompare(b, "en", {'sensitivity': "base"}))) {
+		if(specialProfiles.includes?(key.toLowerCase()) {
+			continue
+		}
 		const value = character.finger[key]
 		const entry = document.createElement("tr")
 		const entryKey = document.createElement("td")
@@ -77,6 +80,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 		document.querySelector(".character .body .profile .finger").appendChild(entry)
 	}
 
+	const sheetsection = document.querySelector(".sheet")
+
+	for(key of specialProfiles) {
+		const value = character.finger[key]
+
+		const profilesection = document.createElement("expandable-item")
+		profilesection.setAttribute("name", key)
+		profilesection.setAttribute("summary", "")
+
+		const profilebody = document.createElement("p")
+		profilebody.innerHTML = optionalANSI(para)
+		profilesection.appendChild(profilebody)
+
+		sheetsection.appendChild(profilesection)
+	}
 
 	const categories = [
 		"Theme",
@@ -90,7 +108,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 		"Info Files"
 	]
 
-	const sheetsection = document.querySelector(".sheet")
 	for(cat of categories) {
 		const items = character.data[cat]
 		if(!items || !items.length) continue
@@ -208,6 +225,7 @@ class ExpandableItem extends HTMLElement {
 					margin: 0 0 0.5rem 0;
 					font-size: 1.1rem;
 					color: var(--secondary-fg);
+					text-transform: capitalize;
 				}
 				
 				.expandable-summary {
