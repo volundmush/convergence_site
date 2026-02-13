@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const specialProfiles = ["profile", "skills"]
 
 	for(key of Object.keys(character.finger).sort((a, b) => a.localeCompare(b, "en", {'sensitivity': "base"}))) {
-		if(specialProfiles.includes?(key.toLowerCase())) {
+		if(specialProfiles.includes(key.toLowerCase())) {
 			continue
 		}
 		const value = character.finger[key]
