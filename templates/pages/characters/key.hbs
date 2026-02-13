@@ -84,6 +84,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 	for(key of specialProfiles) {
 		const value = character.finger[key]
+		if(!value) {
+			continue
+		}
 
 		const profilesection = document.createElement("expandable-item")
 		profilesection.setAttribute("name", key.toLowerCase())
