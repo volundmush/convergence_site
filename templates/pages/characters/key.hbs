@@ -282,7 +282,7 @@ class ExpandableItem extends HTMLElement {
 		const clicker = () => {
 			body.classList.toggle("expanded")
 			arrow.classList.toggle("expanded")
-		})
+		}
 		header.addEventListener("click", clicker)
 		if(initiallyExpanded) {
 			clicker()
