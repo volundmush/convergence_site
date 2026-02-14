@@ -333,6 +333,10 @@ main a, main a:active, main a:visited, main a:hover {
 	height: auto;
 }
 
+.automated main .character .gallery .contents a img {
+	max-width: 100%;
+}
+
 @media (min-width: 1024px) {
 	.automated main .character .gallery .contents a {
 		max-width: 30%;
