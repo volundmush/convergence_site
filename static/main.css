@@ -329,16 +329,12 @@ main a, main a:active, main a:visited, main a:hover {
 	display: block;
 	width: fit-content;
 	height: fit-content;
-}
-
-.automated main .character .gallery .contents img {
 	max-width: 100%;
 	height: auto;
 }
 
-
 @media (min-width: 1024px) {
-	.automated main .character .gallery .contents img {
+	.automated main .character .gallery .contents a {
 		max-width: 30%;
 	}
 }
