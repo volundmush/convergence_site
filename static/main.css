@@ -230,7 +230,7 @@ main a, main a:active, main a:visited, main a:hover {
 }
 
 .automated main .character .banner {
-	height: 180px;
+	aspect-ratio: 980 / 180;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -238,6 +238,10 @@ main a, main a:active, main a:visited, main a:hover {
 
 	background-color: rgba(0, 0, 0, .05);
 	margin-bottom: 10px;
+}
+
+@media (min-width: 1024px) {
+	height: 180px;
 }
 
 .automated main .character .body {
