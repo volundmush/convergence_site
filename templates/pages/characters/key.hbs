@@ -165,9 +165,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 		if(gallery) {
 			for(url of gallery.body.split(/\s+/)) {
+				const div = document.createElement("div")
+				const a = document.createElement("a")
+				a.setAttribute("href", url)
 				const img = document.createElement("img")
 				img.setAttribute("src", url)
-				document.querySelector(".gallery .contents").insertAdjacentElement("beforeend", img)
+
+				div.appendChild(a)
+				a.appendChild(img)
+				document.querySelector(".gallery .contents").insertAdjacentElement("beforeend", div)
 			}
 		}
 
