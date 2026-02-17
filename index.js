@@ -78,6 +78,7 @@ ret.characterRef = rhost.strfunc("pmatch", "${escapeInput(characterName)}")
 ret.hasCharacter = rhost.strfunc("eval", "[streq(get(" .. ret.characterRef .. "/_ACCOUNT), " .. ret.accountRef .. ")]") == "1"
 return json.encode(ret)
 `
+	console.log(luaScript)
 	var ret = {}
 	try {
 		ret = await rhostLua(luaScript)
