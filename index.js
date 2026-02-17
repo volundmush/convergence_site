@@ -359,7 +359,8 @@ return json.encode(char)
 		try {
 			const payload = await ctx.request.body.json()
 
-			const { accountName, password, characterName, portrait, gallery, css } = payload
+			console.log(payload)
+			const { accountName, password, characterName, portrait, gallery, css, banner } = payload
 
 			// Validate required fields
 			if(!accountName || !password || !characterName) {
