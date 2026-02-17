@@ -70,8 +70,8 @@ async function rhostLua(exec) {
 }
 
 async function rhostCheckLogin(accountName, password, characterName = undefined) {
-	const accountRef = await rhostExec(`think [namegrab(searchngobjid(TOTEMS=A),${escapeInput(accountName)})]`)
-	const playerRef = await rhostExec(`think [namegrab(searchngobjid(type=players),${escapeInput(characterName)})]`)
+	const accountRef = await rhostExec(`[namegrab(searchngobjid(TOTEMS=A),${escapeInput(accountName)})]`)
+	const playerRef = await rhostExec(`[namegrab(searchngobjid(type=players),${escapeInput(characterName)})]`)
 	const luaScript = `
 ret = {}
 ret.hasAccount = rhost.strfunc("eval", "streq(get(${playerRef}/_ACCOUNT),${accountRef})")
