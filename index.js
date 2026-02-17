@@ -372,6 +372,7 @@ return json.encode(char)
 			}
 
 			const checkLogin = await rhostCheckLogin(accountName, password, characterName)
+			console.log(checkLogin)
 
 			if(!checkLogin?.characterRef) {
 				ctx.response.status = 403
