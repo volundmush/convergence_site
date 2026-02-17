@@ -22,7 +22,7 @@ async function rhostExec(exec) {
 			throw new Error(`HTTP error! status: ${response.status}`)
 		}
 		
-		return Buffer.from(response.headers.get('return'), 'base64').toString('utf8')
+		return btoa(response.headers.get('return'))
 	} catch(e) {
 		if(e.name !== 'TypeError' || !e.message.includes('fetch')) {
 			console.log('[rhostExec] ERROR', e)
@@ -71,7 +71,7 @@ async function rhostLua(exec) {
 
 async function rhostCheckLogin(accountName, password, characterName = undefined) {
 	const accountRef = await rhostExec(`think namegrab(searchngobjid(TOTEMS=A),${escapeInput(accountName)})`)
-	const playerRef = await rhostExec(`think namegrab(searchngobjid(type=players),${escapeInput(characterName)})`)
+	const playerRef = await rhostExec(`think namegrab(searchngobjid(type=players),${escapeInput(charactersName)})`)
 	const luaScript = `
 ret = {}
 ret.hasAccount = rhost.strfunc("eval", "streq(get(${playerRef}/_ACCOUNT),${accountRef})")
