@@ -14,8 +14,36 @@
 		</ul>
 	</div>
 </div>
-
-<p><a href="/">Go back to the home page.</a></p>
+<div class="editpage">
+	<h3>Edit your own page</h3>
+	<form id="characterForm">
+		<div>
+			<label for="accountName">Account Name:</label>
+			<input type="text" id="accountName" name="accountName" required />
+		</div>
+		<div>
+			<label for="password">Password:</label>
+			<input type="password" id="password" name="password" required />
+		</div>
+		<div>
+			<label for="characterName">Character Name:</label>
+			<input type="text" id="characterName" name="characterName" required />
+		</div>
+		<div>
+			<label for="css">CSS:</label>
+			<textarea id="css" name="css"></textarea>
+		</div>
+		<div>
+			<label for="portrait">Portrait:</label>
+			<input type="text" id="portrait" name="portrait" />
+		</div>
+		<div>
+			<label for="gallery">Gallery:</label>
+			<textarea id="gallery" name="gallery"></textarea>
+		</div>
+		<button type="button" id="fetchBtn">Fetch</button>
+	</form>
+</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
@@ -38,5 +66,44 @@ document.addEventListener("DOMContentLoaded", async () => {
 			approved.appendChild(item)
 		}
 	}
+
+	// Wire up the character edit form
+	const characterForm = document.querySelector("#characterForm")
+	const fetchBtn = document.querySelector("#fetchBtn")
+
+	fetchBtn.addEventListener("click", async (e) => {
+		e.preventDefault()
+
+		const payload = {
+			accountName: document.querySelector("#accountName").value,
+			password: document.querySelector("#password").value,
+			characterName: document.querySelector("#characterName").value,
+			css: document.querySelector("#css").value,
+			portrait: document.querySelector("#portrait").value,
+			gallery: document.querySelector("#gallery").value
+		}
+
+		try {
+			const response = await fetch("/api/characters/edit/", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(payload)
+			})
+
+			const result = await response.json()
+
+			if (response.ok) {
+				alert("Character updated successfully!")
+				characterForm.reset()
+			} else {
+				alert(`Error: ${result.error || "Failed to update character"}`)
+			}
+		} catch (error) {
+			console.error("Error submitting form:", error)
+			alert("An error occurred while updating the character")
+		}
+	})
 })
 </script>

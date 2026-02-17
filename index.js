@@ -3,6 +3,11 @@ import Handlebars from "npm:handlebars@^4.7.8"
 
 const rhost = Deno.env.get("RHOST_ENDPOINT") || "http://%2322222umicupcake@127.0.0.1:2061/"
 
+
+function escapeInput(str) {
+	return str.replaceAll(/ /g, '%b').replaceAll(/\n/g,'%r').replaceAll(/\[/g,'\\[').replaceAll(/;/g,'\\;').replaceAll(/["]/g,'\\"').replaceAll(/\{\}/g,'')
+}
+
 async function rhostExec(exec) {
 	try {
 		const response = await fetch(rhost, {
@@ -61,6 +66,27 @@ async function rhostLua(exec) {
 			// console.log('[rhostLua] CONNRESET, retrying')
 			return this.rhostLua(exec)
 		}
+	}
+}
+
+async function rhostCheckLogin(accountName, password, characterName = undefined) {
+	const luaScript = `
+ret = {}
+accountRef = rhost.strfunc("namegrab", "[searchngobjid(TOTEMS=A)] " .. ${escapeInput(accountName)})
+checkPass = rhost.strfunc("attrpass", ret.accountRef .. "/_PASSWORD " .. ${escapeInput(password)}.. " chk") == "1"
+characterRef = rhost.strfunc("pmatch", ${escapeInput(characterName)})
+hasCharacter = rhost.strfunc("eval", "[streq(get(" .. characterRef .. "/_ACCOUNT), accountRef)]") == "1"
+if hasCharacter and checkPass then
+	ret.characterRef = characterRef
+end
+return json.encode(ret)
+`
+	var ret = {}
+	try {
+		ret = await rhostLua(luaScript)
+	} catch(e) {
+		console.log("[rhostCheckLogin] error:", e)
+		ret = {}
 	}
 }
 
@@ -329,6 +355,49 @@ return json.encode(char)
 
 		ctx.response.status = 200
 		ctx.response.body = ret
+	})
+
+	router.post("/api/characters/edit/", async (ctx) => {
+		try {
+			const body = await ctx.request.body().value
+			const payload = JSON.parse(new TextDecoder().decode(body))
+
+			const { accountName, password, characterName, portrait, gallery, css } = payload
+
+			// Validate required fields
+			if(!accountName || !password || !characterName) {
+				ctx.response.status = 400
+				ctx.response.body = { error: "Missing required fields: accountName, password, characterName" }
+				return
+			}
+
+			const checkLogin = await rhostCheckLogin(accountName, password, characterName)
+
+			if(!checkLogin.characterRef) {
+				ctx.response.status = 403
+				ctx.response.body = { error: "Invalid account name, password, or character name" }
+				return
+			}
+
+			if(css) {
+				await rhostExec(`@sudo ${checkLogin.charaterRef}=+info css=${escapeInput(css)}`)
+			}
+
+			if(gallery) {
+				await rhostExec(`@sudo ${checkLogin.charaterRef}=+info gallery=${escapeInput(gallery)}`)
+			}
+
+			if(portrait) {
+				await rhostExec(`@sudo ${checkLogin.charaterRef}=+info portrait=${escapeInput(portrait)}`)
+			}
+
+			ctx.response.status = 200
+			ctx.response.body = { success: true, message: "Character edited!" }
+		} catch (error) {
+			await logError(error, "POST /api/characters/edit")
+			ctx.response.status = 500
+			ctx.response.body = { error: "Failed to process character edit" }
+		}
 	})
 
 	router.get("/characters/:key/", async (ctx) => {
