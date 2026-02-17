@@ -391,6 +391,10 @@ return json.encode(char)
 				await rhostExec(`@sudo ${checkLogin.charaterRef}=+info portrait=${escapeInput(portrait)}`)
 			}
 
+			if(banner) {
+				await rhostExec(`@sudo ${checkLogin.charaterRef}=+info banner=${escapeInput(banner)}`)
+			}
+
 			ctx.response.status = 200
 			ctx.response.body = { success: true, message: "Character edited!" }
 		} catch (error) {

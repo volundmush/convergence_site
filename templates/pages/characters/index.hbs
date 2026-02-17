@@ -41,6 +41,10 @@
 			<label for="gallery">Gallery:</label>
 			<textarea id="gallery" name="gallery"></textarea>
 		</div>
+		<div>
+			<label for="banner">Banner:</label>
+			<textarea id="banner" name="banner"></textarea>
+		</div>
 		<button type="button" id="fetchBtn">Fetch</button>
 	</form>
 </div>
@@ -80,7 +84,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 			characterName: document.querySelector("#characterName").value,
 			css: document.querySelector("#css").value,
 			portrait: document.querySelector("#portrait").value,
-			gallery: document.querySelector("#gallery").value
+			gallery: document.querySelector("#gallery").value,
+			banner: document.querySelector("#banner").value
 		}
 
 		try {
