@@ -72,15 +72,13 @@ async function rhostLua(exec) {
 async function rhostCheckLogin(accountName, password, characterName = undefined) {
 	const luaScript = `
 ret = {}
-accountRef = rhost.strfunc("eval", "namegrab(searchngobjid(TOTEMS=A), ${escapeInput(accountName)})")
-checkPass = rhost.strfunc("eval", "attrpass(" .. accountRef .. "/_PASSWORD, ${escapeInput(password)}, chk") == "1"
-characterRef = rhost.strfunc("pmatch", "${escapeInput(characterName)}")
-hasCharacter = rhost.strfunc("eval", "[streq(get(" .. characterRef .. "/_ACCOUNT), " .. accountRef .. ")]") == "1"
-if hasCharacter and checkPass then
-	ret.characterRef = characterRef
-end
+ret.accountRef = rhost.strfunc("eval", "namegrab(searchngobjid(totems=a), ${escapeInput(accountName)})")
+ret.playerRef = rhost.strfunc("eval", "namegrab(searchngobjid(type=players), ${escapeInput(characterName)})")
+ret.hasAccount = rhost.strfunc("eval", "streq(get(" .. ret.playerRef .. "/_ACCOUNT)," .. ret.accountRef .. ")")
+ret.checkPass = rhost.strfunc("eval", "attrpass(" .. ret.accountRef .. "/_PASSWORD, ${escapeInput(password)}, chk)") == "1"
 return json.encode(ret)
 `
+	console.log(luaScript)
 	var ret = {}
 	try {
 		ret = await rhostLua(luaScript)
@@ -88,7 +86,12 @@ return json.encode(ret)
 		console.log("[rhostCheckLogin] error:", e)
 		ret = {}
 	}
-	return ret
+	console.log(ret)
+	if(ret.checkPass && ret.hasAccount) {
+		return { characterRef: ret.characterRef }
+	} else {
+		return {}
+	}
 }
 
 // Logging functions
