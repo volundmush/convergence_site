@@ -71,12 +71,12 @@ async function rhostLua(exec) {
 
 async function rhostCheckLogin(accountName, password, characterName = undefined) {
 	const accountRef = await rhostExec(`[namegrab(searchngobjid(TOTEMS=A),${escapeInput(accountName)})]`)
-	const playerRef = await rhostExec(`[namegrab(searchngobjid(type=players),${escapeInput(characterName)})]`)
-	const hasAccount = await rhostExec(`[streq(get(${playerRef}/_ACCOUNT),${accountRef})]`) == "1"
+	const characterRef = await rhostExec(`[namegrab(searchngobjid(type=players),${escapeInput(characterName)})]`)
+	const hasAccount = await rhostExec(`[streq(get(${characterRef}/_ACCOUNT),${accountRef})]`) == "1"
 	const checkPass = await rhostExec(`[attrpass(${accountRef}/_PASSWORD, ${escapeInput(password)}, chk)]`) == "1"
 	const ret = {
 		accountRef,
-		playerRef,
+		characterRef,
 		hasAccount,
 		checkPass
 	}
