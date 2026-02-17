@@ -101,7 +101,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 			if (response.ok) {
 				alert("Character updated successfully!")
-				characterForm.reset()
 			} else {
 				alert(`Error: ${result.error || "Failed to update character"}`)
 			}
