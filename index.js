@@ -359,8 +359,8 @@ return json.encode(char)
 
 	router.post("/api/characters/edit/", async (ctx) => {
 		try {
-			const body = await ctx.request.body().value
-			const payload = JSON.parse(new TextDecoder().decode(body))
+			const body = await ctx.request.body()
+			const payload = body.value
 
 			const { accountName, password, characterName, portrait, gallery, css } = payload
 
