@@ -5,7 +5,7 @@ const rhost = Deno.env.get("RHOST_ENDPOINT") || "http://%2322222umicupcake@127.0
 
 
 function escapeInput(str) {
-	return str.replaceAll(/ /g, '%b').replaceAll(/\n/g,'%r').replaceAll(/\[/g,'\\[').replaceAll(/;/g,'\\;').replaceAll(/["]/g,'\\"').replaceAll(/\{\}/g,'')
+	return str.replaceAll(/ /g, '%b').replaceAll(/\n/g,'%r').replaceAll(/\}/g,'%}').replaceAll(/\{/g,'%{').replaceAll(/\[/g,'\\[').replaceAll(/;/g,'\\;').replaceAll(/["]/g,'\\"').replaceAll(/\{\}/g,'')
 }
 
 async function rhostExec(exec) {
