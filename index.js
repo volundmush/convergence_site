@@ -73,9 +73,9 @@ async function rhostCheckLogin(accountName, password, characterName = undefined)
 	const luaScript = `
 ret = {}
 ret.accountRef = rhost.strfunc("eval", "namegrab(searchngobjid(TOTEMS=A), ${escapeInput(accountName)})")
-ret.checkPass = rhost.strfunc("eval", "attrpass(" .. accountRef .. "/_PASSWORD, ${escapeInput(password)}, chk)") == "1"
+ret.checkPass = rhost.strfunc("eval", "attrpass(" .. ret.accountRef .. "/_PASSWORD, ${escapeInput(password)}, chk)") == "1"
 ret.characterRef = rhost.strfunc("pmatch", "${escapeInput(characterName)}")
-ret.hasCharacter = rhost.strfunc("eval", "[streq(get(" .. characterRef .. "/_ACCOUNT), " .. accountRef .. ")]") == "1"
+ret.hasCharacter = rhost.strfunc("eval", "[streq(get(" .. ret.characterRef .. "/_ACCOUNT), " .. ret.accountRef .. ")]") == "1"
 return json.encode(ret)
 `
 	var ret = {}
