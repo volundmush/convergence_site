@@ -80,7 +80,6 @@ async function rhostCheckLogin(accountName, password, characterName = undefined)
 		hasAccount,
 		checkPass
 	}
-	console.log(ret)
 	if(ret.checkPass && ret.hasAccount) {
 		return { characterRef: ret.characterRef }
 	} else {
