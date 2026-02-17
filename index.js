@@ -73,7 +73,7 @@ async function rhostCheckLogin(accountName, password, characterName = undefined)
 	const luaScript = `
 ret = {}
 ret.hasAccount = rhost.strfunc("eval", "streq(lcstr(name(get(pmatch(${escapeInput(characterName)})/_ACCOUNT))), lcstr(${escapeInput(accountName)}))")
-ret.checkPass = rhost.strfunc("eval", "attrpass(" .. ret.accountRef .. "/_PASSWORD, ${escapeInput(password)}, chk)") == "1"
+ret.checkPass = rhost.strfunc("eval", "attrpass(get(pmatch(${escapeInput(characterName)})/_ACCOUNT)/_PASSWORD, ${escapeInput(password)}, chk)") == "1"
 return json.encode(ret)
 `
 	console.log(luaScript)
