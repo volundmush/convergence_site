@@ -75,10 +75,10 @@ async function rhostCheckLogin(accountName, password, characterName = undefined)
 	const hasAccount = await rhostExec(`[streq(get(${playerRef}/_ACCOUNT),${accountRef})]`) == "1"
 	const checkPass = await rhostExec(`[attrpass(${accountRef}/_PASSWORD, ${escapeInput(password)}, chk)]`) == "1"
 	const ret = {
-		accountRef 
-		playerRef 
-		hasAccount 
-		checkPass 
+		accountRef,
+		playerRef,
+		hasAccount,
+		checkPass
 	}
 	console.log(ret)
 	if(ret.checkPass && ret.hasAccount) {
