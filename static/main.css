@@ -300,6 +300,8 @@ main a, main a:active, main a:visited, main a:hover {
 
 .automated main .character .profile.staff .staff {
 	display: block;
+	text-align: center;
+	font-weight: bold;
 }
 
 .automated main .character .data {
