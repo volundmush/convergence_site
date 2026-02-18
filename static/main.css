@@ -220,20 +220,29 @@ main a, main a:active, main a:visited, main a:hover {
 }
 
 .automated main .characterlists {
-	display: flex;
-	flex-direction: column;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
 	gap: 30px;
 }
 
-.automated main .characterlists ul {
-	columns: 4;
-	column-gap: 30px;
+@media (max-width: 1024px) {
+	.automated main .characterlists {
+		grid-template-columns: repeat(2, 1fr);
+	}
 }
 
-@media (max-width: 1024px) {
-	.automated main .characterlists ul {
-		columns: 2;
-	}
+.automated main .characterlists .letter-section {
+	grid-column: auto;
+}
+
+.automated main .characterlists .letter-section h4 {
+	margin: 0 0 10px 0;
+}
+
+.automated main .characterlists .letter-section ul {
+	padding-left: 0;
+	list-style: none;
+	margin: 0;
 }
 
 .automated main .character {

@@ -2,17 +2,6 @@
 
 <h2>Convergence MUSH characters</h3>
 <div class="characterlists">
-	<div>
-		<h3>Player Characters</h3>
-		<ul id="approved">
-		</ul>
-	</div>
-
-	<div>
-		<h3>Staff</h3>
-		<ul id="staff">
-		</ul>
-	</div>
 </div>
 <div class="editpage">
 	<h3>Edit your own page</h3>
@@ -53,44 +42,41 @@
 document.addEventListener("DOMContentLoaded", async () => {
 	const res = await fetch("/api/characters/get/")
 	const characters = (await res.json()).sort((x, y) => x.name.localeCompare(y.name))
-	const approved = document.querySelector("#approved")
-	const staff = document.querySelector("#staff")
+	const characterlists = document.querySelector(".characterlists")
 	
-	// Helper function to populate list grouped by first letter
-	function populateListByLetter(list, chars) {
-		let currentLetter = null
-		let currentSection = null
-		let currentUL = null
-		
-		for(character of chars) {
-			const firstLetter = character.name.charAt(0).toUpperCase()
-			
-			// Create new section if letter changes
-			if(firstLetter !== currentLetter) {
-				currentLetter = firstLetter
-				currentSection = document.createElement("div")
-				const header = document.createElement("h4")
-				header.textContent = currentLetter
-				currentSection.appendChild(header)
-				currentUL = document.createElement("ul")
-				currentSection.appendChild(currentUL)
-				list.appendChild(currentSection)
-			}
-			
-			const item = document.createElement("li")
-			const path = character.dbref.replace('#', '')
-			item.innerHTML = `<a href="/characters/${path}/">${character.name}</a>`
-			currentUL.appendChild(item)
-		}
-	}
-	
-	// Separate characters by type
+	// Get all approved and staff characters
 	const approvedChars = characters.filter(c => c.pc && c.approved && c.bittype <= 1)
 	const staffChars = characters.filter(c => c.pc && c.bittype > 1)
 	
-	// Populate both lists
-	populateListByLetter(approved, approvedChars)
-	populateListByLetter(staff, staffChars)
+	// Combine for letter grouping
+	const allChars = [...approvedChars, ...staffChars]
+	
+	// Group all characters by first letter
+	let currentLetter = null
+	let currentSection = null
+	let currentUL = null
+	
+	for(character of allChars) {
+		const firstLetter = character.name.charAt(0).toUpperCase()
+		
+		// Create new section if letter changes
+		if(firstLetter !== currentLetter) {
+			currentLetter = firstLetter
+			currentSection = document.createElement("div")
+			currentSection.className = "letter-section"
+			const header = document.createElement("h4")
+			header.textContent = currentLetter
+			currentSection.appendChild(header)
+			currentUL = document.createElement("ul")
+			currentSection.appendChild(currentUL)
+			characterlists.appendChild(currentSection)
+		}
+		
+		const item = document.createElement("li")
+		const path = character.dbref.replace('#', '')
+		item.innerHTML = `<a href="/characters/${path}/">${character.name}</a>`
+		currentUL.appendChild(item)
+	}
 
 	// Wire up the character edit form
 	const characterForm = document.querySelector("#characterForm")
@@ -132,3 +118,4 @@ document.addEventListener("DOMContentLoaded", async () => {
 	})
 })
 </script>
+
