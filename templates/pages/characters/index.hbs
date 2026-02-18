@@ -48,15 +48,55 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const approvedChars = characters.filter(c => c.pc && c.approved && c.bittype <= 1)
 	const staffChars = characters.filter(c => c.pc && c.bittype > 1)
 	
-	// Combine for letter grouping
-	const allChars = [...approvedChars, ...staffChars]
+	// Add Player Characters header
+	if(approvedChars.length > 0) {
+		const playerHeader = document.createElement("h3")
+		playerHeader.textContent = "Player Characters"
+		playerHeader.style.gridColumn = "1 / -1"
+		characterlists.appendChild(playerHeader)
+	}
 	
-	// Group all characters by first letter
+	// Group approved characters by first letter
 	let currentLetter = null
 	let currentSection = null
 	let currentUL = null
 	
-	for(character of allChars) {
+	for(character of approvedChars) {
+		const firstLetter = character.name.charAt(0).toUpperCase()
+		
+		// Create new section if letter changes
+		if(firstLetter !== currentLetter) {
+			currentLetter = firstLetter
+			currentSection = document.createElement("div")
+			currentSection.className = "letter-section"
+			const header = document.createElement("h4")
+			header.textContent = currentLetter
+			currentSection.appendChild(header)
+			currentUL = document.createElement("ul")
+			currentSection.appendChild(currentUL)
+			characterlists.appendChild(currentSection)
+		}
+		
+		const item = document.createElement("li")
+		const path = character.dbref.replace('#', '')
+		item.innerHTML = `<a href="/characters/${path}/">${character.name}</a>`
+		currentUL.appendChild(item)
+	}
+	
+	// Add Staff header
+	if(staffChars.length > 0) {
+		const staffHeader = document.createElement("h3")
+		staffHeader.textContent = "Staff"
+		staffHeader.style.gridColumn = "1 / -1"
+		characterlists.appendChild(staffHeader)
+	}
+	
+	// Group staff characters by first letter
+	currentLetter = null
+	currentSection = null
+	currentUL = null
+	
+	for(character of staffChars) {
 		const firstLetter = character.name.charAt(0).toUpperCase()
 		
 		// Create new section if letter changes
