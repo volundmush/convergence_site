@@ -416,8 +416,16 @@ main a, main a:active, main a:visited, main a:hover {
 	font-size: 1em;
 	font-weight: bold;
 	margin-top: 10px;
+	transition: all 0.1s ease;
 }
 
 .automated main .editpage form button:hover {
 	background: var(--tertiary-bg);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.automated main .editpage form button:active {
+	transform: translateY(2px);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
