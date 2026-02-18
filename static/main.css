@@ -353,6 +353,9 @@ main a, main a:active, main a:visited, main a:hover {
 
 .automated main .editpage {
 	max-width: 600px;
+	border: solid 2px var(--primary-hi);
+	padding: 15px;
+	box-sizing: border-box;
 }
 
 .automated main .editpage form div {
