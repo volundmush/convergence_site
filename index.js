@@ -239,9 +239,13 @@ async function main() {
 ret = {}
 playersRaw = rhost.strfunc("search", "type=player")
 for dbref in string.gmatch(playersRaw, "([^%s]+)") do
-	pc = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",PC)]") == '1'
-	character = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",CHARACTER)]") == '1'
-	if character then
+	pctotem = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",PC)]") == '1'
+	approved = rhost.strfunc("eval", "[hasflag(" .. dbref .. ",WANDERER)]") == '0'
+	bittype = rhost.strfunc("bittype", dbref)
+	npc = not pctotem and not approved and bittype == 0
+	pc = pctotem and bittype <= 1
+	staff = pctotem and bittype > 1
+	if pc or npc or staff then
 		char = {}
 		char.name = rhost.strfunc("name", dbref)
 		char.cname = rhost.parseansi(rhost.strfunc("cname", dbref))
@@ -249,6 +253,8 @@ for dbref in string.gmatch(playersRaw, "([^%s]+)") do
 		char.approved = rhost.strfunc("eval", "[hasflag(" .. dbref .. ",WANDERER)]") == '0'
 		char.dbref = dbref
 		char.pc = pc
+		char.npc = npc
+		char.staff = staff
 		table.insert(ret, char)
 	end
 end
