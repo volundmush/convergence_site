@@ -2,6 +2,7 @@ import { Application, Router, send } from "jsr:@oak/oak@17.1.6"
 import Handlebars from "npm:handlebars@^4.7.8"
 
 const rhost = Deno.env.get("RHOST_ENDPOINT") || "http://%2322222umicupcake@127.0.0.1:2061/"
+const SERVER_START_TIME = Date.now()
 
 
 function escapeInput(str) {
@@ -126,6 +127,11 @@ async function initializeHandlebars() {
 	} catch (error) {
 		console.log("No partials directory or files found:", error.message)
 	}
+
+	// Register cachebuster helper
+	Handlebars.registerHelper("cachebuster", (path) => {
+		return `${path}?v=${SERVER_START_TIME}`
+	})
 
 	console.log("Handlebars initialized with templates, partials, and helpers")
 
