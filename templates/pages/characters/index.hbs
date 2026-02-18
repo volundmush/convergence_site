@@ -55,21 +55,42 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const characters = (await res.json()).sort((x, y) => x.name.localeCompare(y.name))
 	const approved = document.querySelector("#approved")
 	const staff = document.querySelector("#staff")
-	for(character of characters) {
-		if(!character.pc) {
-			continue
-		}
-
-		const item = document.createElement("li")
-		const path = character.dbref.replace('#', '')
-		item.innerHTML = `<a href="/characters/${path}/">${character.name}</a>`
-
-		if(character.bittype > 1) {
-			staff.appendChild(item)
-		} else if(character.approved) {
-			approved.appendChild(item)
+	
+	// Helper function to populate list grouped by first letter
+	function populateListByLetter(list, chars) {
+		let currentLetter = null
+		let currentSection = null
+		let currentUL = null
+		
+		for(character of chars) {
+			const firstLetter = character.name.charAt(0).toUpperCase()
+			
+			// Create new section if letter changes
+			if(firstLetter !== currentLetter) {
+				currentLetter = firstLetter
+				currentSection = document.createElement("div")
+				const header = document.createElement("h4")
+				header.textContent = currentLetter
+				currentSection.appendChild(header)
+				currentUL = document.createElement("ul")
+				currentSection.appendChild(currentUL)
+				list.appendChild(currentSection)
+			}
+			
+			const item = document.createElement("li")
+			const path = character.dbref.replace('#', '')
+			item.innerHTML = `<a href="/characters/${path}/">${character.name}</a>`
+			currentUL.appendChild(item)
 		}
 	}
+	
+	// Separate characters by type
+	const approvedChars = characters.filter(c => c.pc && c.approved && c.bittype <= 1)
+	const staffChars = characters.filter(c => c.pc && c.bittype > 1)
+	
+	// Populate both lists
+	populateListByLetter(approved, approvedChars)
+	populateListByLetter(staff, staffChars)
 
 	// Wire up the character edit form
 	const characterForm = document.querySelector("#characterForm")
