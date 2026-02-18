@@ -89,39 +89,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	populateSection(npcChars, "Non-Player Characters")
 	populateSection(staffChars, "Staff")
 	
-	if(false) {
-		const staffHeader = document.createElement("h3")
-		staffHeader.textContent = "Staff"
-		staffHeader.style.gridColumn = "1 / -1"
-		characterlists.appendChild(staffHeader)
-	}
-	
-	// Group staff characters by first letter
-	currentLetter = null
-	currentSection = null
-	currentUL = null
-	
-	for(character of staffChars) {
-		const firstLetter = character.name.charAt(0).toUpperCase()
-		
-		// Create new section if letter changes
-		if(firstLetter !== currentLetter) {
-			currentLetter = firstLetter
-			currentSection = document.createElement("div")
-			currentSection.className = "letter-section"
-			const header = document.createElement("h4")
-			header.textContent = currentLetter
-			currentSection.appendChild(header)
-			currentUL = document.createElement("ul")
-			currentSection.appendChild(currentUL)
-			characterlists.appendChild(currentSection)
-		}
-		
-		const item = document.createElement("li")
-		const path = character.dbref.replace('#', '')
-		item.innerHTML = `<a href="/characters/${path}/">${character.name}</a>`
-		currentUL.appendChild(item)
-	}
+
 
 	// Wire up the character edit form
 	const characterForm = document.querySelector("#characterForm")
