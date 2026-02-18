@@ -299,7 +299,7 @@ main a, main a:active, main a:visited, main a:hover {
 }
 
 .automated main .character .profile.staff .staff {
-	display: none;
+	display: block;
 }
 
 .automated main .character .data {
