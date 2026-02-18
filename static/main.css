@@ -195,7 +195,12 @@ main a, main a:active, main a:visited, main a:hover {
 }
 
 .automated h2 {
+	font-size: 2em;
 	border-bottom: solid 1px #777;
+}
+
+.automated h3 {
+	font-size: 1.5em;
 }
 
 .automated header a,
