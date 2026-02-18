@@ -243,7 +243,7 @@ for dbref in string.gmatch(playersRaw, "([^%s]+)") do
 	approved = rhost.strfunc("eval", "[hasflag(" .. dbref .. ",WANDERER)]") == '0'
 	bittype = tonumber(rhost.strfunc("bittype", dbref))
 	npc = not pctotem and not approved and bittype == 0
-	pc = pctotem and bittype <= 1
+	pc = approved and pctotem and bittype <= 1
 	staff = pctotem and bittype > 1
 	if pc or npc or staff then
 		char = {}
@@ -293,7 +293,7 @@ pctotem = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",PC)]") == '1'
 approved = rhost.strfunc("eval", "[hasflag(" .. dbref .. ",WANDERER)]") == '0'
 bittype = tonumber(rhost.strfunc("bittype", dbref))
 npc = not pctotem and not approved and bittype == 0
-pc = pctotem and bittype <= 1
+pc = approved and pctotem and bittype <= 1
 staff = pctotem and bittype > 1
 if not (pc or npc or staff) then
 	char = { error = 404 }
