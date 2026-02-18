@@ -377,7 +377,7 @@ main a, main a:active, main a:visited, main a:hover {
 	border: solid 2px var(--primary-hi);
 	padding: 15px;
 	box-sizing: border-box;
-	margin-top: 30px;
+	margin: 30px auto 0;
 }
 
 .automated main .editpage form div {
