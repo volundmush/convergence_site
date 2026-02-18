@@ -45,8 +45,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const characterlists = document.querySelector(".characterlists")
 	
 	// Get characters by type using the new server variables
-	const pcChars = characters.filter(c => c.pc)
-	const npcChars = characters.filter(c => c.npc)
+	const pcChars = characters.filter(c => c.pc && !c.staff)
+	const npcChars = characters.filter(c => c.npc && !c.staff)
 	const staffChars = characters.filter(c => c.staff)
 	
 	// Helper function to populate a section with letter grouping
