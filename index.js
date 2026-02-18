@@ -283,10 +283,13 @@ datatypes = {
 
 char = {}
 dbref = "${dbref}"
-pc = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",PC)]") == '1'
+pctotem = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",PC)]") == '1'
 approved = rhost.strfunc("eval", "[hasflag(" .. dbref .. ",WANDERER)]") == '0'
 bittype = rhost.strfunc("bittype", dbref)
-if not (pc and (approved or (bittype ~= "0"))) then
+npc = not pctotem and not approved and bittype == 0
+pc = pctotem and bittype <= 1
+staff = pctotem and bittype > 1
+if not (pc or npc or staff) then
 	char = { error = 404 }
 else
 	char.finger = {}
@@ -339,6 +342,8 @@ else
 	char.approved = rhost.strfunc("eval", "[hasflag(" .. dbref .. ",WANDERER)]") == '0'
 	char.dbref = dbref
 	char.pc = pc
+	char.npc = npc
+	char.staff = staff
 end
 return json.encode(char)
 `
