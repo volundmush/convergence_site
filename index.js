@@ -241,7 +241,7 @@ playersRaw = rhost.strfunc("search", "type=player")
 for dbref in string.gmatch(playersRaw, "([^%s]+)") do
 	pctotem = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",PC)]") == '1'
 	approved = rhost.strfunc("eval", "[hasflag(" .. dbref .. ",WANDERER)]") == '0'
-	bittype = rhost.strfunc("bittype", dbref)
+	bittype = tonumber(rhost.strfunc("bittype", dbref))
 	npc = not pctotem and not approved and bittype == 0
 	pc = pctotem and bittype <= 1
 	staff = pctotem and bittype > 1
@@ -291,7 +291,7 @@ char = {}
 dbref = "${dbref}"
 pctotem = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",PC)]") == '1'
 approved = rhost.strfunc("eval", "[hasflag(" .. dbref .. ",WANDERER)]") == '0'
-bittype = rhost.strfunc("bittype", dbref)
+bittype = tonumber(rhost.strfunc("bittype", dbref))
 npc = not pctotem and not approved and bittype == 0
 pc = pctotem and bittype <= 1
 staff = pctotem and bittype > 1
