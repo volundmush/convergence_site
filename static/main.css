@@ -221,7 +221,19 @@ main a, main a:active, main a:visited, main a:hover {
 
 .automated main .characterlists {
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
+	gap: 30px;
+}
+
+.automated main .characterlists ul {
+	columns: 4;
+	column-gap: 30px;
+}
+
+@media (max-width: 1024px) {
+	.automated main .characterlists ul {
+		columns: 2;
+	}
 }
 
 .automated main .character {
