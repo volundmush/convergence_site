@@ -1,8 +1,19 @@
 import { Application, Router, send } from "jsr:@oak/oak@17.1.6"
 import Handlebars from "npm:handlebars@^4.7.8"
+import { Client } from "https://deno.land/x/mysql@v2.12.1/mod.ts"
 
 const rhost = Deno.env.get("RHOST_ENDPOINT") || "http://%2322222umicupcake@127.0.0.1:2061/"
 const SERVER_START_TIME = Date.now()
+
+async function mysql() {
+	const mysql = await new Client().connect({
+		hostname: Deno.env.get("MYSQL_HOST"),
+		username: Deno.env.get("MYSQL_USER"),
+		password: Deno.env.get("MYSQL_PASS"),
+		database: Deno.env.get("MYSQL_DB")
+	})
+	return mysql
+}
 
 function rhostbtoa(str) {
 	return btoa(str.replace(/[^\x00-\x7F]/g, ''))
@@ -427,6 +438,38 @@ return '"' .. str .. '"'
 			await logError(error, "POST /api/characters/edit")
 			ctx.response.status = 500
 			ctx.response.body = { error: "Failed to process character edit" }
+		}
+	})
+
+	router.post("/api/logs/list/", async (ctx) => {
+		try {
+			const payload = await ctx.request.body.json()
+			const start = payload?.start || 0
+			const desc = payload?.desc ? "DESC" : "ASC"
+
+			const scenes = await mysql.query(`
+SELECT
+  s.*,
+  a.actor_id,
+  a.entity_id,
+  a.actor_type,
+  a.actor_date_created,
+  a.action_count,
+  e.entity_name,
+  e.entity_objid
+FROM scene s
+LEFT JOIN actor a ON s.scene_id = a.scene_id
+LEFT JOIN entity e ON a.entity_id = e.entity_id
+ORDER BY s.scene_id ??
+LIMIT ??,50
+			`, [desc, start])
+
+			ctx.response.status = 200
+			ctx.response.body = scenes
+		} catch (error) {
+			await logError(error, "POST /api/logs/list")
+			ctx.response.status = 500
+			ctx.response.body = { error: "Failed to list logs" }
 		}
 	})
 
