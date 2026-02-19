@@ -392,11 +392,8 @@ return json.encode(char)
 			}
 
 			const triggerInfo = async (type, val) => {
-				const script = `
-str = rhost.strfunc("trigger", "#lambda/{@sudo%b${checkLogin.characterRef}=+info%b${type}=${escapeInput(val)}}")
-return "\\"" .. str .. "\\""
-				`
-				return await rhostLua(script)
+				const script = `think trigger(#lambda/{@sudo%b${checkLogin.characterRef}=+info%b${type}=${escapeInput(val)}})")`
+				return await rhostExec(script)
 			}
 			if(css) {
 				const resp = await triggerInfo("css", css)
