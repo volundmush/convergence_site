@@ -391,23 +391,26 @@ return json.encode(char)
 				return
 			}
 
+			const triggerInfo = async (type, val) {
+				return await rhostLua(`rhost.strfunc("eval", "[trigger(#lambda/{@sudo ${checkLogin.characterRef}=+info ${type}=${escapeInput(val)}})]"); return "{}"`)
+			}
 			if(css) {
-				const resp = await rhostLua(`rhost.strfunc("eval", "trigger(#lambda/@sudo ${checkLogin.characterRef}=+info css=${escapeInput(css)})"); return "{}"`)
+				const resp = await triggerInfo("css", css)
 				console.log("[/api/characters/edit/] css returns:", resp)
 			}
 
 			if(gallery) {
-				const resp = await rhostLua(`rhost.strfunc("eval", "trigger(#lambda/@sudo ${checkLogin.characterRef}=+info gallery=${escapeInput(gallery)}); return "{}"`)
+				const resp = await triggerInfo("gallery", gallery)
 				console.log("[/api/characters/edit/] galleryreturns:", resp)
 			}
 
 			if(portrait) {
-				const resp = await rhostLua(`rhost.strfunc("eval", "trigger(#lambda/@sudo ${checkLogin.characterRef}=+info portrait=${escapeInput(portrait)})"); return "{}"`)
+				const resp = await triggerInfo("portrait", portrait)
 				console.log("[/api/characters/edit/] portrait returns:", resp)
 			}
 
 			if(banner) {
-				const resp = await rhostLua(`rhost.strfunc("eval", "trigger(#lambda/@sudo ${checkLogin.characterRef}=+info banner=${escapeInput(banner)})"); return "{}"`)
+				const resp = await triggerInfo("banner", banner)
 				console.log("[/api/characters/edit/] banner returns:", resp)
 			}
 
