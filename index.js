@@ -10,6 +10,7 @@ function escapeInput(str) {
 }
 
 async function rhostExec(exec) {
+	console.log('[rhostExec] exec', exec)
 	try {
 		const response = await fetch(rhost, {
 			headers: {
