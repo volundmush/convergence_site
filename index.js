@@ -6,7 +6,7 @@ const SERVER_START_TIME = Date.now()
 
 
 function escapeInput(str) {
-	return str.replaceAll(/ /g, '%b').replaceAll(/\n/g,'%r').replaceAll(/\}/g,'%}').replaceAll(/\{/g,'%{').replaceAll(/\[/g,'\\[').replaceAll(/;/g,'%;').replaceAll(/["]/g,'\\"').replaceAll(/\{\}/g,'')
+	return str.replaceAll(/ /g, '%b').replaceAll(/\n/g,'%r').replaceAll(/\}/g,'%}').replaceAll(/\{/g,'%{').replaceAll(/\[/g,'\\[').replaceAll(/;/g,'%;').replaceAll(/["]/g,'\\"').replaceAll(/\{\}/g,'').replaceAll(/\(/g,'%(')
 }
 
 async function rhostExec(exec) {
@@ -393,7 +393,7 @@ return json.encode(char)
 
 			const triggerInfo = async (type, val) => {
 				const script = `
-str = rhost.strfunc("trigger", "#info/do_info%b%b%b%b${checkLogin.characterRef}%b/%b${type}%b{${escapeInput(val)}}",%b)
+str = rhost.strfunc("eval", "[trigger(#info/do_info,,,,${checkLogin.characterRef},/,${type},${escapeInput(val)})]")
 return '"' .. str .. '"'
 `
 				return await rhostLua(script)
