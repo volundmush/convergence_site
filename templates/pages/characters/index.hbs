@@ -8,7 +8,7 @@
 	<form id="characterForm">
 		<div>
 			<label for="accountName">Account Name:</label>
-			<input type="text" id="accountName" name="accountName" pattern="[A-Za-z0-9_\-\.!@#$%^&*()+=\[\]{};:',.<>?/|\\`~]*" required />
+			<input type="text" id="accountName" name="accountName" required />
 		</div>
 		<div>
 			<label for="password">Password:</label>
@@ -16,7 +16,7 @@
 		</div>
 		<div>
 			<label for="characterName">Character Name:</label>
-			<input type="text" id="characterName" name="characterName" pattern="[A-Za-z0-9_\-\.!@#$%^&*()+=\[\]{};:',.<>?/|\\`~]*" required />
+			<input type="text" id="characterName" name="characterName" required />
 		</div>
 		<div>
 			<label for="css">CSS:</label>
@@ -24,7 +24,7 @@
 		</div>
 		<div>
 			<label for="portrait">Portrait:</label>
-			<input type="text" id="portrait" name="portrait" pattern="[A-Za-z0-9_\-\.!@#$%^&*()+=\[\]{};:',.<>?/|\\`~]*" />
+			<input type="text" id="portrait" name="portrait" />
 		</div>
 		<div>
 			<label for="gallery">Gallery:</label>
@@ -90,6 +90,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 	populateSection(staffChars, "Staff")
 	
 
+
+	// Restrict all form inputs and textareas to ASCII characters only
+	const asciiFields = document.querySelectorAll("#accountName, #password, #characterName, #portrait, #css, #gallery, #banner")
+	asciiFields.forEach(field => {
+		field.addEventListener("input", (e) => {
+			const value = e.target.value
+			const asciiValue = value.replace(/[^\x00-\x7F]/g, '')
+			if(value !== asciiValue) {
+				e.target.value = asciiValue
+			}
+		})
+	})
 
 	// Wire up the character edit form
 	const characterForm = document.querySelector("#characterForm")
