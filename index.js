@@ -392,22 +392,22 @@ return json.encode(char)
 			}
 
 			if(css) {
-				const resp = await rhostLua(`rhost.strfunc("evan", "trigger(@sudo ${checkLogin.characterRef}=+info css=${escapeInput(css)})")`)
+				const resp = await rhostLua(`rhost.strfunc("eval", "trigger(#lambda/@sudo ${checkLogin.characterRef}=+info css=${escapeInput(css)})")`)
 				console.log("[/api/characters/edit/] css returns:", resp)
 			}
 
 			if(gallery) {
-				const resp = await rhostExec(`@sudo ${checkLogin.characterRef}=+info gallery=${escapeInput(gallery)}`)
+				const resp = await rhostLua(`rhost.strfunc("eval", "trigger(#lambda/@sudo ${checkLogin.characterRef}=+info gallery=${escapeInput(gallery)})`)
 				console.log("[/api/characters/edit/] galleryreturns:", resp)
 			}
 
 			if(portrait) {
-				const resp = await rhostExec(`@sudo ${checkLogin.characterRef}=+info portrait=${escapeInput(portrait)}`)
+				const resp = await rhostLua(`rhost.strfunc("eval", "trigger(#lambda/@sudo ${checkLogin.characterRef}=+info portrait=${escapeInput(portrait)}`)
 				console.log("[/api/characters/edit/] portrait returns:", resp)
 			}
 
 			if(banner) {
-				const resp = await rhostExec(`@sudo ${checkLogin.characterRef}=+info banner=${escapeInput(banner)}`)
+				const resp = await rhostLua(`rhost.strfunc("eval", "trigger(#lambda/@sudo ${checkLogin.characterRef}=+info banner=${escapeInput(banner)}`)
 				console.log("[/api/characters/edit/] banner returns:", resp)
 			}
 
