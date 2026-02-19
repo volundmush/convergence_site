@@ -393,7 +393,7 @@ return json.encode(char)
 
 			const triggerInfo = async (type, val) => {
 				const script = `
-str = rhost.strfunc("trigger", "#lambda/{@sudo ${checkLogin.characterRef}=+info ${type}=${escapeInput(val)}}")
+str = rhost.strfunc("trigger", "#lambda/{@sudo%b${checkLogin.characterRef}=+info%b${type}=${escapeInput(val)}}")
 return "\\"" .. str .. "\\""
 				`
 				return await rhostLua(script)
