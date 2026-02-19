@@ -10,7 +10,6 @@ function escapeInput(str) {
 }
 
 async function rhostExec(exec) {
-	console.log('[rhostExec] exec', exec)
 	try {
 		const response = await fetch(rhost, {
 			headers: {
@@ -81,7 +80,6 @@ async function rhostCheckLogin(accountName, password, characterName = undefined)
 		hasAccount,
 		checkPass
 	}
-	console.log("[rhostCheckLogin]", ret)
 	if(ret.checkPass && ret.hasAccount) {
 		return { characterRef: ret.characterRef }
 	} else {
@@ -395,17 +393,17 @@ return json.encode(char)
 
 			if(css) {
 				const resp = await rhostExec(`@sudo ${checkLogin.characterRef}=+info css=${escapeInput(css)}`)
-				console.log("[/api/characters/edit/] css", resp)
+				console.log("[/api/characters/edit/] css returns: ", resp)
 			}
 
 			if(gallery) {
 				const resp = await rhostExec(`@sudo ${checkLogin.characterRef}=+info gallery=${escapeInput(gallery)}`)
-				console.log("[/api/characters/edit/] gallery", resp)
+				console.log("[/api/characters/edit/] galleryreturns: ", resp)
 			}
 
 			if(portrait) {
 				const resp = await rhostExec(`@sudo ${checkLogin.characterRef}=+info portrait=${escapeInput(portrait)}`)
-				console.log("[/api/characters/edit/] portrait", resp)
+				console.log("[/api/characters/edit/] portrait returns:", resp)
 			}
 
 			if(banner) {
