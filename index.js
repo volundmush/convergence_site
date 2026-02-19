@@ -9,7 +9,7 @@ function rhostbtoa(str) {
 }
 
 function escapeInput(str) {
-	return str.replaceAll(/ /g, '%b').replaceAll(/\n/g,'%r').replaceAll(/\}/g,'%}').replaceAll(/\{/g,'%{').replaceAll(/\[/g,'\\[').replaceAll(/;/g,'%;').replaceAll(/["]/g,'\\"').replaceAll(/\{\}/g,'').replaceAll(/\(/g,'%(').replaceAll(/\)/g,'%)')
+	return str.replaceAll(/ /g, '%b').replaceAll(/\n/g,'%r').replaceAll(/\}/g,'%}').replaceAll(/\{/g,'%{').replaceAll(/\[/g,'\\[').replaceAll(/;/g,'%;').replaceAll(/["]/g,'\\"').replaceAll(/\{\}/g,'').replaceAll(/\(/g,'%(').replaceAll(/\)/g,'%)').replaceAll(,)/g,'%,')
 }
 
 async function rhostExec(exec) {
