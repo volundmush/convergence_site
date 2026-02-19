@@ -393,9 +393,7 @@ return json.encode(char)
 
 // str = rhost.strfunc("eval", "[trigger(#lambda/{@sudo%b${checkLogin.characterRef}=+info%b${type}=${escapeInput(val)}})]")
 			const triggerInfo = async (type, val) => {
-				const script = `
-@trigger #lambda/{p ${checkLogin.characterRef}=Trying to update your +info, by request}
-				`
+				const script = `@trigger #lambda/{p ${checkLogin.characterRef}=Trying to update your +info, by request}`
 				return await rhostExec(script)
 			}
 			if(css) {
