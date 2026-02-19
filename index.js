@@ -394,22 +394,22 @@ return json.encode(char)
 			}
 
 			if(css) {
-				const resp = await rhostExec(`@sudo ${checkLogin.charaterRef}=+info css=${escapeInput(css)}`)
+				const resp = await rhostExec(`@sudo ${checkLogin.characterRef}=+info css=${escapeInput(css)}`)
 				console.log("[/api/characters/edit/] css", resp)
 			}
 
 			if(gallery) {
-				const resp = await rhostExec(`@sudo ${checkLogin.charaterRef}=+info gallery=${escapeInput(gallery)}`)
+				const resp = await rhostExec(`@sudo ${checkLogin.characterRef}=+info gallery=${escapeInput(gallery)}`)
 				console.log("[/api/characters/edit/] gallery", resp)
 			}
 
 			if(portrait) {
-				const resp = await rhostExec(`@sudo ${checkLogin.charaterRef}=+info portrait=${escapeInput(portrait)}`)
+				const resp = await rhostExec(`@sudo ${checkLogin.characterRef}=+info portrait=${escapeInput(portrait)}`)
 				console.log("[/api/characters/edit/] portrait", resp)
 			}
 
 			if(banner) {
-				const resp = await rhostExec(`@sudo ${checkLogin.charaterRef}=+info banner=${escapeInput(banner)}`)
+				const resp = await rhostExec(`@sudo ${checkLogin.characterRef}=+info banner=${escapeInput(banner)}`)
 				console.log("[/api/characters/edit/] banner", resp)
 			}
 
