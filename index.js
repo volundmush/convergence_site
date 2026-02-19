@@ -4,6 +4,9 @@ import Handlebars from "npm:handlebars@^4.7.8"
 const rhost = Deno.env.get("RHOST_ENDPOINT") || "http://%2322222umicupcake@127.0.0.1:2061/"
 const SERVER_START_TIME = Date.now()
 
+function rhostbtoa(str) {
+	return btoa(str.replace(/[^\x00-\x7F]/g, ''))
+}
 
 function escapeInput(str) {
 	return str.replaceAll(/ /g, '%b').replaceAll(/\n/g,'%r').replaceAll(/\}/g,'%}').replaceAll(/\{/g,'%{').replaceAll(/\[/g,'\\[').replaceAll(/;/g,'%;').replaceAll(/["]/g,'\\"').replaceAll(/\{\}/g,'').replaceAll(/\(/g,'%(').replaceAll(/\)/g,'%)')
@@ -15,7 +18,7 @@ async function rhostExec(exec) {
 			headers: {
 				parse: 'ansiparse',
 				encode: 'yes',
-				exec64: btoa(exec)
+				exec64: rhostbtoa(exec)
 			}
 		})
 		
@@ -39,7 +42,7 @@ async function rhostLua(exec) {
 
 		const response = await fetch(rhost, {
 			headers: {
-				"x-lua64": btoa(exec)
+				"x-lua64": rhostbtoa(exec)
 			}
 		})
 		const final = await response.text()
