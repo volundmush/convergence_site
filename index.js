@@ -392,7 +392,7 @@ return json.encode(char)
 			}
 
 			if(css) {
-				const resp = await rhostLua(`rhost.eval("trigger(@sudo ${checkLogin.characterRef}=+info css=${escapeInput(css)})")`)
+				const resp = await rhostLua(`rhost.strfunc("evan", "trigger(@sudo ${checkLogin.characterRef}=+info css=${escapeInput(css)})")`)
 				console.log("[/api/characters/edit/] css returns:", resp)
 			}
 
