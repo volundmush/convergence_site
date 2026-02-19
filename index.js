@@ -392,13 +392,13 @@ return json.encode(char)
 			}
 
 			if(css) {
-				const resp = await rhostExec(`@sudo ${checkLogin.characterRef}=+info css=${escapeInput(css)}`)
-				console.log("[/api/characters/edit/] css returns: ", resp)
+				const resp = await rhostLua(`rhost.eval("trigger(@sudo ${checkLogin.characterRef}=+info css=${escapeInput(css)})")`)
+				console.log("[/api/characters/edit/] css returns:", resp)
 			}
 
 			if(gallery) {
 				const resp = await rhostExec(`@sudo ${checkLogin.characterRef}=+info gallery=${escapeInput(gallery)}`)
-				console.log("[/api/characters/edit/] galleryreturns: ", resp)
+				console.log("[/api/characters/edit/] galleryreturns:", resp)
 			}
 
 			if(portrait) {
@@ -408,7 +408,7 @@ return json.encode(char)
 
 			if(banner) {
 				const resp = await rhostExec(`@sudo ${checkLogin.characterRef}=+info banner=${escapeInput(banner)}`)
-				console.log("[/api/characters/edit/] banner", resp)
+				console.log("[/api/characters/edit/] banner returns:", resp)
 			}
 
 			ctx.response.status = 200
