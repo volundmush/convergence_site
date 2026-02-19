@@ -22,7 +22,7 @@ async function rhostExec(exec) {
 		if (!response.ok) {
 			throw new Error(`HTTP error! status: ${response.status}`)
 		}
-		
+		console.log("[rhostExec]", response)
 		return atob(response.headers.get('return'))
 	} catch(e) {
 		if(e.name !== 'TypeError' || !e.message.includes('fetch')) {
