@@ -9,6 +9,11 @@ function escapeInput(str) {
 	return str.replaceAll(/ /g, '%b').replaceAll(/\n/g,'%r').replaceAll(/\}/g,'%}').replaceAll(/\{/g,'%{').replaceAll(/\[/g,'\\[').replaceAll(/;/g,'%;').replaceAll(/["]/g,'\\"').replaceAll(/\{\}/g,'')
 }
 
+function escapeInputInfo(str) {
+	return str.replaceAll(/["]/g,'\\"').replaceAll(/\{\}/g,'')
+}
+
+
 async function rhostExec(exec) {
 	try {
 		const response = await fetch(rhost, {
@@ -393,7 +398,7 @@ return json.encode(char)
 
 			const triggerInfo = async (type, val) => {
 				const script = `
-str = rhost.strfunc("eval", "[trigger(#info/do_info,,,,${checkLogin.characterRef},/,${type},lit(${val}))]")
+str = rhost.strfunc("eval", "[trigger(#info/do_info,,,,${checkLogin.characterRef},/,${type},lit(${escapeInputInfo(val)}))]")
 return '"' .. str .. '"'
 `
 				return await rhostLua(script)
