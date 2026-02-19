@@ -447,7 +447,9 @@ return '"' .. str .. '"'
 			const start = payload?.start || 0
 			const desc = payload?.desc ? "DESC" : "ASC"
 
-			const scenes = await mysql.query(`
+			const client = await mysql()
+
+			const scenes = await client.query(`
 SELECT
   s.*,
   a.actor_id,
