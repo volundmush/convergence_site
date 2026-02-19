@@ -8,7 +8,7 @@
 	<form id="characterForm">
 		<div>
 			<label for="accountName">Account Name:</label>
-			<input type="text" id="accountName" name="accountName" required />
+			<input type="text" id="accountName" name="accountName" pattern="[A-Za-z0-9_\-\.!@#$%^&*()+=\[\]{};:',.<>?/|\\`~]*" required />
 		</div>
 		<div>
 			<label for="password">Password:</label>
@@ -16,7 +16,7 @@
 		</div>
 		<div>
 			<label for="characterName">Character Name:</label>
-			<input type="text" id="characterName" name="characterName" required />
+			<input type="text" id="characterName" name="characterName" pattern="[A-Za-z0-9_\-\.!@#$%^&*()+=\[\]{};:',.<>?/|\\`~]*" required />
 		</div>
 		<div>
 			<label for="css">CSS:</label>
@@ -24,7 +24,7 @@
 		</div>
 		<div>
 			<label for="portrait">Portrait:</label>
-			<input type="text" id="portrait" name="portrait" />
+			<input type="text" id="portrait" name="portrait" pattern="[A-Za-z0-9_\-\.!@#$%^&*()+=\[\]{};:',.<>?/|\\`~]*" />
 		</div>
 		<div>
 			<label for="gallery">Gallery:</label>
@@ -131,4 +131,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 	})
 })
 </script>
+
 
