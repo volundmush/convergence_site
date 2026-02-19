@@ -391,10 +391,12 @@ return json.encode(char)
 				return
 			}
 
-// str = rhost.strfunc("eval", "[trigger(#lambda/{@sudo%b${checkLogin.characterRef}=+info%b${type}=${escapeInput(val)}})]")
 			const triggerInfo = async (type, val) => {
-				const script = `@trigger #lambda/{p ${checkLogin.characterRef}=Trying to update your +info, by request}`
-				return await rhostExec(script)
+				const script = `
+str = rhost.strfunc("eval", "[trigger(#info/do_info,,,${checkLogin.characterRef},/,${type},${escapeInput(val)})]")
+return '"' .. str .. '"'
+`
+				return await rhostLua(script)
 			}
 			if(css) {
 				const resp = await triggerInfo("css", css)
