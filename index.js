@@ -6,7 +6,7 @@ const SERVER_START_TIME = Date.now()
 
 
 function escapeInput(str) {
-	return str.replaceAll(/ /g, '%b').replaceAll(/\n/g,'%r').replaceAll(/\}/g,'%}').replaceAll(/\{/g,'%{').replaceAll(/\[/g,'\\[').replaceAll(/;/g,'\\;').replaceAll(/["]/g,'\\"').replaceAll(/\{\}/g,'')
+	return str.replaceAll(/ /g, '%b').replaceAll(/\n/g,'%r').replaceAll(/\}/g,'%}').replaceAll(/\{/g,'%{').replaceAll(/\[/g,'\\[').replaceAll(/;/g,'%;').replaceAll(/["]/g,'\\"').replaceAll(/\{\}/g,'')
 }
 
 async function rhostExec(exec) {
@@ -22,7 +22,6 @@ async function rhostExec(exec) {
 		if (!response.ok) {
 			throw new Error(`HTTP error! status: ${response.status}`)
 		}
-		console.log("[rhostExec]", response)
 		return atob(response.headers.get('return'))
 	} catch(e) {
 		if(e.name !== 'TypeError' || !e.message.includes('fetch')) {
@@ -59,7 +58,7 @@ async function rhostLua(exec) {
 		}
 	} catch(e) {
 		if(e.name != 'AbortError') {
-			console.log('[rhostExec] ERROR', e)
+			console.log('[rhostLua] ERROR', e)
 			return {
 				error: `${e}`
 			}
