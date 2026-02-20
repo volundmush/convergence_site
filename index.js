@@ -464,7 +464,7 @@ LEFT JOIN actor a ON s.scene_id = a.scene_id
 LEFT JOIN entity e ON a.entity_id = e.entity_id
 ORDER BY s.scene_id ${desc}
 LIMIT ?,50
-			`, [desc, start])
+			`, [start])
 
 			ctx.response.status = 200
 			ctx.response.body = scenes
