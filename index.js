@@ -456,6 +456,7 @@ SELECT
 FROM (
   SELECT *
   FROM scene
+  WHERE scene_status != -1
   ORDER BY scene_id ${desc}
   LIMIT ?, 50
 ) s
