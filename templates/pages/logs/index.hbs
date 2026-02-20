@@ -48,7 +48,10 @@ function loadPage(start = 0, desc = true) {
 				})
 			}
 
-			const playerList = players.map(p => `${p.name} (${p.objid})`).join(", ")
+			const playerList = players.map(p => {
+				const dbref = p.entity_objid.split(':')[0].substring(1) // Remove # and extract dbref
+				return `<a href="/characters/${dbref}/">${p.name}</a>`
+			}).join(", ")
 			
 			const idCell = document.createElement("div")
 			idCell.className = "logs-grid-cell"
@@ -67,7 +70,7 @@ function loadPage(start = 0, desc = true) {
 			
 			const playersCell = document.createElement("div")
 			playersCell.className = "logs-grid-cell"
-			playersCell.textContent = playerList
+			playersCell.innerHTML = playerList
 			tbody.appendChild(playersCell)
 		}
 		
