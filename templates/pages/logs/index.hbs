@@ -1,4 +1,102 @@
-<!-- {"title": "Convergence Mush Logs", "slug": "logs"} -->
+<!-- {"title": "Convergence Mush Characters", "slug": "characters"} -->
 
-<h1>Convergence MUSH Logs</h1>
-<p><a href="/">Go back to the home page.</a></p>
+<h2>Convergence MUSH logs</h2>
+<div class="pagination-controls">
+	<button id="prevBtn">← Previous</button>
+	<span id="pageInfo">Page 1</span>
+	<button id="nextBtn">Next →</button>
+	<button id="sortBtn">Sort: Descending</button>
+</div>
+<div class="logslist">
+	<table>
+		<thead>
+			<tr>
+				<th>Scene ID</th>
+				<th>Title</th>
+				<th>Status</th>
+				<th>Players</th>
+			</tr>
+		</thead>
+		<tbody id="logsTableBody">
+		</tbody>
+	</table>
+</div>
+
+<script>
+let currentStart = 0
+let currentDesc = true
+
+function loadPage(start = 0, desc = true) {
+	currentStart = start
+	currentDesc = desc
+	
+	const res = fetch("/api/logs/list/", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ start, desc })
+	})
+	.then(r => r.json())
+	.then(scenes => {
+		const tbody = document.querySelector("#logsTableBody")
+		tbody.innerHTML = ""
+
+		for(const scene of scenes) {
+			const sceneNumber = scene.scene_id
+			const title = scene.scene_title
+			const status = scene.scene_status
+			const players = []
+
+			for(const player of scene.actors) {
+				players.push({
+					name: player.entity_name,
+					objid: player.entity_objid
+				})
+			}
+
+			const playerList = players.map(p => `${p.name} (${p.objid})`).join(", ")
+			
+			const row = document.createElement("tr")
+			row.innerHTML = `
+				<td>${sceneNumber}</td>
+				<td>${title}</td>
+				<td>${status}</td>
+				<td>${playerList}</td>
+			`
+			tbody.appendChild(row)
+		}
+		
+		updatePaginationControls()
+	})
+}
+
+function previousPage() {
+	const newStart = Math.max(0, currentStart - 50)
+	loadPage(newStart, currentDesc)
+}
+
+function nextPage() {
+	const newStart = currentStart + 50
+	loadPage(newStart, currentDesc)
+}
+
+function toggleSort() {
+	currentDesc = !currentDesc
+	document.querySelector("#sortBtn").textContent = `Sort: ${currentDesc ? "Descending" : "Ascending"}`
+	loadPage(0, currentDesc)
+}
+
+function updatePaginationControls() {
+	document.querySelector("#pageInfo").textContent = `Page: ${Math.floor(currentStart / 50) + 1}`
+	document.querySelector("#prevBtn").disabled = currentStart === 0
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+	document.querySelector("#prevBtn").addEventListener("click", previousPage)
+	document.querySelector("#nextBtn").addEventListener("click", nextPage)
+	document.querySelector("#sortBtn").addEventListener("click", toggleSort)
+	
+	loadPage(0, true)
+})
+</script>
+
+
