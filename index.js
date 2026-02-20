@@ -498,8 +498,17 @@ LEFT JOIN (
 ORDER BY s.scene_id ${desc};
 			`, [start])
 			
+			const statusMap = {
+				"-1": "Deleted",
+				"0": "Scheduled",
+				"1": "Active",
+				"2": "Paused",
+				"3": "Finished"
+			}
+			
 			const parsedScenes = scenes.map(scene => ({
 				...scene,
+				scene_status: statusMap[scene.scene_status] || "Unknown",
 				actors: typeof scene.actors === 'string' ? JSON.parse(scene.actors) : scene.actors
 			}))
 			ctx.response.status = 200
