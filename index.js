@@ -467,6 +467,8 @@ LEFT JOIN (
         'actor_id', g.actor_id,
         'entity_id', g.entity_id,
         'actor_type', g.actor_type,
+        'entity_name', e.entity_name,
+        'entity_objid', e.entity_objid,
         'action_count', g.action_count,
         'first_action', g.first_action,
         'last_action', g.last_action
@@ -482,15 +484,26 @@ LEFT JOIN (
       MIN(a.actor_date_created) AS first_action,
       MAX(a.actor_date_created) AS last_action
     FROM actor a
-    GROUP BY a.scene_id, a.actor_id, a.entity_id, a.actor_type
+    GROUP BY
+      a.scene_id,
+      a.actor_id,
+      a.entity_id,
+      a.actor_type
   ) g
+  LEFT JOIN entity e
+    ON e.entity_id = g.entity_id
   GROUP BY g.scene_id
-) ax ON ax.scene_id = s.scene_id
+) ax
+  ON ax.scene_id = s.scene_id
 ORDER BY s.scene_id ${desc};
 			`, [start])
-
+			
+			const parsedScenes = scenes.map(scene => ({
+				...scene,
+				actors: typeof scene.actors === 'string' ? JSON.parse(scene.actors) : scene.actors
+			}))
 			ctx.response.status = 200
-			ctx.response.body = scenes
+			ctx.response.body = parsedScenes
 		} catch (error) {
 			await logError(error, "POST /api/logs/list")
 			ctx.response.status = 500
