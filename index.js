@@ -452,13 +452,20 @@ return '"' .. str .. '"'
 			const scenes = await client.query(`
 SELECT
   s.*,
-  a.actor_id,
-  a.entity_id,
-  a.actor_type,
-  a.actor_date_created,
-  a.action_count,
-  e.entity_name,
-  e.entity_objid
+  COALESCE(
+    JSON_ARRAYAGG(
+      JSON_OBJECT(
+        'actor_id', a.actor_id,
+        'entity_id', a.entity_id,
+        'actor_type', a.actor_type,
+        'actor_date_created', a.actor_date_created,
+        'action_count', a.action_count
+        'entity_name', e.entity_name,
+        'entity_objid', e.entity_objid
+      )
+    ),
+    JSON_ARRAY()
+  ) AS actors
 FROM scene s
 LEFT JOIN actor a ON s.scene_id = a.scene_id
 LEFT JOIN entity e ON a.entity_id = e.entity_id
