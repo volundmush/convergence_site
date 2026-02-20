@@ -5,6 +5,13 @@ import { Client } from "https://deno.land/x/mysql@v2.12.1/mod.ts"
 const rhost = Deno.env.get("RHOST_ENDPOINT") || "http://%2322222umicupcake@127.0.0.1:2061/"
 const SERVER_START_TIME = Date.now()
 
+console.log({
+		hostname: Deno.env.get("MYSQL_HOST"),
+		username: Deno.env.get("MYSQL_USER"),
+		password: Deno.env.get("MYSQL_PASS"),
+		database: Deno.env.get("MYSQL_DB")
+	})
+
 async function mysql() {
 	const mysql = await new Client().connect({
 		hostname: Deno.env.get("MYSQL_HOST"),
