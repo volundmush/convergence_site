@@ -457,30 +457,36 @@ FROM (
   SELECT *
   FROM scene
   ORDER BY scene_id ${desc}
-  LIMIT 0, 50
+  LIMIT ?, 50
 ) s
 LEFT JOIN (
   SELECT
-    a.scene_id,
+    g.scene_id,
     JSON_ARRAYAGG(
       JSON_OBJECT(
-        'actor_id', a.actor_id,
-        'entity_id', a.entity_id,
-        'actor_type', a.actor_type,
-        'first_action', MIN(a.actor_date_created),
-        'last_action',  MAX(a.actor_date_created),
-        'action_count', COUNT(*)  -- number of action rows for this actor in this scene
+        'actor_id', g.actor_id,
+        'entity_id', g.entity_id,
+        'actor_type', g.actor_type,
+        'action_count', g.action_count,
+        'first_action', g.first_action,
+        'last_action', g.last_action
       )
     ) AS actors
-  FROM actor a
-  GROUP BY
-    a.scene_id,
-    a.actor_id,
-    a.entity_id,
-    a.actor_type
+  FROM (
+    SELECT
+      a.scene_id,
+      a.actor_id,
+      a.entity_id,
+      a.actor_type,
+      COUNT(*) AS action_count,
+      MIN(a.actor_date_created) AS first_action,
+      MAX(a.actor_date_created) AS last_action
+    FROM actor a
+    GROUP BY a.scene_id, a.actor_id, a.entity_id, a.actor_type
+  ) g
+  GROUP BY g.scene_id
 ) ax ON ax.scene_id = s.scene_id
-ORDER BY s.scene_id ${desc}
-LIMIT ?,50
+ORDER BY s.scene_id ${desc};
 			`, [start])
 
 			ctx.response.status = 200
