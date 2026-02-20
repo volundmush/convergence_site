@@ -49,8 +49,10 @@ function loadPage(start = 0, desc = true) {
 			}
 
 			const playerList = players.map(p => {
-				if (!p.entity_objid) return `<a href="#">${p.name}</a>`
-				const dbref = p.entity_objid.split(':')[0].substring(1) // Remove # and extract dbref
+				let dbref = p.entity_id // Use entity_id as fallback
+				if (p.entity_objid) {
+					dbref = p.entity_objid.split(':')[0].substring(1) // Remove # and extract dbref if objid exists
+				}
 				return `<a href="/characters/${dbref}/">${p.name}</a>`
 			}).join(", ")
 			
