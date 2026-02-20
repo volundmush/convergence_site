@@ -59,12 +59,12 @@ function loadPage(start = 0, desc = true) {
 			
 			const idCell = document.createElement("div")
 			idCell.className = "logs-grid-cell"
-			idCell.textContent = sceneNumber
+			idCell.innerHTML = `<a href="/logs/${sceneNumber}/">${sceneNumber}</a>`
 			tbody.appendChild(idCell)
 			
 			const titleCell = document.createElement("div")
 			titleCell.className = "logs-grid-cell"
-			titleCell.textContent = title
+			titleCell.innerHTML = `<a href="/logs/${sceneNumber}/">${title}</a>`
 			tbody.appendChild(titleCell)
 			
 			const statusCell = document.createElement("div")
