@@ -459,7 +459,7 @@ SELECT
         'entity_id', a.entity_id,
         'actor_type', a.actor_type,
         'actor_date_created', a.actor_date_created,
-        'action_count', a.action_count
+        'action_count', a.action_count,
         'entity_name', e.entity_name,
         'entity_objid', e.entity_objid
       )
