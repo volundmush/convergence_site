@@ -462,7 +462,7 @@ SELECT
 FROM scene s
 LEFT JOIN actor a ON s.scene_id = a.scene_id
 LEFT JOIN entity e ON a.entity_id = e.entity_id
-ORDER BY s.scene_id ??
+ORDER BY s.scene_id ?
 LIMIT ?,50
 			`, [desc, start])
 
