@@ -8,18 +8,13 @@
 	<button id="sortBtn">Sort: Descending</button>
 </div>
 <div class="logslist">
-	<table>
-		<thead>
-			<tr>
-				<th>Scene ID</th>
-				<th>Title</th>
-				<th>Status</th>
-				<th>Players</th>
-			</tr>
-		</thead>
-		<tbody id="logsTableBody">
-		</tbody>
-	</table>
+	<div class="logs-grid-header">
+		<div class="logs-grid-cell">Scene ID</div>
+		<div class="logs-grid-cell">Title</div>
+		<div class="logs-grid-cell">Status</div>
+		<div class="logs-grid-cell">Players</div>
+	</div>
+	<div id="logsTableBody" class="logs-grid"></div>
 </div>
 
 <script>
@@ -55,12 +50,13 @@ function loadPage(start = 0, desc = true) {
 
 			const playerList = players.map(p => `${p.name} (${p.objid})`).join(", ")
 			
-			const row = document.createElement("tr")
+			const row = document.createElement("div")
+			row.className = "logs-grid-row"
 			row.innerHTML = `
-				<td>${sceneNumber}</td>
-				<td>${title}</td>
-				<td>${status}</td>
-				<td>${playerList}</td>
+				<div class="logs-grid-cell">${sceneNumber}</div>
+				<div class="logs-grid-cell">${title}</div>
+				<div class="logs-grid-cell">${status}</div>
+				<div class="logs-grid-cell">${playerList}</div>
 			`
 			tbody.appendChild(row)
 		}

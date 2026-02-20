@@ -436,3 +436,30 @@ main a, main a:active, main a:visited, main a:hover {
 	transform: translateY(2px);
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
+/* Logs Grid */
+.automated main .logslist .logs-grid-header {
+	display: grid;
+	grid-template-columns: 80px 1fr 100px 1fr;
+	gap: 1rem;
+	padding: 0.5rem;
+	font-weight: bold;
+	border-bottom: 2px solid var(--primary-hi);
+}
+
+.automated main .logslist .logs-grid {
+	display: grid;
+	grid-template-columns: 80px 1fr 100px 1fr;
+	gap: 1rem;
+	padding: 0.5rem;
+}
+
+.automated main .logslist .logs-grid-row {
+	display: contents;
+}
+
+.automated main .logslist .logs-grid-cell {
+	padding: 0.5rem;
+	border-bottom: 1px solid var(--primary-fg);
+	opacity: 0.8;
+}
