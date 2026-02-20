@@ -454,7 +454,6 @@ main a, main a:active, main a:visited, main a:hover {
 .automated main .logslist .logs-grid {
 	display: grid;
 	grid-template-columns: 80px 1fr 100px 1fr;
-	gap: 1rem;
 	padding: 0.5rem;
 }
 
