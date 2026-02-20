@@ -44,7 +44,8 @@ function loadPage(start = 0, desc = true) {
 			for(const player of scene.actors) {
 				players.push({
 					name: player.entity_name,
-					objid: player.entity_objid
+					entity_id: player.entity_id,
+					entity_objid: player.entity_objid
 				})
 			}
 
