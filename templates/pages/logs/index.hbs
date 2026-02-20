@@ -50,15 +50,25 @@ function loadPage(start = 0, desc = true) {
 
 			const playerList = players.map(p => `${p.name} (${p.objid})`).join(", ")
 			
-			const row = document.createElement("div")
-			row.className = "logs-grid-row"
-			row.innerHTML = `
-				<div class="logs-grid-cell">${sceneNumber}</div>
-				<div class="logs-grid-cell">${title}</div>
-				<div class="logs-grid-cell">${status}</div>
-				<div class="logs-grid-cell">${playerList}</div>
-			`
-			tbody.appendChild(row)
+			const idCell = document.createElement("div")
+			idCell.className = "logs-grid-cell"
+			idCell.textContent = sceneNumber
+			tbody.appendChild(idCell)
+			
+			const titleCell = document.createElement("div")
+			titleCell.className = "logs-grid-cell"
+			titleCell.textContent = title
+			tbody.appendChild(titleCell)
+			
+			const statusCell = document.createElement("div")
+			statusCell.className = "logs-grid-cell"
+			statusCell.textContent = status
+			tbody.appendChild(statusCell)
+			
+			const playersCell = document.createElement("div")
+			playersCell.className = "logs-grid-cell"
+			playersCell.textContent = playerList
+			tbody.appendChild(playersCell)
 		}
 		
 		updatePaginationControls()
