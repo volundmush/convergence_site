@@ -452,23 +452,33 @@ return '"' .. str .. '"'
 			const scenes = await client.query(`
 SELECT
   s.*,
-  COALESCE(
+  COALESCE(ax.actors, JSON_ARRAY()) AS actors
+FROM (
+  SELECT *
+  FROM scene
+  ORDER BY scene_id ${desc}
+  LIMIT 0, 50
+) s
+LEFT JOIN (
+  SELECT
+    a.scene_id,
     JSON_ARRAYAGG(
       JSON_OBJECT(
         'actor_id', a.actor_id,
         'entity_id', a.entity_id,
         'actor_type', a.actor_type,
-        'actor_date_created', a.actor_date_created,
-        'action_count', a.action_count,
-        'entity_name', e.entity_name,
-        'entity_objid', e.entity_objid
+        'first_action', MIN(a.actor_date_created),
+        'last_action',  MAX(a.actor_date_created),
+        'action_count', COUNT(*)  -- number of action rows for this actor in this scene
       )
-    ),
-    JSON_ARRAY()
-  ) AS actors
-FROM scene s
-LEFT JOIN actor a ON s.scene_id = a.scene_id
-LEFT JOIN entity e ON a.entity_id = e.entity_id
+    ) AS actors
+  FROM actor a
+  GROUP BY
+    a.scene_id,
+    a.actor_id,
+    a.entity_id,
+    a.actor_type
+) ax ON ax.scene_id = s.scene_id
 ORDER BY s.scene_id ${desc}
 LIMIT ?,50
 			`, [start])
