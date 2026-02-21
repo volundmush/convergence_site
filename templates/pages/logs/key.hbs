@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 			const classes = []
 			if(pose.channel_category === 1) classes.push("pose-ooc")
 			else classes.push("pose-ic")
-			if(pose.channel_name === "Meter") classes.push("pose-meter")
+			if(pose.channel_name === "Meter" || pose.channel_name === "Challenge") classes.push("pose-meter")
 			poseDiv.setAttribute("class", classes.join(" "))
 			poseDiv.setAttribute("name", pose.actrole_name || "Pose")
 			poseDiv.setAttribute("summary", summary)
