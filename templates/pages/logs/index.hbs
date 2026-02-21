@@ -12,6 +12,7 @@
 			<div class="logs-grid-cell"></div>
 			<div class="logs-grid-cell">ID</div>
 			<div class="logs-grid-cell">Title</div>
+			<div class="logs-grid-cell">Date</div>
 			<div class="logs-grid-cell">Players</div>
 		</div>
 		<div id="logsTableBody" class="logs-grid"></div>
@@ -99,6 +100,15 @@ function loadPage(start = 0, desc = true) {
 			titleCell.className = "logs-grid-cell"
 			titleCell.innerHTML = `<a href="/logs/${sceneNumber}/">${title}</a>`
 			tbody.appendChild(titleCell)
+			
+			const dateDisplay = scene.scene_date_started || scene.scene_date_scheduled || scene.scene_date_created || "-"
+			const dateObj = new Date(dateDisplay)
+			const dateStr = isNaN(dateObj.getTime()) ? dateDisplay : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+			
+			const dateCell = document.createElement("div")
+			dateCell.className = "logs-grid-cell"
+			dateCell.textContent = dateStr
+			tbody.appendChild(dateCell)
 			
 			const playersCell = document.createElement("div")
 			playersCell.className = "logs-grid-cell"
