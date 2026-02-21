@@ -9,9 +9,9 @@
 <div class="logslist-wrapper">
 	<div class="logslist" id="logslist">
 		<div class="logs-grid-header">
+			<div class="logs-grid-cell"></div>
 			<div class="logs-grid-cell">ID</div>
 			<div class="logs-grid-cell">Title</div>
-			<div class="logs-grid-cell">Status</div>
 			<div class="logs-grid-cell">Players</div>
 		</div>
 		<div id="logsTableBody" class="logs-grid"></div>
@@ -70,6 +70,13 @@ function loadPage(start = 0, desc = true) {
 				})
 			}
 
+			const statusEmojiMap = {
+				"Scheduled": "⚪",
+				"Paused": "🟠",
+				"Active": "🔴",
+				"Finished": "🟢"
+			}
+			
 			const playerList = players.map(p => {
 				let dbref = p.entity_id // Use entity_id as fallback
 				if (p.entity_objid) {
@@ -90,10 +97,10 @@ function loadPage(start = 0, desc = true) {
 			
 			const statusCell = document.createElement("div")
 			statusCell.className = "logs-grid-cell"
-			statusCell.textContent = status
+			statusCell.textContent = statusEmojiMap[status] || "⚫"
 			tbody.appendChild(statusCell)
 			
-			const playersCell = document.createElement("div")
+			const idCell = document.createElement("div")
 			playersCell.className = "logs-grid-cell"
 			playersCell.innerHTML = playerList
 			tbody.appendChild(playersCell)
