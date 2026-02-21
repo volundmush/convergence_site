@@ -35,7 +35,14 @@
 </div>
 
 <script>
+	function escapeHtml(str) {
+		return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+	}
+
 	function colorizeText(str) {
+		// HTML escape the input first to prevent XSS
+		str = escapeHtml(str)
+
 		const colorMap = {
 			'x': '#000000', 'X': 'background-color: #000000',
 			'r': '#ff0000', 'R': 'background-color: #ff0000',
@@ -99,13 +106,19 @@
 			spanDepth--
 		}
 
+
 		return result
 	}
 
 	document.addEventListener("DOMContentLoaded", async () => {
+	window.ansi = (await import("/static/ansi.js")).default
 	window.optionalANSI = function(str) {
 		str = str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-		return str
+		if(str.includes("\u001b")) {
+			return window.ansi.html(str)
+		} else {
+			return str
+		}
 	}
 
 	const res = await fetch(`/api/logs/get/${encodeURIComponent("{{ sceneKey }}")}`)
@@ -123,7 +136,9 @@
 	const oldTitle = document.querySelector("title").innerText
 	document.querySelector("title").innerText = `${log.scene_title} — ${oldTitle}`
 
-	document.querySelector(".log .banner .title").innerHTML = optionalANSI(log.scene_title)
+	const titleEl = document.createElement("span")
+	titleEl.innerHTML = optionalANSI(log.scene_title)
+	document.querySelector(".log .banner .title").appendChild(titleEl)
 
 	// Add log details to profile
 	const logDate = log.scene_date_started || log.scene_date_scheduled
@@ -141,7 +156,12 @@
 		entryKey.classList.add("key")
 		entryKey.innerText = key
 		const entryValue = document.createElement("td")
-		entryValue.innerHTML = optionalANSI(String(value))
+		const escapedValue = optionalANSI(String(value))
+		if(escapedValue.includes("<span")) {
+			entryValue.innerHTML = escapedValue
+		} else {
+			entryValue.textContent = escapedValue
+		}
 		entryValue.classList.add("value")
 		entry.appendChild(entryKey)
 		entry.appendChild(entryValue)

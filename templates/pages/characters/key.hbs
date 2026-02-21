@@ -208,12 +208,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 		for(const log of logs) {
 			const idCell = document.createElement("div")
 			idCell.classList.add("logs-grid-cell")
-			idCell.innerHTML = `<a href="/logs/${log.scene_id}/">${log.scene_id}</a>`
+			const idLink = document.createElement("a")
+			idLink.href = `/logs/${log.scene_id}/`
+			idLink.textContent = log.scene_id
+			idCell.appendChild(idLink)
 			logsGrid.appendChild(idCell)
 			
 			const titleCell = document.createElement("div")
 			titleCell.classList.add("logs-grid-cell")
-			titleCell.innerHTML = `<a href="/logs/${log.scene_id}/">${log.scene_title}</a>`
+			const titleLink = document.createElement("a")
+			titleLink.href = `/logs/${log.scene_id}/`
+			titleLink.textContent = log.scene_title
+			titleCell.appendChild(titleLink)
 			logsGrid.appendChild(titleCell)
 			
 			const dateCell = document.createElement("div")
