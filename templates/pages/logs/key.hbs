@@ -124,9 +124,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 			poseDiv.setAttribute("summary", summary)
 			poseDiv.setAttribute("expanded", "false")
 
-			const poseBody = document.createElement("p")
-			poseBody.innerHTML = optionalANSI(pose.pose_text || "")
-			poseDiv.appendChild(poseBody)
+			// Split pose text on line breaks and %r, then replace %t with tabs
+			const poseText = pose.pose_text || ""
+			const lines = poseText.split(/\r\n|\r|\n|%r/)
+			for(const line of lines) {
+				if(line.trim()) {
+					const poseBody = document.createElement("p")
+					const processedLine = line.replace(/%t/g, "\t")
+					poseBody.innerHTML = optionalANSI(processedLine)
+					poseDiv.appendChild(poseBody)
+				}
+			}
 			posesList.appendChild(poseDiv)
 		}
 	} else {
