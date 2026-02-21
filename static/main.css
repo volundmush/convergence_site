@@ -649,7 +649,7 @@ main a, main a:active, main a:visited, main a:hover {
 
 
 /* Links in expandable bodies */
-.expandable-body a, .expandable-body a:active, .expandable-body a:visited, .expandable-body a:hover {
+.expandable-content a, .expandable-content a:active, .expandable-content a:visited, .expandable-content a:hover {
 	color: var(--tertiary-hi);
 	text-shadow: none;
 }
