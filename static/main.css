@@ -651,3 +651,8 @@ main a, main a:active, main a:visited, main a:hover {
 	color: var(--tertiary-hi);
 	text-shadow: none;
 }
+
+/* Gallery padding */
+.automated main .character .data .gallery {
+	padding-bottom: 1rem;
+}
