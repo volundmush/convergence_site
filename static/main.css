@@ -646,11 +646,4 @@ main a, main a:active, main a:visited, main a:hover {
 	opacity: 0.8;
 }
 
-.automated main .character .data .logs .logs-grid-cell a {
-	color: var(--primary-hi);
-	text-decoration: none;
-}
 
-.automated main .character .data .logs .logs-grid-cell a:hover {
-	text-decoration: underline;
-}
