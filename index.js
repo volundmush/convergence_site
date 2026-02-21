@@ -594,6 +594,43 @@ ORDER BY s.scene_id ${desc};
 		}
 	})
 
+	router.get("/api/logs/player/:dbref", async (ctx) => {
+		try {
+			const dbref = ctx.params.dbref
+			const client = await mysql()
+
+			const logs = await client.query(`
+SELECT DISTINCT
+  s.scene_id,
+  s.scene_title,
+  s.scene_date_started,
+  s.scene_date_scheduled
+FROM scene s
+INNER JOIN channel ch ON ch.scene_id = s.scene_id
+INNER JOIN pose p ON p.channel_id = ch.channel_id AND p.pose_is_deleted = 0
+INNER JOIN actrole ar ON ar.actrole_id = p.actrole_id
+INNER JOIN actor a ON a.actor_id = ar.actor_id
+INNER JOIN entity e ON e.entity_id = a.entity_id
+WHERE e.entity_objid LIKE ?
+AND s.scene_status != -1
+ORDER BY s.scene_date_started DESC
+			`, [`${dbref}:%`])
+
+			const formattedLogs = logs.map(log => ({
+				scene_id: log.scene_id,
+				scene_title: log.scene_title,
+				scene_date: log.scene_date_started || log.scene_date_scheduled || null
+			}))
+
+			ctx.response.status = 200
+			ctx.response.body = formattedLogs
+		} catch (error) {
+			await logError(error, "GET /api/logs/player/:dbref")
+			ctx.response.status = 500
+			ctx.response.body = { error: "Failed to get player logs" }
+		}
+	})
+
 	router.post("/api/logs/pagecount/", async (ctx) => {
 		try {
 			const client = await mysql()
