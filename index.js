@@ -435,6 +435,7 @@ else
 		end
 	end
 
+	char.objid = rhost.strfunc("objid", dbref)
 	char.sex = rhost.strfunc("get", dbref .. "/SEX")
 	char.name = rhost.strfunc("name", dbref)
 	char.cname = rhost.parseansi(rhost.strfunc("cname", dbref))
