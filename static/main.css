@@ -439,8 +439,13 @@ main a, main a:active, main a:visited, main a:hover {
 
 /* Logs Grid */
 .automated main .logslist {
-	overflow: scroll;
 	width: 100%;
+}
+
+@media (max-width: 1024px) {
+	.automated main .logslist {
+		overflow-x: scroll;
+	}
 }
 
 .automated main .logslist .logs-grid-header {
