@@ -58,6 +58,9 @@
 
 		// Process color codes
 		result = result.replace(/%[cC]([a-zA-Z])/g, (match, letter) => {
+			let html = spanDepth > 0 ? '</span>' : ''
+			spanDepth++
+			
 			let styles = []
 			if(colorMap[letter]) {
 				if(letter === letter.toUpperCase() && letter !== letter.toLowerCase()) {
@@ -69,11 +72,23 @@
 			if(styleMap[letter]) {
 				styles.push(styleMap[letter])
 			}
-			return `<span style="${styles.join('; ')}">`
+			return html + `<span style="${styles.join('; ')}">`
 		})
 
 		// Close color codes
-		result = result.replace(/%[cC]n/g, '</span>')
+		result = result.replace(/%[cC]n/g, () => {
+			if(spanDepth > 0) {
+				spanDepth--
+				return '</span>'
+			}
+			return ''
+		})
+
+		// Close any remaining open spans
+		while(spanDepth > 0) {
+			result += '</span>'
+			spanDepth--
+		}
 
 		return result
 	}
