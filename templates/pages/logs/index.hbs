@@ -103,7 +103,7 @@ function loadPage(start = 0, desc = true) {
 			
 			const dateDisplay = scene.scene_date_started || scene.scene_date_scheduled || scene.scene_date_created || "-"
 			const dateObj = new Date(dateDisplay)
-			const dateStr = isNaN(dateObj.getTime()) ? dateDisplay : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+			const dateStr = isNaN(dateObj.getTime()) ? dateDisplay : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 			
 			const dateCell = document.createElement("div")
 			dateCell.className = "logs-grid-cell"
