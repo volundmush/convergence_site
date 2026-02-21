@@ -188,6 +188,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const logs = await logsRes.json()
 
 	const logsContainer = document.querySelector(".character .data .logs")
+	const logsExpandable = document.createElement("expandable-item")
+	logsExpandable.setAttribute("name", "logs")
+	logsExpandable.setAttribute("summary", logs && logs.length > 0 ? `${logs.length} logged scenes` : "No logs recorded")
+	logsExpandable.setAttribute("expanded", "false")
 	
 	if(logs && logs.length > 0) {
 		const logsGrid = document.createElement("div")
@@ -200,7 +204,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 			<div class="logs-grid-cell">Title</div>
 			<div class="logs-grid-cell">Date</div>
 		`
-		logsContainer.appendChild(header)
+		logsExpandable.appendChild(header)
 		
 		for(const log of logs) {
 			const idCell = document.createElement("div")
@@ -223,12 +227,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 			}
 			logsGrid.appendChild(dateCell)
 		}
-		logsContainer.appendChild(logsGrid)
-	} else {
-		const noLogs = document.createElement("p")
-		noLogs.textContent = "No logs recorded"
-		logsContainer.appendChild(noLogs)
+		logsExpandable.appendChild(logsGrid)
 	}
+	
+	logsContainer.appendChild(logsExpandable)
 })
 
 // Expandable web component
