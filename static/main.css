@@ -514,7 +514,7 @@ main a, main a:active, main a:visited, main a:hover {
 
 .automated main .logslist::before {
 	content: "";
-	position: absolute;
+	position: sticky;
 	left: 0;
 	top: 0;
 	bottom: 0;
@@ -524,11 +524,12 @@ main a, main a:active, main a:visited, main a:hover {
 	opacity: 0;
 	transition: opacity 0.2s ease;
 	z-index: 10;
+	flex-shrink: 0;
 }
 
 .automated main .logslist::after {
 	content: "";
-	position: absolute;
+	position: sticky;
 	right: 0;
 	top: 0;
 	bottom: 0;
@@ -538,6 +539,7 @@ main a, main a:active, main a:visited, main a:hover {
 	opacity: 0;
 	transition: opacity 0.2s ease;
 	z-index: 10;
+	flex-shrink: 0;
 }
 
 .automated main .logslist.scrollable-left::before {
