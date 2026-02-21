@@ -100,7 +100,7 @@ function loadPage(start = 0, desc = true) {
 			statusCell.textContent = statusEmojiMap[status] || "⚫"
 			tbody.appendChild(statusCell)
 			
-			const idCell = document.createElement("div")
+			const playersCell = document.createElement("div")
 			playersCell.className = "logs-grid-cell"
 			playersCell.innerHTML = playerList
 			tbody.appendChild(playersCell)
