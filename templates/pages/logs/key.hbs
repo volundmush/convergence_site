@@ -197,6 +197,7 @@
 			for(const line of lines) {
 				if(line.trim()) {
 					const poseBody = document.createElement("p")
+					poseBody.classList.add("pose-paragraph")
 					let processedLine = line.replace(/%t/g, "\t")
 					processedLine = colorizeText(processedLine)
 					poseBody.innerHTML = processedLine

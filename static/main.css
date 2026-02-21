@@ -610,3 +610,8 @@ main a, main a:active, main a:visited, main a:hover {
 #posesList.hide-meter .pose-meter {
 	display: none;
 }
+
+/* Pose Paragraphs */
+.pose-paragraph {
+	padding: 0;
+}
