@@ -594,9 +594,9 @@ ORDER BY s.scene_id ${desc};
 		}
 	})
 
-	router.get("/api/logs/player/:dbref", async (ctx) => {
+	router.get("/api/logs/player/:objid", async (ctx) => {
 		try {
-			const dbref = ctx.params.dbref
+			const objid = ctx.params.objid
 			const client = await mysql()
 
 			const logs = await client.query(`
@@ -611,10 +611,10 @@ INNER JOIN pose p ON p.channel_id = ch.channel_id AND p.pose_is_deleted = 0
 INNER JOIN actrole ar ON ar.actrole_id = p.actrole_id
 INNER JOIN actor a ON a.actor_id = ar.actor_id
 INNER JOIN entity e ON e.entity_id = a.entity_id
-WHERE e.entity_objid LIKE ?
-AND s.scene_status != -1
-ORDER BY s.scene_date_started DESC
-			`, [`${dbref}:%`])
+			WHERE e.entity_objid = ?
+			AND s.scene_status != -1
+			ORDER BY s.scene_date_started DESC
+			`, [objid])
 
 			const formattedLogs = logs.map(log => ({
 				scene_id: log.scene_id,
@@ -625,7 +625,7 @@ ORDER BY s.scene_date_started DESC
 			ctx.response.status = 200
 			ctx.response.body = formattedLogs
 		} catch (error) {
-			await logError(error, "GET /api/logs/player/:dbref")
+			await logError(error, "GET /api/logs/player/:objid")
 			ctx.response.status = 500
 			ctx.response.body = { error: "Failed to get player logs" }
 		}

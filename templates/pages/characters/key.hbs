@@ -183,8 +183,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 	}
 
 	// Load character logs
-	const dbref = "{{ dbref }}".replace(/#/g, '')
-	const logsRes = await fetch(`/api/logs/player/${encodeURIComponent(dbref)}`)
+	const objid = character.objid
+	const logsRes = await fetch(`/api/logs/player/${encodeURIComponent(objid)}`)
 	const logs = await logsRes.json()
 
 	const logsContainer = document.querySelector(".character .data .logs")
