@@ -559,7 +559,7 @@ main a, main a:active, main a:visited, main a:hover {
 
 /* Updated Scroll fade gradients with overlay elements */
 .automated main .logslist-wrapper {
-	overflow: hidden;
+	position: relative;
 }
 
 .automated main .logslist-fade {
