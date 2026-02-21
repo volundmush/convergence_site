@@ -55,6 +55,7 @@
 		}
 
 		let result = str
+		let spanDepth = 0
 
 		// Process color codes
 		result = result.replace(/%[cC]([a-zA-Z])/g, (match, letter) => {
