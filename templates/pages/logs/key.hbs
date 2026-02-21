@@ -17,7 +17,13 @@
 				<ul id="participantsList"></ul>
 			</div>
 			<div class="poses">
-				<h3>Poses</h3>
+				<div style="display: flex; justify-content: space-between; align-items: center;">
+					<h3>Poses</h3>
+					<label style="display: flex; align-items: center; gap: 0.5rem;">
+						<input type="checkbox" id="showOOC" style="cursor: pointer;">
+						<span>Show OOC Posts</span>
+					</label>
+				</div>
 				<div id="posesList"></div>
 			</div>
 		</div>
@@ -103,7 +109,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 			const poseDiv = document.createElement("expandable-item")
 			const actorName = pose.entity_name || "Unknown"
 			const poseDate = new Date(pose.pose_date).toLocaleString()
-			const summary = `${actorName} in ${pose.channel_name} at ${poseDate}`
+			const channelLabel = pose.channel_category === 1 ? ` [OOC]` : ""
+			const summary = `${actorName} in ${pose.channel_name}${channelLabel} at ${poseDate}`
+			const channelClass = pose.channel_category === 1 ? "pose-ooc" : "pose-ic"
+			poseDiv.setAttribute("class", channelClass)
 			poseDiv.setAttribute("name", pose.actrole_name || "Pose")
 			poseDiv.setAttribute("summary", summary)
 			poseDiv.setAttribute("expanded", "false")
@@ -116,6 +125,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 	} else {
 		posesList.innerHTML = "<p>No poses recorded</p>"
 	}
+
+	// Toggle OOC visibility
+	const showOOCCheckbox = document.getElementById("showOOC")
+	showOOCCheckbox.addEventListener("change", () => {
+		posesList.classList.toggle("hide-ooc", !showOOCCheckbox.checked)
+	})
+	// Start with OOC hidden by default
+	posesList.classList.add("hide-ooc")
 
 	// Expandable web component
 	class ExpandableItem extends HTMLElement {
@@ -216,9 +233,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 				arrow.classList.toggle("expanded")
 			}
 			header.addEventListener("click", clicker)
-			if(initiallyExpanded) {
-				clicker()
-			}
+		if(initiallyExpanded) {
+			clicker()
+		}
 		}
 	}
 

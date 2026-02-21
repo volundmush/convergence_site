@@ -601,3 +601,8 @@ main a, main a:active, main a:visited, main a:hover {
 		width: 30px;
 	}
 }
+
+/* Log Detail Page - OOC Posts Toggle */
+#posesList.hide-ooc .pose-ooc {
+	display: none;
+}
