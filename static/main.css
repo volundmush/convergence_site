@@ -558,11 +558,15 @@ main a, main a:active, main a:visited, main a:hover {
 }
 
 /* Updated Scroll fade gradients with overlay elements */
+.automated main .logslist-wrapper {
+	overflow: hidden;
+}
+
 .automated main .logslist-fade {
 	position: absolute;
 	top: 0;
 	bottom: 0;
-	width: 20px;
+	width: 60px;
 	pointer-events: none;
 	opacity: 0;
 	transition: opacity 0.2s ease;
@@ -589,6 +593,6 @@ main a, main a:active, main a:visited, main a:hover {
 
 @media (max-width: 1024px) {
 	.automated main .logslist-fade {
-		width: 30px;
+		width: 80px;
 	}
 }
