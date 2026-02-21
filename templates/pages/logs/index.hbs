@@ -85,6 +85,11 @@ function loadPage(start = 0, desc = true) {
 				return `<a href="/characters/${dbref}/">${p.name}</a>`
 			}).join(", ")
 			
+			const statusCell = document.createElement("div")
+			statusCell.className = "logs-grid-cell"
+			statusCell.textContent = statusEmojiMap[status] || "⚫"
+			tbody.appendChild(statusCell)
+			
 			const idCell = document.createElement("div")
 			idCell.className = "logs-grid-cell"
 			idCell.innerHTML = `<a href="/logs/${sceneNumber}/">${sceneNumber}</a>`
@@ -94,11 +99,6 @@ function loadPage(start = 0, desc = true) {
 			titleCell.className = "logs-grid-cell"
 			titleCell.innerHTML = `<a href="/logs/${sceneNumber}/">${title}</a>`
 			tbody.appendChild(titleCell)
-			
-			const statusCell = document.createElement("div")
-			statusCell.className = "logs-grid-cell"
-			statusCell.textContent = statusEmojiMap[status] || "⚫"
-			tbody.appendChild(statusCell)
 			
 			const playersCell = document.createElement("div")
 			playersCell.className = "logs-grid-cell"
