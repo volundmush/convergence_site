@@ -234,6 +234,80 @@ async function main() {
 		ctx.response.body = "Found"
 	})
 
+	router.get("/api/logs/get/:key", async (ctx) => {
+		try {
+			const sceneKey = ctx.params.key
+			const client = await mysql()
+
+		const sceneResult = await client.query(`
+SELECT *
+FROM scene
+WHERE scene_id = ? AND scene_status != -1
+			`, [sceneKey])
+
+		if (!sceneResult || sceneResult.length === 0) {
+			ctx.response.status = 404
+			ctx.response.body = { error: "Scene not found" }
+			return
+		}
+
+		const sceneData = sceneResult[0]
+
+		const poses = await client.query(`
+SELECT
+  p.pose_id,
+  p.pose_text,
+  p.pose_date_created as pose_date,
+  ch.channel_name,
+  ch.channel_category,
+  ar.actrole_name,
+  e.entity_name,
+  e.entity_objid
+FROM channel ch
+LEFT JOIN pose p ON p.channel_id = ch.channel_id AND p.pose_is_deleted = 0
+LEFT JOIN actrole ar ON ar.actrole_id = p.actrole_id
+LEFT JOIN actor a ON a.actor_id = ar.actor_id
+LEFT JOIN entity e ON e.entity_id = a.entity_id
+WHERE ch.scene_id = ?
+ORDER BY p.pose_date_created ASC
+			`, [sceneKey])
+
+		const statusMap = {
+			"-1": "Deleted",
+			"0": "Scheduled",
+			"1": "Active",
+			"2": "Paused",
+			"3": "Finished"
+		}
+
+		const formattedPoses = poses
+			.filter(p => p.pose_id !== null)
+			.map(p => ({
+				pose_id: p.pose_id,
+				pose_text: p.pose_text,
+				pose_date: p.pose_date,
+				channel_name: p.channel_name,
+				channel_category: p.channel_category,
+				actrole_name: p.actrole_name,
+				entity_name: p.entity_name,
+				entity_objid: p.entity_objid
+			}))
+
+		ctx.response.status = 200
+		ctx.response.body = {
+			scene: {
+				...sceneData,
+				scene_status: statusMap[sceneData.scene_status] || "Unknown"
+			},
+			poses: formattedPoses
+		}
+		} catch (error) {
+			await logError(error, "GET /api/logs/get/:key")
+			ctx.response.status = 500
+			ctx.response.body = { error: "Failed to get log" }
+		}
+	})
+
 	router.get("/logs/:key/", async (ctx) => {
 		try {
 			const characterKey = ctx.params.key
@@ -557,6 +631,24 @@ WHERE scene_status != -1
 			ctx.response.body = html
 		} catch (error) {
 			await logError(error, "/characters/:key")
+			throw error
+		}
+	})
+
+	router.get("/logs/:key/", async (ctx) => {
+		const sceneKey = ctx.params.key
+
+		try {
+			const data = {
+				user: ctx.state.user || null,
+				sceneKey
+			}
+
+			const html = await renderPage(siteTemplate, "/app/templates/pages/logs/key.hbs", data)
+			ctx.response.headers.set("Content-Type", "text/html")
+			ctx.response.body = html
+		} catch (error) {
+			await logError(error, "/logs/:key")
 			throw error
 		}
 	})

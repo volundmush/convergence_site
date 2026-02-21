@@ -1,0 +1,227 @@
+<!-- {"title": "Convergence Mush Log Page", "slug": "logs/:key"} -->
+
+<div class="log">
+	<div class="banner">
+		<h2 class="title"></h2>
+	</div>
+	<div class="body">
+		<div class="profile">
+			<table class="finger">
+			</table>
+		</div>
+		<div class="data">
+			<div class="summary">
+			</div>
+			<div class="participants">
+				<h3>Participants</h3>
+				<ul id="participantsList"></ul>
+			</div>
+			<div class="poses">
+				<h3>Poses</h3>
+				<div id="posesList"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+	window.optionalANSI = function(str) {
+		str = str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+		return str
+	}
+
+	const res = await fetch(`/api/logs/get/${encodeURIComponent("{{ sceneKey }}")}`)
+	const data = await res.json()
+
+	if(data.error) {
+		document.querySelector(".log").innerHTML = `<p>Log not found</p>`
+		return
+	}
+
+	const log = data.scene
+	const poses = data.poses || []
+	window.log = log
+
+	const oldTitle = document.querySelector("title").innerText
+	document.querySelector("title").innerText = `${log.scene_title} — ${oldTitle}`
+
+	document.querySelector(".log .banner .title").innerHTML = optionalANSI(log.scene_title)
+
+	// Add log details to profile
+	const details = {
+		"ID": log.scene_id,
+		"Status": log.scene_status,
+		"Date": log.scene_date_started || log.scene_date_scheduled || "-",
+		"Pitch": log.scene_pitch || "-"
+	}
+
+	for(const [key, value] of Object.entries(details)) {
+		const entry = document.createElement("tr")
+		const entryKey = document.createElement("td")
+		entryKey.classList.add("key")
+		entryKey.innerText = key
+		const entryValue = document.createElement("td")
+		entryValue.innerHTML = optionalANSI(String(value))
+		entryValue.classList.add("value")
+		entry.appendChild(entryKey)
+		entry.appendChild(entryValue)
+		document.querySelector(".log .body .profile .finger").appendChild(entry)
+	}
+
+	// Get unique participants from poses
+	const uniqueParticipants = {}
+	for(const pose of poses) {
+		if(pose.entity_objid) {
+			uniqueParticipants[pose.entity_objid] = {
+				entity_name: pose.entity_name,
+				entity_objid: pose.entity_objid
+			}
+		}
+	}
+
+	// Add participants
+	const participantsList = document.getElementById("participantsList")
+	if(Object.keys(uniqueParticipants).length) {
+		for(const [objid, actor] of Object.entries(uniqueParticipants)) {
+			const li = document.createElement("li")
+			const link = document.createElement("a")
+			const dbref = actor.entity_objid.split(':')[0].substring(1)
+			link.href = `/characters/${dbref}/`
+			link.textContent = actor.entity_name
+			li.appendChild(link)
+			participantsList.appendChild(li)
+		}
+	} else {
+		participantsList.innerHTML = "<li>No participants recorded</li>"
+	}
+
+	// Add poses
+	const posesList = document.getElementById("posesList")
+	if(poses.length) {
+		for(const pose of poses) {
+			const poseDiv = document.createElement("expandable-item")
+			const actorName = pose.entity_name || "Unknown"
+			const poseDate = new Date(pose.pose_date).toLocaleString()
+			const summary = `${actorName} in ${pose.channel_name} at ${poseDate}`
+			poseDiv.setAttribute("name", pose.actrole_name || "Pose")
+			poseDiv.setAttribute("summary", summary)
+			poseDiv.setAttribute("expanded", "false")
+
+			const poseBody = document.createElement("p")
+			poseBody.innerHTML = optionalANSI(pose.pose_text || "")
+			poseDiv.appendChild(poseBody)
+			posesList.appendChild(poseDiv)
+		}
+	} else {
+		posesList.innerHTML = "<p>No poses recorded</p>"
+	}
+
+	// Expandable web component
+	class ExpandableItem extends HTMLElement {
+		constructor() {
+			super()
+			this.attachShadow({ mode: "open" })
+		}
+
+		connectedCallback() {
+			const name = this.getAttribute("name") || "Item"
+			const summary = this.getAttribute("summary") || ""
+			const initiallyExpanded = this.getAttribute("expanded")
+			
+			this.shadowRoot.innerHTML = `
+				<style>
+					:host {
+						display: block;
+					}
+					
+					.expandable-item {
+						border: 1px solid var(--secondary-hi);
+						border-radius: 4px;
+						margin-bottom: 1rem;
+						overflow: hidden;
+					}
+					
+					.expandable-header {
+						display: flex;
+						justify-content: space-between;
+						align-items: center;
+						padding: 1rem;
+						background-color: var(--secondary-bg);
+						cursor: pointer;
+					}
+					
+					.expandable-content-preview {
+						flex: 1;
+					}
+					
+					.expandable-name {
+						margin: 0 0 0.5rem 0;
+						font-size: 1.1rem;
+						color: var(--secondary-fg);
+						text-transform: capitalize;
+					}
+					
+					.expandable-summary {
+						margin: 0;
+						color: var(--secondary-fg);
+						font-size: 0.95rem;
+					}
+					
+					.expandable-arrow {
+						display: inline-block;
+						margin-left: 1rem;
+						transition: transform 0.3s ease;
+						font-size: 0.8rem;
+						color: var(--secondary-hi);
+					}
+					
+					.expandable-arrow.expanded {
+						transform: rotate(90deg);
+					}
+					
+					.expandable-body {
+						padding: 1rem;
+						color: var(--tertiary-fg);
+						background-color: var(--tertiary-bg);
+						border-top: 1px solid var(--tertiary-hi);
+						display: none;
+					}
+
+					.expandable-body.expanded {
+						display: block;
+					}
+				</style>
+				
+				<div class="expandable-item" part="base">
+					<div class="expandable-header" part="header">
+						<div class="expandable-content-preview" part="preview">
+							<h4 class="expandable-name" part="name">${name}</h4>
+							<p class="expandable-summary" part="summary">${summary}</p>
+						</div>
+						<span class="expandable-arrow" part="arrow">▶</span>
+					</div>
+					<div class="expandable-body" part="body">
+						<slot></slot>
+					</div>
+				</div>
+			`
+			
+			const header = this.shadowRoot.querySelector(".expandable-header")
+			const body = this.shadowRoot.querySelector(".expandable-body")
+			const arrow = this.shadowRoot.querySelector(".expandable-arrow")
+			
+			const clicker = () => {
+				body.classList.toggle("expanded")
+				arrow.classList.toggle("expanded")
+			}
+			header.addEventListener("click", clicker)
+			if(initiallyExpanded) {
+				clicker()
+			}
+		}
+	}
+
+	customElements.define("expandable-item", ExpandableItem)
+})
+</script>
