@@ -6,7 +6,7 @@
 	<span id="pageInfo" style="min-width: 120px; text-align: center; font-weight: bold;">Page 1</span>
 	<button id="nextBtn" style="padding: 10px 20px; background: var(--secondary-bg); color: var(--secondary-fg); border: none; cursor: pointer; font-size: 1em; font-weight: bold; transition: all 0.1s ease;"><span class="button-text">Next </span>→</button>
 </div>
-<div class="logslist">
+<div class="logslist" id="logslist">
 	<div class="logs-grid-header">
 		<div class="logs-grid-cell">ID</div>
 		<div class="logs-grid-cell">Title</div>
@@ -16,29 +16,6 @@
 	<div id="logsTableBody" class="logs-grid"></div>
 </div>
 
-<style>
-#prevBtn:hover, #nextBtn:hover {
-	background: var(--tertiary-bg);
-	transform: translateY(-2px);
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-#prevBtn:active, #nextBtn:active {
-	transform: translateY(2px);
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-#prevBtn:disabled, #nextBtn:disabled {
-	opacity: 0.5;
-	cursor: not-allowed;
-}
-
-@media (max-width: 1024px) {
-	.button-text {
-		display: none;
-	}
-}
-</style>
 
 <script>
 let currentStart = 0
@@ -167,6 +144,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 			loadPage(newStart, currentDesc)
 		}
 	})
+	
+	// Update scroll fade on scroll and after content loads
+	const logslist = document.getElementById("logslist")
+	if (logslist) {
+		const updateScrollFade = () => {
+			const isScrolledLeft = logslist.scrollLeft > 0
+			const isScrolledRight = logslist.scrollLeft < (logslist.scrollWidth - logslist.clientWidth - 5)
+			
+			logslist.classList.toggle("scrollable-left", isScrolledLeft)
+			logslist.classList.toggle("scrollable-right", isScrolledRight)
+		}
+		logslist.addEventListener("scroll", updateScrollFade)
+		setTimeout(updateScrollFade, 100)
+	}
 })
 </script>
 

@@ -472,3 +472,85 @@ main a, main a:active, main a:visited, main a:hover {
 	border-bottom: 1px solid var(--primary-fg);
 	opacity: 0.8;
 }
+
+/* Pagination Controls */
+.automated main .pagination-controls button {
+	padding: 10px 20px;
+	background: var(--secondary-bg);
+	color: var(--secondary-fg);
+	border: none;
+	cursor: pointer;
+	font-size: 1em;
+	font-weight: bold;
+	transition: all 0.1s ease;
+}
+
+.automated main .pagination-controls button:hover {
+	background: var(--tertiary-bg);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.automated main .pagination-controls button:active {
+	transform: translateY(2px);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.automated main .pagination-controls button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+@media (max-width: 1024px) {
+	.button-text {
+		display: none;
+	}
+}
+
+/* Scroll fade gradients */
+.automated main .logslist {
+	position: relative;
+}
+
+.automated main .logslist::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 20px;
+	background: linear-gradient(to right, var(--primary-inner-bg), transparent);
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.2s ease;
+	z-index: 10;
+}
+
+.automated main .logslist::after {
+	content: "";
+	position: absolute;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	width: 20px;
+	background: linear-gradient(to left, var(--primary-inner-bg), transparent);
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.2s ease;
+	z-index: 10;
+}
+
+.automated main .logslist.scrollable-left::before {
+	opacity: 1;
+}
+
+.automated main .logslist.scrollable-right::after {
+	opacity: 1;
+}
+
+@media (max-width: 1024px) {
+	.automated main .logslist::before,
+	.automated main .logslist::after {
+		width: 30px;
+	}
+}
