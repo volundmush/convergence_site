@@ -625,7 +625,6 @@ main a, main a:active, main a:visited, main a:hover {
 .automated main .character .data .logs .logs-grid-header {
 	display: grid;
 	grid-template-columns: 50px 1fr 150px;
-	padding: 0.5rem;
 	font-weight: bold;
 	border-bottom: 2px solid var(--primary-hi);
 }
@@ -637,7 +636,6 @@ main a, main a:active, main a:visited, main a:hover {
 .automated main .character .data .logs .logs-grid {
 	display: grid;
 	grid-template-columns: 50px 1fr 150px;
-	padding: 0 0.5rem 0.5rem 0.5rem;
 }
 
 .automated main .character .data .logs .logs-grid-cell {
