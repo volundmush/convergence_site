@@ -521,6 +521,28 @@ ORDER BY s.scene_id ${desc};
 		}
 	})
 
+	router.post("/api/logs/pagecount/", async (ctx) => {
+		try {
+			const client = await mysql()
+
+			const result = await client.query(`
+SELECT COUNT(*) AS total
+FROM scene
+WHERE scene_status != -1
+			`)
+
+			const total = result[0]?.total || 0
+			const pageCount = Math.ceil(total / 50)
+
+			ctx.response.status = 200
+			ctx.response.body = { pageCount, total }
+		} catch (error) {
+			await logError(error, "POST /api/logs/pagecount")
+			ctx.response.status = 500
+			ctx.response.body = { error: "Failed to get page count" }
+		}
+	})
+
 	router.get("/characters/:key/", async (ctx) => {
 		const dbref = `#${ctx.params.key}`
 
