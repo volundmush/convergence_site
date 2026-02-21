@@ -614,4 +614,9 @@ main a, main a:active, main a:visited, main a:hover {
 /* Pose Paragraphs */
 .pose-paragraph {
 	padding: 0;
+	margin-top: 0;
+}
+
+.pose-paragraph:last-child {
+	margin-bottom: 0;
 }
