@@ -566,7 +566,7 @@ main a, main a:active, main a:visited, main a:hover {
 	position: absolute;
 	top: 0;
 	bottom: 0;
-	width: 60px;
+	width: 30px;
 	pointer-events: none;
 	opacity: 0;
 	transition: opacity 0.2s ease;
@@ -593,6 +593,6 @@ main a, main a:active, main a:visited, main a:hover {
 
 @media (max-width: 1024px) {
 	.automated main .logslist-fade {
-		width: 80px;
+		width: 30px;
 	}
 }
