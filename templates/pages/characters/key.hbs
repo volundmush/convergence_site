@@ -175,10 +175,60 @@ document.addEventListener("DOMContentLoaded", async () => {
 			}
 		}
 
-		if(css) {
-			const stylesheet = document.createElement("style")
-			stylesheet.innerText = css.body.replace(/(\r|\n)/g, " ")
-			document.body.appendChild(stylesheet)
+			if(css) {
+				const stylesheet = document.createElement("style")
+				stylesheet.innerText = css.body.replace(/(\r|\n)/g, " ")
+				document.body.appendChild(stylesheet)
+			}
+
+			// Load character logs
+			const dbref = "{{ dbref }}".replace(/#/g, '')
+			const logsRes = await fetch(`/api/logs/player/${encodeURIComponent(dbref)}`)
+			const logs = await logsRes.json()
+
+			const logsContainer = document.querySelector(".character .data .logs")
+			
+			if(logs && logs.length > 0) {
+				const logsGrid = document.createElement("div")
+				logsGrid.classList.add("logs-grid")
+				
+				const header = document.createElement("div")
+				header.classList.add("logs-grid-header")
+				header.innerHTML = `
+					<div class="logs-grid-cell">ID</div>
+					<div class="logs-grid-cell">Title</div>
+					<div class="logs-grid-cell">Date</div>
+				`
+				logsContainer.appendChild(header)
+				
+				for(const log of logs) {
+					const idCell = document.createElement("div")
+					idCell.classList.add("logs-grid-cell")
+					idCell.innerHTML = `<a href="/logs/${log.scene_id}/">${log.scene_id}</a>`
+					logsGrid.appendChild(idCell)
+					
+					const titleCell = document.createElement("div")
+					titleCell.classList.add("logs-grid-cell")
+					titleCell.innerHTML = `<a href="/logs/${log.scene_id}/">${log.scene_title}</a>`
+					logsGrid.appendChild(titleCell)
+					
+					const dateCell = document.createElement("div")
+					dateCell.classList.add("logs-grid-cell")
+					if(log.scene_date) {
+						const dateObj = new Date(log.scene_date)
+						dateCell.textContent = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+					} else {
+						dateCell.textContent = "-"
+					}
+					logsGrid.appendChild(dateCell)
+				}
+				logsContainer.appendChild(logsGrid)
+			} else {
+				const noLogs = document.createElement("p")
+				noLogs.textContent = "No logs recorded"
+				logsContainer.appendChild(noLogs)
+			}
+		})
 		}
 	}
 })
@@ -295,3 +345,4 @@ class ExpandableItem extends HTMLElement {
 
 customElements.define("expandable-item", ExpandableItem)
 </script>
+

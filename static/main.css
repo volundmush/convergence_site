@@ -620,3 +620,33 @@ main a, main a:active, main a:visited, main a:hover {
 .pose-paragraph:last-child {
 	margin-bottom: 0;
 }
+
+/* Character Logs Grid */
+.automated main .character .data .logs .logs-grid-header {
+	display: grid;
+	grid-template-columns: 50px 1fr 150px;
+	padding: 0.5rem;
+	font-weight: bold;
+	border-bottom: 2px solid var(--primary-hi);
+}
+
+.automated main .character .data .logs .logs-grid {
+	display: grid;
+	grid-template-columns: 50px 1fr 150px;
+	padding: 0 0.5rem 0.5rem 0.5rem;
+}
+
+.automated main .character .data .logs .logs-grid-cell {
+	padding: 0.5rem;
+	border-bottom: 1px solid var(--primary-fg);
+	opacity: 0.8;
+}
+
+.automated main .character .data .logs .logs-grid-cell a {
+	color: var(--primary-hi);
+	text-decoration: none;
+}
+
+.automated main .character .data .logs .logs-grid-cell a:hover {
+	text-decoration: underline;
+}
