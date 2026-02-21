@@ -181,14 +181,14 @@
 			const actorName = pose.entity_name || "Unknown"
 			const poseDate = new Date(pose.pose_date).toLocaleString()
 			const channelLabel = pose.channel_category === 1 ? ` [OOC]` : ""
-			const summary = `${actorName} in ${pose.channel_name}${channelLabel} at ${poseDate}`
+			const summary = `<b>${optionalANSI(actorName)}</b> in ${pose.channel_name}${channelLabel} at ${poseDate}`
 			const classes = []
 			if(pose.channel_category === 1) classes.push("pose-ooc")
 			else classes.push("pose-ic")
 			if(pose.channel_name === "Meter" || pose.channel_name === "Challenge") classes.push("pose-meter")
 			poseDiv.setAttribute("class", classes.join(" "))
 			poseDiv.setAttribute("name", pose.actrole_name || "Pose")
-			poseDiv.setAttribute("summary", summary)
+			poseDiv.setAttribute("summary-html", summary)
 			poseDiv.setAttribute("expanded", "false")
 
 			// Split pose text on line breaks and %r, then replace %t with tabs
@@ -235,7 +235,7 @@
 
 		connectedCallback() {
 			const name = this.getAttribute("name") || "Item"
-			const summary = this.getAttribute("summary") || ""
+			const summary = this.getAttribute("summary-html") || this.getAttribute("summary") || ""
 			const initiallyExpanded = this.getAttribute("expanded")
 			
 			this.shadowRoot.innerHTML = `
@@ -305,7 +305,7 @@
 				<div class="expandable-item" part="base">
 					<div class="expandable-header" part="header">
 					<div class="expandable-content-preview" part="preview">
-						<p class="expandable-summary" part="summary">${summary}</p>
+						<p class="expandable-summary" part="summary"></p>
 					</div>
 						<span class="expandable-arrow" part="arrow">▶</span>
 					</div>
@@ -318,6 +318,8 @@
 			const header = this.shadowRoot.querySelector(".expandable-header")
 			const body = this.shadowRoot.querySelector(".expandable-body")
 			const arrow = this.shadowRoot.querySelector(".expandable-arrow")
+			const summaryP = this.shadowRoot.querySelector(".expandable-summary")
+			summaryP.innerHTML = summary
 			
 			const clicker = () => {
 				body.classList.toggle("expanded")
