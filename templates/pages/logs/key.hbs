@@ -35,7 +35,50 @@
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", async () => {
+	function colorizeText(str) {
+		const colorMap = {
+			'x': '#000000', 'X': 'background-color: #000000',
+			'r': '#ff0000', 'R': 'background-color: #ff0000',
+			'g': '#00ff00', 'G': 'background-color: #00ff00',
+			'y': '#ffff00', 'Y': 'background-color: #ffff00',
+			'b': '#0000ff', 'B': 'background-color: #0000ff',
+			'm': '#ff00ff', 'M': 'background-color: #ff00ff',
+			'c': '#00ffff', 'C': 'background-color: #00ffff',
+			'w': '#ffffff', 'W': 'background-color: #ffffff'
+		}
+
+		const styleMap = {
+			'f': 'text-decoration: blink;',
+			'i': 'filter: invert(1);',
+			'h': 'font-weight: bold;',
+			'u': 'text-decoration: underline;'
+		}
+
+		let result = str
+
+		// Process color codes
+		result = result.replace(/%[cC]([a-zA-Z])/g, (match, letter) => {
+			let styles = []
+			if(colorMap[letter]) {
+				if(letter === letter.toUpperCase() && letter !== letter.toLowerCase()) {
+					styles.push(colorMap[letter])
+				} else {
+					styles.push(`color: ${colorMap[letter]}`)
+				}
+			}
+			if(styleMap[letter]) {
+				styles.push(styleMap[letter])
+			}
+			return `<span style="${styles.join('; ')}">`
+		})
+
+		// Close color codes
+		result = result.replace(/%[cC]n/g, '</span>')
+
+		return result
+	}
+
+	document.addEventListener("DOMContentLoaded", async () => {
 	window.optionalANSI = function(str) {
 		str = str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 		return str
@@ -130,8 +173,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 			for(const line of lines) {
 				if(line.trim()) {
 					const poseBody = document.createElement("p")
-					const processedLine = line.replace(/%t/g, "\t")
-					poseBody.innerHTML = optionalANSI(processedLine)
+					let processedLine = line.replace(/%t/g, "\t")
+					processedLine = colorizeText(processedLine)
+					poseBody.innerHTML = processedLine
 					poseDiv.appendChild(poseBody)
 				}
 			}
