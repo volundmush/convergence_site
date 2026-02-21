@@ -5,7 +5,6 @@
 	<button id="prevBtn">← Previous</button>
 	<span id="pageInfo">Page 1</span>
 	<button id="nextBtn">Next →</button>
-	<button id="sortBtn">Sort: Descending</button>
 </div>
 <div class="logslist">
 	<div class="logs-grid-header">
@@ -112,11 +111,6 @@ function nextPage() {
 	}
 }
 
-function toggleSort() {
-	currentDesc = !currentDesc
-	document.querySelector("#sortBtn").textContent = `Sort: ${currentDesc ? "Descending" : "Ascending"}`
-	loadPage(0, currentDesc)
-}
 
 function updatePaginationControls() {
 	const currentPage = Math.floor(currentStart / 50) + 1
@@ -128,7 +122,6 @@ function updatePaginationControls() {
 document.addEventListener("DOMContentLoaded", async () => {
 	document.querySelector("#prevBtn").addEventListener("click", previousPage)
 	document.querySelector("#nextBtn").addEventListener("click", nextPage)
-	document.querySelector("#sortBtn").addEventListener("click", toggleSort)
 	
 	await loadPageCount()
 	
