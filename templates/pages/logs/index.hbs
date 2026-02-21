@@ -2,9 +2,9 @@
 
 <h2>Convergence MUSH logs</h2>
 <div class="pagination-controls" style="display: flex; justify-content: center; align-items: center; gap: 20px; margin: 20px 0;">
-	<button id="prevBtn" style="padding: 10px 20px; background: var(--secondary-bg); color: var(--secondary-fg); border: none; cursor: pointer; font-size: 1em; font-weight: bold; transition: all 0.1s ease;">← Previous</button>
+	<button id="prevBtn" style="padding: 10px 20px; background: var(--secondary-bg); color: var(--secondary-fg); border: none; cursor: pointer; font-size: 1em; font-weight: bold; transition: all 0.1s ease;">←<span class="button-text"> Previous</span></button>
 	<span id="pageInfo" style="min-width: 120px; text-align: center; font-weight: bold;">Page 1</span>
-	<button id="nextBtn" style="padding: 10px 20px; background: var(--secondary-bg); color: var(--secondary-fg); border: none; cursor: pointer; font-size: 1em; font-weight: bold; transition: all 0.1s ease;">Next →</button>
+	<button id="nextBtn" style="padding: 10px 20px; background: var(--secondary-bg); color: var(--secondary-fg); border: none; cursor: pointer; font-size: 1em; font-weight: bold; transition: all 0.1s ease;"><span class="button-text">Next </span>→</button>
 </div>
 <div class="logslist">
 	<div class="logs-grid-header">
@@ -31,6 +31,12 @@
 #prevBtn:disabled, #nextBtn:disabled {
 	opacity: 0.5;
 	cursor: not-allowed;
+}
+
+@media (max-width: 1024px) {
+	.button-text {
+		display: none;
+	}
 }
 </style>
 
