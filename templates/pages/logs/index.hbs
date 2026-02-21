@@ -39,6 +39,8 @@ async function loadPageCount() {
 function loadPage(start = 0, desc = true) {
 	currentStart = start
 	currentDesc = desc
+	const currentPage = Math.floor(start / 50) + 1
+	window.location.hash = `page=${currentPage}`
 	
 	const res = fetch("/api/logs/list/", {
 		method: "POST",
@@ -129,7 +131,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 	document.querySelector("#sortBtn").addEventListener("click", toggleSort)
 	
 	await loadPageCount()
-	loadPage(0, true)
+	
+	// Check for page in URL hash
+	const hash = window.location.hash.substring(1)
+	const params = new URLSearchParams(hash)
+	const pageFromHash = parseInt(params.get("page")) || 1
+	const startFromHash = (pageFromHash - 1) * 50
+	
+	loadPage(startFromHash, true)
+	
+	// Handle hash changes (back/forward buttons)
+	window.addEventListener("hashchange", () => {
+		const newHash = window.location.hash.substring(1)
+		const newParams = new URLSearchParams(newHash)
+		const newPage = parseInt(newParams.get("page")) || 1
+		const newStart = (newPage - 1) * 50
+		if (newStart !== currentStart) {
+			loadPage(newStart, currentDesc)
+		}
+	})
 })
 </script>
 
