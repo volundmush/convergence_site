@@ -309,21 +309,20 @@ ORDER BY p.pose_date_created ASC
 	})
 
 	router.get("/logs/:key/", async (ctx) => {
+		const sceneKey = ctx.params.key
+
 		try {
-			const characterKey = ctx.params.key
-			const characterDoc = await character.findCharacterByKey(characterKey)
-			
-			if (!characterDoc) {
-				ctx.response.status = 404
-				ctx.response.body = { error: "Character not found" }
-				return
+			const data = {
+				user: ctx.state.user || null,
+				sceneKey
 			}
-			
-			ctx.response.body = { character: characterDoc }
+
+			const html = await renderPage(siteTemplate, "/app/templates/pages/logs/key.hbs", data)
+			ctx.response.headers.set("Content-Type", "text/html")
+			ctx.response.body = html
 		} catch (error) {
-			await logError(error, "Get admin character by key")
-			ctx.response.status = 500
-			ctx.response.body = { error: "Failed to get character" }
+			await logError(error, "/logs/:key")
+			throw error
 		}
 	})
 
