@@ -126,10 +126,12 @@
 	document.querySelector(".log .banner .title").innerHTML = optionalANSI(log.scene_title)
 
 	// Add log details to profile
+	const logDate = log.scene_date_started || log.scene_date_scheduled
+	const formattedDate = logDate ? new Date(logDate).toLocaleString() : "-"
 	const details = {
 		"ID": log.scene_id,
 		"Status": log.scene_status,
-		"Date": log.scene_date_started || log.scene_date_scheduled || "-",
+		"Date": formattedDate,
 		"Pitch": log.scene_pitch || "-"
 	}
 
