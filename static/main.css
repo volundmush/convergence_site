@@ -556,3 +556,39 @@ main a, main a:active, main a:visited, main a:hover {
 		width: 30px;
 	}
 }
+
+/* Updated Scroll fade gradients with overlay elements */
+.automated main .logslist-fade {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 20px;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.2s ease;
+	z-index: 10;
+}
+
+.automated main .logslist-fade-left {
+	left: 0;
+	background: linear-gradient(to right, var(--primary-inner-bg), transparent);
+}
+
+.automated main .logslist-fade-right {
+	right: 0;
+	background: linear-gradient(to left, var(--primary-inner-bg), transparent);
+}
+
+.automated main .logslist-wrapper.scrollable-left .logslist-fade-left {
+	opacity: 1;
+}
+
+.automated main .logslist-wrapper.scrollable-right .logslist-fade-right {
+	opacity: 1;
+}
+
+@media (max-width: 1024px) {
+	.automated main .logslist-fade {
+		width: 30px;
+	}
+}
