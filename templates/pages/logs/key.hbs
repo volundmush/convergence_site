@@ -54,38 +54,46 @@
 			'u': 'text-decoration: underline;'
 		}
 
-		let result = str
+		let result = ''
 		let spanDepth = 0
+		let i = 0
 
-		// Process color codes
-		result = result.replace(/%[cC]([a-zA-Z])/g, (match, letter) => {
-			spanDepth++
-			
-			let styles = []
-			if(colorMap[letter]) {
-				if(letter === letter.toUpperCase() && letter !== letter.toLowerCase()) {
-					styles.push(colorMap[letter])
-				} else {
-					styles.push(`color: ${colorMap[letter]}`)
+		while(i < str.length) {
+			if(str[i] === '%' && i + 2 < str.length) {
+				const code = str[i + 1]
+				const letter = str[i + 2]
+
+				if((code === 'c' || code === 'C') && letter === 'n') {
+					while(spanDepth > 0) {
+						result += '</span>'
+						spanDepth--
+					}
+					i += 3
+					continue
+				}
+				else if((code === 'c' || code === 'C') && letter.match(/[a-zA-Z]/)) {
+					let styles = []
+					if(colorMap[letter]) {
+						if(letter === letter.toUpperCase() && letter !== letter.toLowerCase()) {
+							styles.push(colorMap[letter])
+						} else {
+							styles.push(`color: ${colorMap[letter]}`)
+						}
+					}
+					if(styleMap[letter]) {
+						styles.push(styleMap[letter])
+					}
+					result += `<span style="${styles.join('; ')}">`
+					spanDepth++
+					i += 3
+					continue
 				}
 			}
-			if(styleMap[letter]) {
-				styles.push(styleMap[letter])
-			}
-			return `<span style="${styles.join('; ')}">`
-		})
 
-		// Close color codes - close all open spans
-		result = result.replace(/%[cC]n/g, () => {
-			let html = ''
-			while(spanDepth > 0) {
-				html += '</span>'
-				spanDepth--
-			}
-			return html
-		})
+			result += str[i]
+			i++
+		}
 
-		// Close any remaining open spans
 		while(spanDepth > 0) {
 			result += '</span>'
 			spanDepth--
