@@ -75,13 +75,14 @@
 			return `<span style="${styles.join('; ')}">`
 		})
 
-		// Close color codes
+		// Close color codes - close all open spans
 		result = result.replace(/%[cC]n/g, () => {
-			if(spanDepth > 0) {
+			let html = ''
+			while(spanDepth > 0) {
+				html += '</span>'
 				spanDepth--
-				return '</span>'
 			}
-			return ''
+			return html
 		})
 
 		// Close any remaining open spans
