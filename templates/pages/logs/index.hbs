@@ -20,6 +20,21 @@
 <script>
 let currentStart = 0
 let currentDesc = true
+let totalPageCount = 0
+
+async function loadPageCount() {
+	try {
+		const res = await fetch("/api/logs/pagecount/", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" }
+		})
+		const data = await res.json()
+		totalPageCount = data.pageCount
+		updatePaginationControls()
+	} catch (error) {
+		console.error("Failed to load page count:", error)
+	}
+}
 
 function loadPage(start = 0, desc = true) {
 	currentStart = start
@@ -88,8 +103,11 @@ function previousPage() {
 }
 
 function nextPage() {
-	const newStart = currentStart + 50
-	loadPage(newStart, currentDesc)
+	const currentPage = Math.floor(currentStart / 50) + 1
+	if (currentPage < totalPageCount) {
+		const newStart = currentStart + 50
+		loadPage(newStart, currentDesc)
+	}
 }
 
 function toggleSort() {
@@ -99,8 +117,10 @@ function toggleSort() {
 }
 
 function updatePaginationControls() {
-	document.querySelector("#pageInfo").textContent = `Page: ${Math.floor(currentStart / 50) + 1}`
+	const currentPage = Math.floor(currentStart / 50) + 1
+	document.querySelector("#pageInfo").textContent = `Page: ${currentPage} of ${totalPageCount}`
 	document.querySelector("#prevBtn").disabled = currentStart === 0
+	document.querySelector("#nextBtn").disabled = currentPage >= totalPageCount
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -108,6 +128,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	document.querySelector("#nextBtn").addEventListener("click", nextPage)
 	document.querySelector("#sortBtn").addEventListener("click", toggleSort)
 	
+	await loadPageCount()
 	loadPage(0, true)
 })
 </script>
