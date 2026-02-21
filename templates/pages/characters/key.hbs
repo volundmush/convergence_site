@@ -338,7 +338,7 @@ class ExpandableItem extends HTMLElement {
 			arrow.classList.toggle("expanded")
 		}
 		header.addEventListener("click", clicker)
-		if(initiallyExpanded) {
+		if(initiallyExpanded === "true") {
 			clicker()
 		}
 	}
