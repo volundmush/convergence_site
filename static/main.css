@@ -602,7 +602,11 @@ main a, main a:active, main a:visited, main a:hover {
 	}
 }
 
-/* Log Detail Page - OOC Posts Toggle */
+/* Log Detail Page - Post Visibility Toggles */
 #posesList.hide-ooc .pose-ooc {
+	display: none;
+}
+
+#posesList.hide-meter .pose-meter {
 	display: none;
 }

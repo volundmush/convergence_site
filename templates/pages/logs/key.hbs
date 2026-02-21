@@ -19,10 +19,14 @@
 			<div class="poses">
 				<div style="display: flex; justify-content: space-between; align-items: center;">
 					<h3>Poses</h3>
-					<label style="display: flex; align-items: center; gap: 0.5rem;">
-						<input type="checkbox" id="showOOC" style="cursor: pointer;">
-						<span>Show OOC Posts</span>
-					</label>
+				<label style="display: flex; align-items: center; gap: 0.5rem;">
+					<input type="checkbox" id="showOOC" style="cursor: pointer;">
+					<span>Show OOC Posts</span>
+				</label>
+				<label style="display: flex; align-items: center; gap: 0.5rem;">
+					<input type="checkbox" id="showMeter" style="cursor: pointer;">
+					<span>Show Meter Posts</span>
+				</label>
 				</div>
 				<div id="posesList"></div>
 			</div>
@@ -111,8 +115,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 			const poseDate = new Date(pose.pose_date).toLocaleString()
 			const channelLabel = pose.channel_category === 1 ? ` [OOC]` : ""
 			const summary = `${actorName} in ${pose.channel_name}${channelLabel} at ${poseDate}`
-			const channelClass = pose.channel_category === 1 ? "pose-ooc" : "pose-ic"
-			poseDiv.setAttribute("class", channelClass)
+			const classes = []
+			if(pose.channel_category === 1) classes.push("pose-ooc")
+			else classes.push("pose-ic")
+			if(pose.channel_name === "Meter") classes.push("pose-meter")
+			poseDiv.setAttribute("class", classes.join(" "))
 			poseDiv.setAttribute("name", pose.actrole_name || "Pose")
 			poseDiv.setAttribute("summary", summary)
 			poseDiv.setAttribute("expanded", "false")
@@ -133,6 +140,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 	})
 	// Start with OOC hidden by default
 	posesList.classList.add("hide-ooc")
+
+	// Toggle Meter visibility
+	const showMeterCheckbox = document.getElementById("showMeter")
+	showMeterCheckbox.addEventListener("change", () => {
+		posesList.classList.toggle("hide-meter", !showMeterCheckbox.checked)
+	})
+	// Start with Meter hidden by default
+	posesList.classList.add("hide-meter")
 
 	// Expandable web component
 	class ExpandableItem extends HTMLElement {
