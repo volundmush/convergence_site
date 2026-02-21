@@ -331,6 +331,7 @@ ORDER BY p.pose_date_created ASC
 ret = {}
 playersRaw = rhost.strfunc("search", "type=player")
 for dbref in string.gmatch(playersRaw, "([^%s]+)") do
+	pcobjid = rhost.strfunc("objid", dbref)
 	pctotem = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",PC)]") == '1'
 	approved = rhost.strfunc("eval", "[hasflag(" .. dbref .. ",WANDERER)]") == '0'
 	bittype = tonumber(rhost.strfunc("bittype", dbref))
@@ -347,6 +348,7 @@ for dbref in string.gmatch(playersRaw, "([^%s]+)") do
 		char.pc = pc
 		char.npc = npc
 		char.staff = staff
+		char.objid = pcobjid
 		table.insert(ret, char)
 	end
 end
