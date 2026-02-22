@@ -588,7 +588,8 @@ ORDER BY s.scene_id ${desc};
 			
 			const parsedScenes = scenes.map(scene => ({
 				...scene,
-				scene_status: statusMap[scene.scene_status] || "Unknown"
+				scene_status: statusMap[scene.scene_status] || "Unknown",
+				actors: typeof scene.actors === 'string' ? JSON.parse(scene.actors) : scene.actors
 			}))
 			ctx.response.status = 200
 			ctx.response.body = parsedScenes
