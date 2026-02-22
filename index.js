@@ -673,11 +673,11 @@ SELECT
   e.entity_name as creator_name,
   e.entity_objid as creator_objid
 FROM scene s
-LEFT JOIN entity e ON e.entity_id = s.scene_creator_id
+LEFT JOIN scene_scheduled ss ON ss.scene_id = s.scene_id
+LEFT JOIN entity e ON e.entity_objid = ss.owner_objid
 WHERE s.scene_status = 0 AND s.scene_date_scheduled > NOW()
 ORDER BY s.scene_date_scheduled ASC
-
-			`, [start])
+			`)
 
 			const statusMap = {
 				"-1": "Deleted",
