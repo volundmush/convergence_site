@@ -576,7 +576,7 @@ LEFT JOIN (
 ) ax
   ON ax.scene_id = s.scene_id
 ORDER BY s.scene_id ${desc};
-			`)
+			`, [start])
 			
 			const statusMap = {
 				"-1": "Deleted",
