@@ -719,7 +719,7 @@ LIMIT ?, 50
 		}
 	})
 
-	router.get("/logs/:key/", async (ctx) => {
+	router.get("/logs/:key([0-9]+)/", async (ctx) => {
 		const sceneKey = ctx.params.key
 
 		try {
