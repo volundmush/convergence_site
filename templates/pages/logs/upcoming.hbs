@@ -19,14 +19,14 @@
 
 <script>
 async function loadScenes() {
-	
-	const res = fetch("/api/logs/upcoming/", {
+	try {
+		const res = await fetch("/api/logs/upcoming/",
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ start })
+body: JSON.stringify({})
 	})
-	.then(r => r.json())
-	.then(scenes => {
+		const scenes = await res.json()
+		if (scenes && Array.isArray(scenes)) {
 		const tbody = document.querySelector("#logsTableBody")
 		tbody.innerHTML = ""
 
@@ -79,9 +79,11 @@ async function loadScenes() {
 			creatorCell.innerHTML = creatorLink
 			tbody.appendChild(creatorCell)
 		}
-		
-
-	})
+		}
+	} catch (error) {
+		console.error("Failed to load upcoming scenes:", error)
+	}
+}
 }
 
 
