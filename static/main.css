@@ -647,7 +647,7 @@ main a, main a:active, main a:visited, main a:hover {
 /* Upcoming logs grid */
 .logslist .logs-grid-header {
 	display: grid;
-	grid-template-columns: 50px 1fr 150px 1fr;
+	grid-template-columns: 50px 1fr 150px 150px;
 	font-weight: bold;
 	border-bottom: 2px solid var(--primary-hi);
 }
@@ -658,7 +658,7 @@ main a, main a:active, main a:visited, main a:hover {
 
 .logslist .logs-grid {
 	display: grid;
-	grid-template-columns: 50px 1fr 150px 1fr;
+	grid-template-columns: 50px 1fr 150px 150px;
 }
 
 .logslist .logs-grid-cell {
