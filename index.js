@@ -616,6 +616,7 @@ INNER JOIN actor a ON a.actor_id = ar.actor_id
 INNER JOIN entity e ON e.entity_id = a.entity_id
 			WHERE e.entity_objid = ?
 			AND s.scene_status != -1
+			AND ch.channel_name = 'Actions'
 			ORDER BY s.scene_id DESC
 			`, [objid])
 
