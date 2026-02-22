@@ -657,3 +657,12 @@ main a, main a:active, main a:visited, main a:hover {
 .automated main .character .data .gallery {
 	padding-bottom: 1rem;
 }
+
+/* Upcoming logs list - 4 columns */
+.automated main .logslist-upcoming .logs-grid-header {
+	grid-template-columns: 80px 1fr 100px 1fr;
+}
+
+.automated main .logslist-upcoming .logs-grid {
+	grid-template-columns: 80px 1fr 100px 1fr;
+}
