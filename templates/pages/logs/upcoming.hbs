@@ -4,7 +4,6 @@
 <div class="logslist-wrapper">
 	<div class="logslist" id="logslist">
 	<div class="logs-grid-header">
-		<div class="logs-grid-cell"></div>
 		<div class="logs-grid-cell">ID</div>
 		<div class="logs-grid-cell">Title</div>
 		<div class="logs-grid-cell">Date</div>
@@ -35,18 +34,7 @@ async function loadScenes() {
 			const title = scene.scene_title
 			const status = scene.scene_status
 
-			const statusEmojiMap = {
-				"Scheduled": "⚪",
-				"Paused": "🟠",
-				"Active": "🔴",
-				"Finished": "🟢"
-			}
-			
-			const statusCell = document.createElement("div")
-			statusCell.className = "logs-grid-cell"
-			statusCell.textContent = statusEmojiMap[status] || "⚫"
-			tbody.appendChild(statusCell)
-			
+
 			const idCell = document.createElement("div")
 			idCell.className = "logs-grid-cell"
 			idCell.innerHTML = `<a href="/logs/${sceneNumber}/">${sceneNumber}</a>`
