@@ -644,28 +644,6 @@ main a, main a:active, main a:visited, main a:hover {
 	opacity: 0.8;
 }
 
-/* Upcoming logs grid */
-.logslist .logs-grid-header {
-	display: grid;
-	grid-template-columns: 50px 1fr 150px 150px;
-	font-weight: bold;
-	border-bottom: 2px solid var(--primary-hi);
-}
-
-.logslist .logs-grid-header .logs-grid-cell {
-	border-bottom: none;
-}
-
-.logslist .logs-grid {
-	display: grid;
-	grid-template-columns: 50px 1fr 150px 150px;
-}
-
-.logslist .logs-grid-cell {
-	padding: 0.5rem;
-	border-bottom: 1px solid var(--primary-fg);
-	opacity: 0.8;
-}
 
 
 
