@@ -568,7 +568,10 @@ LEFT JOIN (
       a.scene_id,
       a.actor_id,
       a.entity_id,
-      a.actor_type
+      a.actor_type,
+      ar.actrole_id,
+      p.actrole_id,
+      ch.channel_id
   ) g
   LEFT JOIN entity e
     ON e.entity_id = g.entity_id
