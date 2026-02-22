@@ -168,10 +168,10 @@
 		document.querySelector(".log .body .profile .finger").appendChild(entry)
 	}
 
-	// Get unique participants from poses
+	// Get unique participants from poses - only those with poses in Actions channel
 	const uniqueParticipants = {}
 	for(const pose of poses) {
-		if(pose.entity_objid) {
+		if(pose.entity_objid && pose.channel_name === 'Actions') {
 			uniqueParticipants[pose.entity_objid] = {
 				entity_name: pose.entity_name,
 				entity_objid: pose.entity_objid
