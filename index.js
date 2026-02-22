@@ -588,8 +588,7 @@ ORDER BY s.scene_id ${desc};
 			
 			const parsedScenes = scenes.map(scene => ({
 				...scene,
-				scene_status: statusMap[scene.scene_status] || "Unknown",
-				actors: typeof scene.actors === 'string' ? JSON.parse(scene.actors) : scene.actors
+				scene_status: statusMap[scene.scene_status] || "Unknown"
 			}))
 			ctx.response.status = 200
 			ctx.response.body = parsedScenes
@@ -660,6 +659,47 @@ WHERE scene_status != -1
 		}
 	})
 
+	router.post("/api/logs/upcoming/", async (ctx) => {
+		try {
+			const payload = await ctx.request.body.json()
+			const start = payload?.start || 0
+
+			const client = await mysql()
+
+			const scenes = await client.query(`
+SELECT
+  s.*,
+  e.entity_name as creator_name,
+  e.entity_objid as creator_objid
+FROM scene s
+LEFT JOIN entity e ON e.entity_id = s.scene_creator_id
+WHERE s.scene_status = 0 AND s.scene_date_scheduled > NOW()
+ORDER BY s.scene_date_scheduled ASC
+LIMIT ?, 50
+			`, [start])
+
+			const statusMap = {
+				"-1": "Deleted",
+				"0": "Scheduled",
+				"1": "Active",
+				"2": "Paused",
+				"3": "Finished"
+			}
+
+			const parsedScenes = scenes.map(scene => ({
+				...scene,
+				scene_status: statusMap[scene.scene_status] || "Unknown",
+				actors: typeof scene.actors === 'string' ? JSON.parse(scene.actors) : scene.actors
+			}))
+			ctx.response.status = 200
+			ctx.response.body = parsedScenes
+		} catch (error) {
+			await logError(error, "POST /api/logs/upcoming")
+			ctx.response.status = 500
+			ctx.response.body = { error: "Failed to list upcoming logs" }
+		}
+	})
+
 	router.get("/characters/:key/", async (ctx) => {
 		const dbref = `#${ctx.params.key}`
 
@@ -700,6 +740,7 @@ WHERE scene_status != -1
 	const pageRoutes = [
 		{ path: "/characters/", template: "/app/templates/pages/characters/index.hbs", errorContext: "Characters list page render" },
 		{ path: "/logs/", template: "/app/templates/pages/logs/index.hbs", errorContext: "Logs list page render" },
+		{ path: "/logs/upcoming/", template: "/app/templates/pages/logs/upcoming.hbs", errorContext: "Upcoming logs page render" },
 	]
 
 	// Helper function for rendering page routes

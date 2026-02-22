@@ -1,0 +1,157 @@
+<!-- {"title": "Upcoming Convergence MUSH Logs", "slug": "logs/upcoming"} -->
+
+<h2>Upcoming Convergence MUSH Scenes</h2>
+<div class="pagination-controls" style="display: flex; justify-content: center; align-items: center; gap: 20px; margin: 20px 0;">
+	<button id="prevBtn" style="padding: 10px 20px; background: var(--secondary-bg); color: var(--secondary-fg); border: none; cursor: pointer; font-size: 1em; font-weight: bold; transition: all 0.1s ease;">←<span class="button-text"> Previous</span></button>
+	<span id="pageInfo" style="min-width: 120px; text-align: center; font-weight: bold;">Page 1</span>
+	<button id="nextBtn" style="padding: 10px 20px; background: var(--secondary-bg); color: var(--secondary-fg); border: none; cursor: pointer; font-size: 1em; font-weight: bold; transition: all 0.1s ease;"><span class="button-text">Next </span>→</button>
+</div>
+<div class="logslist-wrapper">
+	<div class="logslist" id="logslist">
+	<div class="logs-grid-header">
+		<div class="logs-grid-cell"></div>
+		<div class="logs-grid-cell">ID</div>
+		<div class="logs-grid-cell">Title</div>
+		<div class="logs-grid-cell">Date</div>
+		<div class="logs-grid-cell">Creator</div>
+	</div>
+		<div id="logsTableBody" class="logs-grid"></div>
+	</div>
+	<div class="logslist-fade logslist-fade-left"></div>
+	<div class="logslist-fade logslist-fade-right"></div>
+</div>
+
+
+<script>
+let currentStart = 0
+let totalPageCount = 0
+let totalUpcoming = 0
+
+async function loadPageCount() {
+	try {
+		const res = await fetch("/api/logs/upcoming/", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ start: 0 })
+		})
+		const data = await res.json()
+		if (Array.isArray(data)) {
+			totalUpcoming = data.length
+			totalPageCount = Math.ceil(totalUpcoming / 50)
+		}
+		updatePaginationControls()
+	} catch (error) {
+		console.error("Failed to load page count:", error)
+	}
+}
+
+function loadPage(start = 0) {
+	currentStart = start
+	const currentPage = Math.floor(start / 50) + 1
+	window.location.hash = `page=${currentPage}`
+	
+	const res = fetch("/api/logs/upcoming/", {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ start })
+	})
+	.then(r => r.json())
+	.then(scenes => {
+		const tbody = document.querySelector("#logsTableBody")
+		tbody.innerHTML = ""
+
+		for(const scene of scenes) {
+			const sceneNumber = scene.scene_id
+			const title = scene.scene_title
+			const status = scene.scene_status
+
+			const statusEmojiMap = {
+				"Scheduled": "⚪",
+				"Paused": "🟠",
+				"Active": "🔴",
+				"Finished": "🟢"
+			}
+			
+			const statusCell = document.createElement("div")
+			statusCell.className = "logs-grid-cell"
+			statusCell.textContent = statusEmojiMap[status] || "⚫"
+			tbody.appendChild(statusCell)
+			
+			const idCell = document.createElement("div")
+			idCell.className = "logs-grid-cell"
+			idCell.innerHTML = `<a href="/logs/${sceneNumber}/">${sceneNumber}</a>`
+			tbody.appendChild(idCell)
+			
+			const titleCell = document.createElement("div")
+			titleCell.className = "logs-grid-cell"
+			titleCell.innerHTML = `<a href="/logs/${sceneNumber}/">${title}</a>`
+			tbody.appendChild(titleCell)
+			
+			const dateDisplay = scene.scene_date_started || scene.scene_date_scheduled || scene.scene_date_created || "-"
+			const dateObj = new Date(dateDisplay)
+			const dateStr = isNaN(dateObj.getTime()) ? dateDisplay : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+			
+			const dateCell = document.createElement("div")
+			dateCell.className = "logs-grid-cell"
+			dateCell.textContent = dateStr
+			tbody.appendChild(dateCell)
+			
+			const creatorCell = document.createElement("div")
+			creatorCell.className = "logs-grid-cell"
+			let creatorLink = "-"
+			if (scene.creator_name) {
+				let creatorDbref = scene.creator_objid
+				if (creatorDbref) {
+					creatorDbref = creatorDbref.split(':')[0].substring(1)
+				}
+				creatorLink = `<a href="/characters/${creatorDbref}/">${scene.creator_name}</a>`
+			}
+			creatorCell.innerHTML = creatorLink
+			tbody.appendChild(creatorCell)
+		}
+		
+		updatePaginationControls()
+	})
+}
+
+function previousPage() {
+	const newStart = Math.max(0, currentStart - 50)
+	loadPage(newStart)
+}
+
+function nextPage() {
+	const currentPage = Math.floor(currentStart / 50) + 1
+	if (currentPage < totalPageCount) {
+		const newStart = currentStart + 50
+		loadPage(newStart)
+	}
+}
+
+
+function updatePaginationControls() {
+	const currentPage = Math.floor(currentStart / 50) + 1
+	document.querySelector("#pageInfo").textContent = `Page: ${currentPage} of ${totalPageCount}`
+	document.querySelector("#prevBtn").disabled = currentStart === 0
+	document.querySelector("#nextBtn").disabled = currentPage >= totalPageCount
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+	document.querySelector("#prevBtn").addEventListener("click", previousPage)
+	document.querySelector("#nextBtn").addEventListener("click", nextPage)
+	
+	await loadPageCount()
+	
+	// Check for page in URL hash
+	const hash = window.location.hash.substring(1)
+	if (hash) {
+		const match = hash.match(/page=(\d+)/)
+		if (match) {
+			const page = parseInt(match[1]) - 1
+			const start = page * 50
+			loadPage(start)
+		}
+	} else {
+		loadPage(0)
+	}
+})
+</script>
