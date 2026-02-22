@@ -308,7 +308,7 @@ ORDER BY p.pose_date_created ASC
 		}
 	})
 
-	router.get("/logs/:key/", async (ctx) => {
+	router.get("/logs/:key(\\d+)/", async (ctx) => {
 		const sceneKey = ctx.params.key
 
 		try {
