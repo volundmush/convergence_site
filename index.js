@@ -576,7 +576,7 @@ LEFT JOIN (
 ) ax
   ON ax.scene_id = s.scene_id
 ORDER BY s.scene_id ${desc};
-			`, [start])
+			`)
 			
 			const statusMap = {
 				"-1": "Deleted",
@@ -676,7 +676,7 @@ FROM scene s
 LEFT JOIN entity e ON e.entity_id = s.scene_creator_id
 WHERE s.scene_status = 0 AND s.scene_date_scheduled > NOW()
 ORDER BY s.scene_date_scheduled ASC
-LIMIT ?, 50
+
 			`, [start])
 
 			const statusMap = {

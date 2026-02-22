@@ -1,11 +1,6 @@
 <!-- {"title": "Upcoming Convergence MUSH Logs", "slug": "logs/upcoming"} -->
 
 <h2>Upcoming Convergence MUSH Scenes</h2>
-<div class="pagination-controls" style="display: flex; justify-content: center; align-items: center; gap: 20px; margin: 20px 0;">
-	<button id="prevBtn" style="padding: 10px 20px; background: var(--secondary-bg); color: var(--secondary-fg); border: none; cursor: pointer; font-size: 1em; font-weight: bold; transition: all 0.1s ease;">←<span class="button-text"> Previous</span></button>
-	<span id="pageInfo" style="min-width: 120px; text-align: center; font-weight: bold;">Page 1</span>
-	<button id="nextBtn" style="padding: 10px 20px; background: var(--secondary-bg); color: var(--secondary-fg); border: none; cursor: pointer; font-size: 1em; font-weight: bold; transition: all 0.1s ease;"><span class="button-text">Next </span>→</button>
-</div>
 <div class="logslist-wrapper">
 	<div class="logslist" id="logslist">
 	<div class="logs-grid-header">
@@ -23,32 +18,7 @@
 
 
 <script>
-let currentStart = 0
-let totalPageCount = 0
-let totalUpcoming = 0
-
-async function loadPageCount() {
-	try {
-		const res = await fetch("/api/logs/upcoming/", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ start: 0 })
-		})
-		const data = await res.json()
-		if (Array.isArray(data)) {
-			totalUpcoming = data.length
-			totalPageCount = Math.ceil(totalUpcoming / 50)
-		}
-		updatePaginationControls()
-	} catch (error) {
-		console.error("Failed to load page count:", error)
-	}
-}
-
-function loadPage(start = 0) {
-	currentStart = start
-	const currentPage = Math.floor(start / 50) + 1
-	window.location.hash = `page=${currentPage}`
+async function loadScenes() {
 	
 	const res = fetch("/api/logs/upcoming/", {
 		method: "POST",
@@ -110,48 +80,13 @@ function loadPage(start = 0) {
 			tbody.appendChild(creatorCell)
 		}
 		
-		updatePaginationControls()
+
 	})
 }
 
-function previousPage() {
-	const newStart = Math.max(0, currentStart - 50)
-	loadPage(newStart)
-}
 
-function nextPage() {
-	const currentPage = Math.floor(currentStart / 50) + 1
-	if (currentPage < totalPageCount) {
-		const newStart = currentStart + 50
-		loadPage(newStart)
-	}
-}
-
-
-function updatePaginationControls() {
-	const currentPage = Math.floor(currentStart / 50) + 1
-	document.querySelector("#pageInfo").textContent = `Page: ${currentPage} of ${totalPageCount}`
-	document.querySelector("#prevBtn").disabled = currentStart === 0
-	document.querySelector("#nextBtn").disabled = currentPage >= totalPageCount
-}
 
 document.addEventListener("DOMContentLoaded", async () => {
-	document.querySelector("#prevBtn").addEventListener("click", previousPage)
-	document.querySelector("#nextBtn").addEventListener("click", nextPage)
-	
-	await loadPageCount()
-	
-	// Check for page in URL hash
-	const hash = window.location.hash.substring(1)
-	if (hash) {
-		const match = hash.match(/page=(\d+)/)
-		if (match) {
-			const page = parseInt(match[1]) - 1
-			const start = page * 50
-			loadPage(start)
-		}
-	} else {
-		loadPage(0)
-	}
+	await loadScenes()
 })
 </script>
