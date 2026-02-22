@@ -561,6 +561,9 @@ LEFT JOIN (
       MIN(a.actor_date_created) AS first_action,
       MAX(a.actor_date_created) AS last_action
     FROM actor a
+    INNER JOIN actrole ar ON ar.actor_id = a.actor_id
+    INNER JOIN pose p ON p.actrole_id = ar.actrole_id AND p.pose_is_deleted = 0
+    INNER JOIN channel ch ON ch.channel_id = p.channel_id AND ch.channel_name = 'Actions'
     GROUP BY
       a.scene_id,
       a.actor_id,
