@@ -213,11 +213,8 @@
 		entryKey.innerText = key
 		const entryValue = document.createElement("td")
 		const escapedValue = optionalANSI(String(value))
-		if(escapedValue.includes("<span")) {
-			entryValue.innerHTML = escapedValue
-		} else {
-			entryValue.textContent = escapedValue
-		}
+		// Always use innerHTML since optionalANSI returns properly escaped HTML
+		entryValue.innerHTML = escapedValue
 		entryValue.classList.add("value")
 		entry.appendChild(entryKey)
 		entry.appendChild(entryValue)
