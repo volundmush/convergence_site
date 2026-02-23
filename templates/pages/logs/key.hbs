@@ -75,10 +75,48 @@
 						result += '</span>'
 						spanDepth--
 					}
-					i += 3
+				i += 3
+				continue
+			}
+			// Check for 8-bit color code: %c0x## or %C0x##
+			else if((code === 'c' || code === 'C') && letter === '0' && i + 5 < str.length && str[i + 3] === 'x') {
+				const hexCode = str[i + 4] + str[i + 5]
+				const colorCode = parseInt(hexCode, 16)
+				if(!isNaN(colorCode) && colorCode >= 0 && colorCode <= 255) {
+					// Convert ANSI 256 color to RGB
+					let rgb
+					if(colorCode <= 15) {
+						// Standard 4-bit colors (0-15)
+						const standardColors = [
+							[0, 0, 0], [128, 0, 0], [0, 128, 0], [128, 128, 0],
+							[0, 0, 128], [128, 0, 128], [0, 128, 128], [192, 192, 192],
+							[128, 128, 128], [255, 0, 0], [0, 255, 0], [255, 255, 0],
+							[0, 0, 255], [255, 0, 255], [0, 255, 255], [255, 255, 255]
+						]
+						rgb = standardColors[colorCode]
+					} else if(colorCode <= 231) {
+						// 216 colors (6x6x6 RGB cube, colors 16-231)
+						const n = colorCode - 16
+						const r = Math.floor(n / 36) * 51
+						const g = Math.floor((n % 36) / 6) * 51
+						const b = (n % 6) * 51
+						rgb = [r, g, b]
+					} else {
+						// Grayscale (232-255)
+						const gray = 8 + (colorCode - 232) * 10
+						rgb = [gray, gray, gray]
+					}
+					const isBackground = code === 'C'
+					const style = isBackground
+						? `background-color: rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`
+						: `color: rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`
+					result += `<span style="${style}">`
+					spanDepth++
+					i += 6
 					continue
 				}
-				else if((code === 'c' || code === 'C') && letter.match(/[a-zA-Z]/)) {
+			}
+			else if((code === 'c' || code === 'C') && letter.match(/[a-zA-Z]/)) {
 					let styles = []
 					if(colorMap[letter]) {
 						if(letter === letter.toUpperCase() && letter !== letter.toLowerCase()) {
