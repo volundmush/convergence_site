@@ -43,6 +43,15 @@
 		// HTML escape the input first to prevent XSS
 		str = escapeHtml(str)
 
+		// HTML entities for special characters
+		const entityMap = {
+			38: '&amp;',   // &
+			60: '&lt;',    // <
+			62: '&gt;',    // >
+			34: '&quot;',  // "
+			39: '&#39;'    // '
+		}
+
 		const colorMap = {
 			'x': '#000000', 'X': 'background-color: #000000',
 			'r': '#ff0000', 'R': 'background-color: #ff0000',
@@ -66,6 +75,19 @@
 		let i = 0
 
 		while(i < str.length) {
+			if(str[i] === '%' && i + 4 < str.length && str[i + 1] === '<' && str[i + 5] === '>') {
+				// ASCII code format: %<###>
+				const asciiCode = parseInt(str.substring(i + 2, i + 5), 10)
+				if(!isNaN(asciiCode) && asciiCode >= 0 && asciiCode <= 127) {
+					if(entityMap[asciiCode]) {
+						result += entityMap[asciiCode]
+					} else {
+						result += String.fromCharCode(asciiCode)
+					}
+					i += 6
+					continue
+				}
+			}
 			if(str[i] === '%' && i + 2 < str.length) {
 				const code = str[i + 1]
 				const letter = str[i + 2]
