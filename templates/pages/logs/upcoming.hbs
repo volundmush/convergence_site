@@ -19,7 +19,7 @@
 <script>
 async function loadScenes() {
 	try {
-		const res = await fetch("/api/logs/upcoming/", {
+		const res = await fetch("/gapi/logs/upcoming/", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({})

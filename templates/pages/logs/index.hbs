@@ -35,7 +35,7 @@ let totalPageCount = 0
 
 async function loadPageCount() {
 	try {
-		const res = await fetch("/api/logs/pagecount/", {
+		const res = await fetch("/gapi/logs/pagecount/", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" }
 		})
@@ -53,7 +53,7 @@ function loadPage(start = 0, desc = true) {
 	const currentPage = Math.floor(start / 50) + 1
 	window.location.hash = `page=${currentPage}`
 	
-	const res = fetch("/api/logs/list/", {
+	const res = fetch("/gapi/logs/list/", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({ start, desc })

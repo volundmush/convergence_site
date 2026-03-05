@@ -234,7 +234,7 @@ async function main() {
 		ctx.response.body = "Found"
 	})
 
-	router.get("/api/logs/get/:key", async (ctx) => {
+	router.get("/gapi/logs/get/:key", async (ctx) => {
 		try {
 			const sceneKey = ctx.params.key
 			const client = await mysql()
@@ -326,7 +326,7 @@ ORDER BY p.pose_date_created ASC
 		}
 	})
 
-	router.get("/api/characters/get/", async (ctx) => {
+	router.get("/gapi/characters/get/", async (ctx) => {
 		const luaScript = `
 ret = {}
 playersRaw = rhost.strfunc("search", "type=player")
@@ -366,7 +366,7 @@ return json.encode(ret)
 		ctx.response.body = ret
 	})
 
-	router.get("/api/characters/get/:key", async (ctx) => {
+	router.get("/gapi/characters/get/:key", async (ctx) => {
 		const dbref = `${ctx.params.key}`
 		const luaScript = `
 datatypes = {
@@ -460,7 +460,7 @@ return json.encode(char)
 		ctx.response.body = ret
 	})
 
-	router.post("/api/characters/edit/", async (ctx) => {
+	router.post("/gapi/characters/edit/", async (ctx) => {
 		try {
 			const payload = await ctx.request.body.json()
 
@@ -517,7 +517,7 @@ return '"' .. str .. '"'
 		}
 	})
 
-	router.post("/api/logs/list/", async (ctx) => {
+	router.post("/gapi/logs/list/", async (ctx) => {
 		try {
 			const payload = await ctx.request.body.json()
 			const start = payload?.start || 0
@@ -603,7 +603,7 @@ ORDER BY s.scene_id ${desc};
 		}
 	})
 
-	router.get("/api/logs/player/:objid", async (ctx) => {
+	router.get("/gapi/logs/player/:objid", async (ctx) => {
 		try {
 			const objid = ctx.params.objid
 			const client = await mysql()
@@ -641,7 +641,7 @@ INNER JOIN entity e ON e.entity_id = a.entity_id
 		}
 	})
 
-	router.post("/api/logs/pagecount/", async (ctx) => {
+	router.post("/gapi/logs/pagecount/", async (ctx) => {
 		try {
 			const client = await mysql()
 
@@ -663,7 +663,7 @@ WHERE scene_status != -1
 		}
 	})
 
-	router.post("/api/logs/upcoming/", async (ctx) => {
+	router.post("/gapi/logs/upcoming/", async (ctx) => {
 		try {
 			const payload = await ctx.request.body.json()
 			const start = payload?.start || 0

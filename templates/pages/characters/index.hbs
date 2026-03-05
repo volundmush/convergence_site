@@ -40,7 +40,7 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
-	const res = await fetch("/api/characters/get/")
+	const res = await fetch("/gapi/characters/get/")
 	const characters = (await res.json()).sort((x, y) => x.name.localeCompare(y.name))
 	const characterlists = document.querySelector(".characterlists")
 	
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 		}
 
 		try {
-			const response = await fetch("/api/characters/edit/", {
+			const response = await fetch("/gapi/characters/edit/", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"

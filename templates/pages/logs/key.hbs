@@ -177,7 +177,7 @@
 		}
 	}
 
-	const res = await fetch(`/api/logs/get/${encodeURIComponent("{{ sceneKey }}")}`)
+	const res = await fetch(`/gapi/logs/get/${encodeURIComponent("{{ sceneKey }}")}`)
 	const data = await res.json()
 
 	if(data.error) {

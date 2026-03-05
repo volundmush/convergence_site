@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 		}
 	}
 
-	const res = await fetch(`/api/characters/get/${encodeURIComponent("{{ dbref }}")}`)
+	const res = await fetch(`/gapi/characters/get/${encodeURIComponent("{{ dbref }}")}`)
 	const character = await res.json()
 	window.character = character
 
@@ -183,7 +183,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 	// Load character logs
 	const objid = character.objid
-	const logsRes = await fetch(`/api/logs/player/${encodeURIComponent(objid)}`)
+	const logsRes = await fetch(`/gapi/logs/player/${encodeURIComponent(objid)}`)
 	const logs = await logsRes.json()
 
 	const logsContainer = document.querySelector(".character .data .logs")
