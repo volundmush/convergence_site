@@ -3,8 +3,8 @@ FROM node:20-slim AS build
 
 WORKDIR /app
 
-# Install pnpm and dependencies in one step
-RUN npm install -g pnpm
+# Install OpenSSL and pnpm - must match runtime environment
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/* && npm install -g pnpm
 COPY package.json .npmrc ./
 RUN pnpm install
 
