@@ -23,7 +23,8 @@ services:
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
     volumes:
-      - ./postgres:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups
     networks:
       - internal
     healthcheck:
@@ -81,6 +82,9 @@ services:
       - "traefik.http.routers.dynamic-webpages.entrypoints=web"
       - "traefik.http.routers.dynamic-webpages.priority=1"
       - "traefik.http.services.dynamic-webpages.loadbalancer.server.port=8000"
+
+volumes:
+  postgres_data:
 
 networks:
   internal:

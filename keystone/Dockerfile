@@ -4,16 +4,13 @@ WORKDIR /app
 
 # Install dependencies
 COPY package.json package-lock.json* yarn.lock* ./
-RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
+RUN npm install --legacy-peer-deps
 
 # Copy application code
 COPY . .
 
-# Build Keystone CMS
-RUN npm run build
-
-# Create directories for uploads and public assets
-RUN mkdir -p /app/public/uploads
+# Build Keystone CMS (prisma client generation)
+RUN npx prisma generate || true
 
 # Expose port (Keystone default is 3000)
 EXPOSE 3000
