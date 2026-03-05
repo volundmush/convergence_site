@@ -1,8 +1,5 @@
 FROM node:20-alpine
 
-# Accept DATABASE_URL as build argument
-ARG DATABASE_URL
-
 # Install pnpm
 RUN npm install -g pnpm
 
@@ -14,18 +11,9 @@ COPY package.json .npmrc ./
 # Install dependencies
 RUN pnpm install
 
-# Copy Prisma schema
+# Copy all source files
+COPY keystone.ts schema.ts ./
 COPY prisma/ ./prisma/
-
-# Generate Prisma client with DATABASE_URL from build args
-RUN DATABASE_URL=${DATABASE_URL} pnpm prisma generate
-
-# Copy source files
-COPY keystone.ts .
-COPY schema.ts .
-
-# Build Keystone for production
-RUN pnpm build
 
 # Copy entrypoint script
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
