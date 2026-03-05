@@ -19,12 +19,12 @@ COPY . ./
 RUN pnpm build
 
 # Runtime container
-FROM node:20-alpine3.16
+FROM node:20-slim
 
 WORKDIR /app
 
-# Install OpenSSL 1.1 and pnpm for runtime
-RUN apk add --no-cache openssl1.1 && npm install -g pnpm
+# Install pnpm for runtime
+RUN npm install -g pnpm
 
 # Copy built app from build stage
 COPY --from=build /app /app
