@@ -60,6 +60,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.keystone.rule=PathPrefix(`/admin`)"
       - "traefik.http.routers.keystone.entrypoints=web"
+      - "traefik.http.routers.keystone.priority=100"
       - "traefik.http.services.keystone.loadbalancer.server.port=3000"
       - "traefik.http.middlewares.keystone-strip.stripprefix.prefixes=/admin"
       - "traefik.http.routers.keystone.middlewares=keystone-strip"
@@ -73,6 +74,8 @@ services:
       - .:/app
     ports:
       - "127.0.0.1:8000:8000"
+    networks:
+      - internal
     env_file:
       - .env
     environment:
