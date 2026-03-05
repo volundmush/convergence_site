@@ -1,6 +1,7 @@
 import { config } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { lists } from './schema';
+import express from 'express';
 
 export default config({
   db: {
@@ -10,6 +11,39 @@ export default config({
   lists,
   session: {
     secret: process.env.SESSION_SECRET || 'development-secret-key-change-in-production',
+  },
+  storage: {
+    images: {
+      kind: 'local',
+      type: 'image',
+      storagePath: 'public/images',
+      publicPath: '/images',
+    },
+    files: {
+      kind: 'local',
+      type: 'file',
+      storagePath: 'public/files',
+      publicPath: '/files',
+    },
+  },
+  server: {
+    extendExpressApp: app => {
+      app.use(
+        '/images',
+        express.static('public/images', { index: false, redirect: false, lastModified: false })
+      )
+      app.use(
+        '/files',
+        express.static('public/files', {
+          setHeaders(res) {
+            res.setHeader('Content-Type', 'application/octet-stream')
+          },
+          index: false,
+          redirect: false,
+          lastModified: false,
+        })
+      )
+    },
   },
   ui: {
     basePath: '/admin',

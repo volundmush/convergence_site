@@ -1,3 +1,6 @@
 .env
 logs/*.log
 raw
+keystone/.pnpm-store
+keystone/.keystone
+keystone/pnpm-lock.yaml

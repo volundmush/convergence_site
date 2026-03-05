@@ -7,7 +7,6 @@ import {
   relationship,
   text,
   timestamp,
-  richText,
   select,
 } from '@keystone-6/core/fields';
 
@@ -19,6 +18,7 @@ export const lists = {
         validation: { isRequired: true },
       }),
       image: image({
+        storage: 'images',
         validation: { isRequired: true },
       }),
       alt: text({
@@ -55,15 +55,10 @@ export const lists = {
         ],
         defaultValue: 'draft',
       }),
-      content: richText({
-        formatting: {
-          inlineMarks: true,
-          listTypes: true,
-          alignment: true,
+      content: text({
+        ui: {
+          displayMode: 'textarea',
         },
-        dividers: true,
-        links: true,
-        images: true,
       }),
       images: relationship({
         ref: 'Image',
