@@ -37,6 +37,8 @@ export default config({
         console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
         next();
       });
+      // Serve Admin UI at /admin basePath
+      app.use('/admin', express.static('.keystone/admin/.next', { index: 'index.html', redirect: false }));
       app.use(
         '/images',
         express.static('public/images', { index: false, redirect: false, lastModified: false })
