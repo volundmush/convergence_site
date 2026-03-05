@@ -3,3 +3,10 @@ MYSQL_HOST=127.0.0.1
 MYSQL_USER=rooty
 MYSQL_PASS=tooty
 MYSQL_DB=fruity
+
+# Keystone CMS
+KEYSTONE_SESSION_SECRET=your-secret-key-change-this-in-production
+POSTGRES_DB=convergence_web
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+
