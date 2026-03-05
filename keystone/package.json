@@ -1,0 +1,23 @@
+{
+  "name": "convergence-keystone-cms",
+  "version": "1.0.0",
+  "description": "Keystone CMS for Convergence - serves images and pages",
+  "scripts": {
+    "dev": "keystone dev",
+    "start": "keystone start",
+    "build": "keystone build",
+    "reset-db": "keystone prisma migrate reset"
+  },
+  "dependencies": {
+    "@keystone-6/core": "^5.0.0",
+    "@keystone-6/document-renderer": "^7.0.0",
+    "graphql": "^16.0.0",
+    "next": "^14.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "prisma": {
+    "seed": "node --require dotenv/config ./seed.ts"
+  }
+}
