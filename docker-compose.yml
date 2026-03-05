@@ -1,4 +1,20 @@
 services:
+  traefik:
+    image: traefik:v2.10
+    restart: unless-stopped
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "127.0.0.1:80:80"
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - internal
+
   postgres:
     image: postgres:16-alpine
     restart: unless-stopped
@@ -38,6 +54,13 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keystone.rule=PathPrefix(`/admin`)"
+      - "traefik.http.routers.keystone.entrypoints=web"
+      - "traefik.http.services.keystone.loadbalancer.server.port=3000"
+      - "traefik.http.middlewares.keystone-strip.stripprefix.prefixes=/admin"
+      - "traefik.http.routers.keystone.middlewares=keystone-strip"
 
   dynamic-webpages:
     image: denoland/deno:alpine
@@ -52,6 +75,12 @@ services:
       - .env
     environment:
       - RHOST_ENDPOINT=${RHOST_ENDPOINT}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dynamic-webpages.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.dynamic-webpages.entrypoints=web"
+      - "traefik.http.routers.dynamic-webpages.priority=1"
+      - "traefik.http.services.dynamic-webpages.loadbalancer.server.port=8000"
 
 networks:
   internal:

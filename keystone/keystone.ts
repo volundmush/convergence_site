@@ -12,6 +12,7 @@ export default config({
     secret: process.env.SESSION_SECRET || 'development-secret-key-change-in-production',
   },
   ui: {
+    basePath: '/admin',
     isAccessAllowed: allowAll,
   },
 });
