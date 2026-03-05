@@ -37,20 +37,7 @@ export default config({
         console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
         next();
       });
-      // Serve Admin UI at /admin basePath
-      const fs = require('fs');
-      const path = require('path');
-      const adminPath = path.join(process.cwd(), '.keystone/admin/.next');
-      console.log(`[ADMIN] Checking for admin UI at: ${adminPath}`);
-      if (fs.existsSync(adminPath)) {
-        console.log(`[ADMIN] Found admin UI, serving...`);
-        app.use('/admin', express.static(adminPath, { index: 'index.html' }));
-        app.get('/admin*', (req, res) => {
-          res.sendFile(path.join(adminPath, 'index.html'));
-        });
-      } else {
-        console.error(`[ADMIN] ERROR: Admin UI directory not found at ${adminPath}`);
-      }
+
       app.use(
         '/images',
         express.static('public/images', { index: false, redirect: false, lastModified: false })
