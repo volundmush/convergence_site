@@ -22,7 +22,7 @@ WORKDIR /app
 # Install OpenSSL 1.1 and pnpm for runtime
 RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/* && npm install -g pnpm
 
-# Copy entire app from build stage (includes .keystone, .next, node_modules, etc)
+# Copy entire app from build stage
 COPY --from=build /app /app
 
 EXPOSE 3000
