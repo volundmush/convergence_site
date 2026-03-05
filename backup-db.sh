@@ -1,9 +1,8 @@
 #!/bin/bash
+set -euo pipefail
 
 # PostgreSQL Database Backup Script
 # Creates timestamped backups in the ./backups directory
-
-set -e
 
 BACKUP_DIR="./backups"
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
