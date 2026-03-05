@@ -1,10 +1,10 @@
 #!/bin/bash
 set -e
 
-echo "🔄 Running Prisma migrations..."
-pnpm prisma migrate deploy || pnpm prisma db push
+echo "🔄 Syncing Prisma schema to database..."
+pnpm prisma db push --skip-generate
 
-echo "✅ Migrations complete"
+echo "✅ Database schema synced"
 echo "🚀 Starting Keystone..."
 
 exec pnpm start
