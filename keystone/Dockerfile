@@ -1,5 +1,8 @@
 FROM node:20-alpine
 
+# Install OpenSSL 1.1 for Prisma
+RUN apk add --no-cache openssl1.1
+
 # Install pnpm
 RUN npm install -g pnpm
 
