@@ -11,6 +11,8 @@ export default config({
   lists,
   session: {
     secret: process.env.SESSION_SECRET || 'development-secret-key-change-in-production',
+    data: 'role',
+    get: ({ item }) => ({ isSignedIn: !!item, role: item?.role }),
   },
   storage: {
     images: {
