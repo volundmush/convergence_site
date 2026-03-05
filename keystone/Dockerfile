@@ -3,13 +3,9 @@ FROM node:20-slim AS build
 
 WORKDIR /app
 
-# Install pnpm
+# Install pnpm and dependencies in one step
 RUN npm install -g pnpm
-
-# Copy package files
 COPY package.json .npmrc ./
-
-# Install dependencies
 RUN pnpm install
 
 # Copy all source files
@@ -23,8 +19,8 @@ FROM node:20-slim
 
 WORKDIR /app
 
-# Install pnpm for runtime
-RUN npm install -g pnpm
+# Install OpenSSL 1.1 and pnpm for runtime
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/* && npm install -g pnpm
 
 # Copy built app from build stage
 COPY --from=build /app /app
