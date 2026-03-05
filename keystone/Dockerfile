@@ -23,6 +23,9 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+# Install pnpm for runtime
+RUN npm install -g pnpm
+
 # Copy built app from build stage
 COPY --from=build /app /app
 
