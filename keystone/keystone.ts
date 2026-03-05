@@ -32,6 +32,11 @@ export default config({
     cors: { origin: true, credentials: true },
     extendExpressApp: app => {
       app.set('trust proxy', true);
+      // Log all requests
+      app.use((req, res, next) => {
+        console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+        next();
+      });
       app.use(
         '/images',
         express.static('public/images', { index: false, redirect: false, lastModified: false })
