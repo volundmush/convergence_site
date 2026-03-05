@@ -1,12 +1,10 @@
-FROM node:20-alpine3.16
+# Build container
+FROM node:20-alpine AS build
 
-# Install OpenSSL 1.1 for Prisma (Alpine 3.16 has this package)
-RUN apk add --no-cache openssl1.1
+WORKDIR /app
 
 # Install pnpm
 RUN npm install -g pnpm
-
-WORKDIR /app
 
 # Copy package files
 COPY package.json .npmrc ./
@@ -15,19 +13,22 @@ COPY package.json .npmrc ./
 RUN pnpm install
 
 # Copy all source files
-COPY keystone.ts schema.ts ./
-COPY prisma/ ./prisma/
+COPY . ./
 
-# Copy entrypoint script
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+# Build Keystone
+RUN pnpm build
 
-# Expose port
+# Runtime container
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy built app from build stage
+COPY --from=build /app /app
+
 EXPOSE 3000
 
-# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
 
-# Run the entrypoint script at startup
-CMD ["/usr/local/bin/entrypoint.sh"]
+CMD ["pnpm", "start"]
