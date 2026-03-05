@@ -58,12 +58,10 @@ services:
       start_period: 40s
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.keystone.rule=PathPrefix(`/admin`)"
+      - "traefik.http.routers.keystone.rule=PathPrefix(`/`)"
       - "traefik.http.routers.keystone.entrypoints=web"
-      - "traefik.http.routers.keystone.priority=100"
+      - "traefik.http.routers.keystone.priority=0"
       - "traefik.http.services.keystone.loadbalancer.server.port=3000"
-      - "traefik.http.middlewares.keystone-strip.stripprefix.prefixes=/admin"
-      - "traefik.http.routers.keystone.middlewares=keystone-strip"
 
   dynamic-webpages:
     image: denoland/deno:alpine

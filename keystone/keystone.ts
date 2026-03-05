@@ -50,7 +50,7 @@ export default config({
     },
   },
   ui: {
-    basePath: '',
+    basePath: '/admin',
     isAccessAllowed: allowAll,
   },
 });
