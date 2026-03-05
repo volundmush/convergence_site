@@ -38,7 +38,15 @@ export default config({
         next();
       });
       // Serve Admin UI at /admin basePath
-      app.use('/admin', express.static('.keystone/admin/.next', { index: 'index.html', redirect: false }));
+      const path = require('path');
+      const adminPath = path.join(process.cwd(), '.keystone/admin/.next');
+      console.log(`Serving admin UI from: ${adminPath}`);
+      app.use('/admin', express.static(adminPath, { index: 'index.html' }));
+      app.use('/admin/_next', express.static(path.join(adminPath, '_next')));
+      // Fallback for client-side routing
+      app.get('/admin/*', (req, res) => {
+        res.sendFile(path.join(adminPath, 'index.html'));
+      });
       app.use(
         '/images',
         express.static('public/images', { index: false, redirect: false, lastModified: false })

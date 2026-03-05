@@ -58,7 +58,7 @@ services:
       start_period: 40s
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.keystone.rule=PathPrefix(`/admin`) || PathPrefix(`/api`) || PathPrefix(`/graphql`)"
+      - "traefik.http.routers.keystone.rule=PathPrefix(`/admin`) || PathPrefix(`/api`) || PathPrefix(`/graphql`) || PathPrefix(`/files`) || PathPrefix(`/images`)"
       - "traefik.http.routers.keystone.entrypoints=web"
       - "traefik.http.routers.keystone.priority=10"
       - "traefik.http.services.keystone.loadbalancer.server.port=3000"
@@ -80,7 +80,7 @@ services:
       - RHOST_ENDPOINT=${RHOST_ENDPOINT}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.dynamic-webpages.rule=PathPrefix(`/static`) || PathPrefix(`/logs`) || PathPrefix(`/characters`) || PathPrefix(`/api`)"
+      - "traefik.http.routers.dynamic-webpages.rule=PathPrefix(`/`)"
       - "traefik.http.routers.dynamic-webpages.entrypoints=web"
       - "traefik.http.routers.dynamic-webpages.priority=1"
       - "traefik.http.services.dynamic-webpages.loadbalancer.server.port=8000"
