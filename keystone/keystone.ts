@@ -11,8 +11,8 @@ export default config({
   lists,
   session: {
     secret: process.env.SESSION_SECRET || 'development-secret-key-change-in-production',
-    data: 'role',
-    get: ({ item }) => ({ isSignedIn: !!item, role: item?.role }),
+    data: 'authenticated',
+    get: ({ item }) => ({ isSignedIn: !!item, bittype: item?.bittype }),
   },
   storage: {
     images: {
@@ -32,6 +32,28 @@ export default config({
     cors: { origin: true, credentials: true },
     extendExpressApp: app => {
       app.set('trust proxy', true);
+      const cookieParser = require('cookie-parser');
+      app.use(cookieParser());
+      // Custom session middleware to validate JWT from auth cookie
+      app.use((req, res, next) => {
+        const token = req.cookies?.auth;
+        if (token) {
+          try {
+            const parts = token.split('.');
+            const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
+            req.session = {
+              isSignedIn: true,
+              bittype: payload.bittype,
+              accountName: payload.accountName,
+              characterName: payload.characterName,
+              item: { authenticated: true }
+            };
+          } catch (e) {
+            // Invalid token, continue without session
+          }
+        }
+        next();
+      });
       // Log all requests
       app.use((req, res, next) => {
         console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
@@ -57,6 +79,8 @@ export default config({
   },
   ui: {
     basePath: '/admin',
-    isAccessAllowed: allowAll,
+    isAccessAllowed: (context) => {
+      return !!context.session?.isSignedIn;
+    },
   },
 });

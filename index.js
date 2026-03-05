@@ -1,6 +1,7 @@
 import { Application, Router, send } from "jsr:@oak/oak@17.1.6"
 import Handlebars from "npm:handlebars@^4.7.8"
 import { Client } from "https://deno.land/x/mysql@v2.12.1/mod.ts"
+import * as jose from "https://deno.land/x/jose@v4.14.1/index.ts"
 
 const rhost = Deno.env.get("RHOST_ENDPOINT") || "http://%2322222umicupcake@127.0.0.1:2061/"
 const SERVER_START_TIME = Date.now()
@@ -98,6 +99,27 @@ async function rhostCheckLogin(accountName, password, characterName = undefined)
 		return { characterRef: ret.characterRef }
 	} else {
 		return {}
+	}
+}
+
+// JWT functions
+const JWT_SECRET = Deno.env.get("JWT_SECRET") || "change-this-in-production"
+const jwtSecret = new TextEncoder().encode(JWT_SECRET)
+
+async function createJWT(accountName, characterName, bittype) {
+	const token = await jose.SignJWT({ accountName, characterName, bittype })
+		.setProtectedHeader({ alg: 'HS256' })
+		.setExpirationTime('7d')
+		.sign(jwtSecret)
+	return token
+}
+
+async function verifyJWT(token) {
+	try {
+		const verified = await jose.jwtVerify(token, jwtSecret)
+		return verified.payload
+	} catch (error) {
+		return null
 	}
 }
 
@@ -228,11 +250,59 @@ async function main() {
 		}
 	})
 
-	router.get("/", async (ctx) => {
-		ctx.response.status = 301
-		ctx.response.headers.set("Location", "/static/")
-		ctx.response.body = "Found"
-	})
+	// Fallback handler to check Keystone for pages
+	const keystonePageFallback = async (ctx) => {
+		const slug = ctx.request.url.pathname.replace(/^\/+|\/+$/g, '') // Remove leading/trailing slashes
+
+		try {
+			const query = `
+				query {
+					pages(where: { slug: { equals: "${slug}" } }) {
+						id
+						title
+						slug
+						status
+						content
+						publishedAt
+					}
+				}
+			`
+
+			const response = await fetch('http://keystone:3000/graphql', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ query })
+			})
+
+			const data = await response.json()
+
+			if (data.data?.pages?.length > 0) {
+				const page = data.data.pages[0]
+				// Only serve published pages
+				if (page.status === 'published') {
+					const pageData = {
+						user: ctx.state.user || null,
+						page: {
+							title: page.title,
+							slug: page.slug,
+							content: page.content
+						}
+					}
+
+					const html = await renderPage(siteTemplate, "/app/templates/pages/keystone-page.hbs", pageData)
+					ctx.response.headers.set("Content-Type", "text/html")
+					ctx.response.body = html
+					return
+				}
+			}
+		} catch (error) {
+			await logError(error, "Keystone page fallback")
+		}
+
+		// No page found, continue to 404
+		ctx.response.status = 404
+		ctx.response.body = { error: "Not Found" }
+	}
 
 	router.get("/gapi/logs/get/:key", async (ctx) => {
 		try {
@@ -740,6 +810,71 @@ ORDER BY s.scene_date_scheduled ASC
 		}
 	})
 
+	// Signin routes
+	router.get("/signin/", async (ctx) => {
+		try {
+			const data = {
+				user: ctx.state.user || null
+			}
+
+			const html = await renderPage(siteTemplate, "/app/templates/pages/signin.hbs", data)
+			ctx.response.headers.set("Content-Type", "text/html")
+			ctx.response.body = html
+		} catch (error) {
+			await logError(error, "GET /signin")
+			throw error
+		}
+	})
+
+	router.post("/signin/", async (ctx) => {
+		try {
+			const body = await ctx.request.body.json()
+			const { accountName, password, characterName } = body
+
+			if (!accountName || !password || !characterName) {
+				ctx.response.status = 400
+				ctx.response.body = { error: "Missing required fields" }
+				return
+			}
+
+			const loginResult = await rhostCheckLogin(accountName, password, characterName)
+
+			if (!loginResult?.characterRef) {
+				ctx.response.status = 401
+				ctx.response.body = { error: "Invalid credentials" }
+				return
+			}
+
+			// Check if user is staff (bittype > 1)
+			const bittype = await rhostExec(`[bittype(${loginResult.characterRef})]`)
+			const bittpNum = parseInt(bittype)
+
+			if (bittpNum <= 1) {
+				ctx.response.status = 403
+				ctx.response.body = { error: "Only staff members can access the admin panel" }
+				return
+			}
+
+			// Create JWT token
+			const token = await createJWT(accountName, characterName, bittpNum)
+
+			// Set JWT cookie
+			ctx.cookies.set("auth", token, {
+				httpOnly: true,
+				secure: Deno.env.get("NODE_ENV") === "production",
+				sameSite: "Lax",
+				maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+			})
+
+			ctx.response.status = 200
+			ctx.response.body = { success: true, message: "Signed in successfully", token }
+		} catch (error) {
+			await logError(error, "POST /signin")
+			ctx.response.status = 500
+			ctx.response.body = { error: "Failed to sign in" }
+		}
+	})
+
 	// Centralized route configuration
 	const pageRoutes = [
 		{ path: "/characters/", template: "/app/templates/pages/characters/index.hbs", errorContext: "Characters list page render" },
@@ -801,6 +936,9 @@ ORDER BY s.scene_date_scheduled ASC
 		// Continue to next middleware
 		await next()
 	})
+
+	// Fallback handler: try to serve pages from Keystone
+	router.get("/:path+", keystonePageFallback)
 
 	// 404 handler for all other routes
 	app.use((ctx) => {
