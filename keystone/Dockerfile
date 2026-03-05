@@ -14,8 +14,9 @@ RUN pnpm install --frozen-lockfile || pnpm install
 # Copy application code
 COPY . .
 
-# Build Keystone CMS (prisma client generation)
+# Build Keystone CMS (prisma client generation and build)
 RUN pnpm prisma generate || true
+RUN pnpm build
 
 # Expose port (Keystone default is 3000)
 EXPOSE 3000
