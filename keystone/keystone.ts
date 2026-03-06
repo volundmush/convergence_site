@@ -31,7 +31,6 @@ export default config({
 	server: {
 		cors: { origin: true, credentials: true },
 		extendExpressApp: (app, commonContext) => {
-			console.log('[Keystone] extendExpressApp called');
 			app.set('trust proxy', true);
 			const cookieParser = require('cookie-parser');
 			app.use(cookieParser());
