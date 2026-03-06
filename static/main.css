@@ -85,7 +85,7 @@ header {
 }
 
 header::before {
-	background: url(/w/images/6/67/Umisticker.webp);
+	background: url(/static/umiwa.webp);
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
