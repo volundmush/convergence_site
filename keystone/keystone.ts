@@ -82,7 +82,9 @@ export default config({
 	ui: {
 		basePath: '/admin',
 		isAccessAllowed: (context) => {
-			return !!context.session?.isSignedIn;
+			const allowed = !!context.session?.isSignedIn;
+			console.log('[Admin Access]', 'session:', context.session, 'allowed:', allowed);
+			return allowed;
 		},
 	},
 });
