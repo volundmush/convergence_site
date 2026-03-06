@@ -667,96 +667,68 @@ main a, main a:active, main a:visited, main a:hover {
 	grid-template-columns: 80px 1fr 100px 1fr;
 }
 
-/* ============================================
-   SIGNIN PAGE
-   Scoped to data-page="signin" only
-   ============================================ */
-[data-page="signin"] .signin-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.automated main .signin-form-container {
+	max-width: 600px;
+	border: solid 2px var(--primary-hi);
+	padding: 15px;
+	box-sizing: border-box;
+	margin: 30px auto 0;
 }
 
-[data-page="signin"] .signin-box {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  width: 100%;
-  max-width: 400px;
+.automated main .signin-form-container form div {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 15px;
 }
 
-[data-page="signin"] .signin-box h1 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 2rem;
-  font-size: 1.8rem;
+.automated main .signin-form-container form label {
+	margin-bottom: 5px;
+	font-weight: bold;
 }
 
-[data-page="signin"] .form-group {
-  margin-bottom: 1.5rem;
+.automated main .signin-form-container form input[type="text"],
+.automated main .signin-form-container form input[type="password"] {
+	width: 100%;
+	padding: 8px;
+	box-sizing: border-box;
+	border: 1px solid var(--primary-hi);
+	background: var(--primary-bg);
+	color: var(--primary-fg);
+	font-family: inherit;
 }
 
-[data-page="signin"] .form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #555;
-  font-weight: 500;
+.automated main .signin-form-container form button {
+	padding: 10px 20px;
+	background: var(--secondary-bg);
+	color: var(--secondary-fg);
+	border: none;
+	cursor: pointer;
+	font-size: 1em;
+	font-weight: bold;
+	margin-top: 10px;
+	transition: all 0.1s ease;
 }
 
-[data-page="signin"] .form-group input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  box-sizing: border-box;
+.automated main .signin-form-container form button:hover {
+	background: var(--tertiary-bg);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-[data-page="signin"] .form-group input:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+.automated main .signin-form-container form button:active {
+	transform: translateY(2px);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-[data-page="signin"] .signin-button {
-  width: 100%;
-  padding: 0.75rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s;
+.automated main .signin-form-container .error-message {
+	color: #d32f2f;
+	margin-top: 1rem;
+	display: none;
 }
 
-[data-page="signin"] .signin-button:hover {
-  transform: translateY(-2px);
+.automated main .signin-form-container .error-message.show {
+	display: block;
 }
-
-[data-page="signin"] .signin-button:active {
-  transform: translateY(0);
-}
-
-[data-page="signin"] .error-message {
-  margin-top: 1rem;
-  color: #d32f2f;
-  text-align: center;
-  display: none;
-}
-
-[data-page="signin"] .error-message.show {
-  display: block;
-}
-
-/* ============================================
-   KEYSTONE PAGES (CMS-managed content)
-   Scoped to class="keystone-page" only
-   ============================================ */
 .keystone-page {
   padding: 2rem;
   max-width: 900px;
