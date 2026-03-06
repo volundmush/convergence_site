@@ -2,6 +2,7 @@ import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import {
 	checkbox,
+	document,
 	file,
 	image,
 	relationship,
@@ -55,10 +56,9 @@ export const lists = {
 				],
 				defaultValue: 'draft',
 			}),
-			content: text({
-				ui: {
-					displayMode: 'textarea',
-				},
+			content: document({
+				formatting: { inlineMarks: 'inherit', softBreaks: 'inherit' },
+				dividers: 'inherit',
 			}),
 			images: relationship({
 				ref: 'Image',
