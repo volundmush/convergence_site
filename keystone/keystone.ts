@@ -2,6 +2,7 @@ import { config } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { lists } from './schema';
 import express from 'express';
+import { parse } from 'graphql';
 
 export default config({
 	db: {
@@ -80,11 +81,12 @@ export default config({
 			// GraphQL endpoint for external API requests
 			app.post('/graphql', async (req, res) => {
 				try {
-					const { query, variables } = req.body;
-					const result = await commonContext.graphql.raw({
-						source: query,
-						variableValues: variables,
-					});
+				const { query, variables } = req.body;
+				const parsedQuery = parse(query);
+				const result = await commonContext.graphql.raw({
+					source: parsedQuery,
+					variableValues: variables,
+				});
 					res.json(result);
 				} catch (error) {
 					console.error('GraphQL error:', error);
