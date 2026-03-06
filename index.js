@@ -957,10 +957,8 @@ ORDER BY s.scene_date_scheduled ASC
 	app.use(router.allowedMethods())
 
 	// Root path handler: try to serve home page from Keystone
-	router.get("/", keystonePageFallback)
-
 	// Fallback handler: try to serve pages from Keystone
-	router.get("/:path+", keystonePageFallback)
+	router.get("/:path*", keystonePageFallback)
 
 	// 404 handler for all other routes
 	app.use((ctx) => {
