@@ -51,7 +51,7 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').request({hostname: 'localhost', port: 3000, path: '/api/graphql', method: 'POST', headers: {'Content-Type': 'application/json'}}, (r) => {if (r.statusCode >= 500) throw new Error(r.statusCode)}).end(JSON.stringify({query: '{__typename}'}))"]
+      test: ["CMD", "node", "-e", "require('http').request({hostname: 'localhost', port: 3000, path: '/admin'}, (r) => {if (r.statusCode >= 500) throw new Error(r.statusCode)}).end()"]
       interval: 30s
       timeout: 10s
       retries: 3
