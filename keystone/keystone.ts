@@ -32,7 +32,6 @@ export default config({
 		cors: { origin: true, credentials: true },
 		extendExpressApp: (app, commonContext) => {
 			app.set('trust proxy', true);
-			app.use(express.json());
 			const cookieParser = require('cookie-parser');
 			app.use(cookieParser());
 			// Custom session middleware to validate JWT from auth cookie
