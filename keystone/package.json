@@ -11,6 +11,7 @@
 	"dependencies": {
 		"@keystone-6/core": "6.5.1",
 		"@keystone-6/document-renderer": "1.1.2",
+		"@keystone-6/fields-document": "7.2.0",
 		"@prisma/client": "5.22.0",
 		"cookie-parser": "1.4.6",
 		"graphql": "16.8.1",

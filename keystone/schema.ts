@@ -2,7 +2,6 @@ import { list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import {
 	checkbox,
-	document,
 	file,
 	image,
 	relationship,
@@ -10,6 +9,7 @@ import {
 	timestamp,
 	select,
 } from '@keystone-6/core/fields';
+import { document } from '@keystone-6/fields-document';
 
 export const lists = {
 	Image: list({
