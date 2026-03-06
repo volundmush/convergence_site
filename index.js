@@ -956,34 +956,6 @@ ORDER BY s.scene_date_scheduled ASC
 	app.use(router.routes())
 	app.use(router.allowedMethods())
 
-	// Trailing slash redirect middleware (runs before 404 handler)
-	app.use(async (ctx, next) => {
-		// Only process GET requests
-		if (ctx.request.method === "GET") {
-			const url = ctx.request.url.pathname
-
-			// Check if URL doesn't end with slash and doesn't have a file extension
-			if (!url.endsWith("/") && !url.includes(".")) {
-				// Try to find a route with trailing slash
-				const routeWithSlash = url + "/"
-
-				// Check if this route exists in our trailing slash routes
-				const trailingSlashRoutes = pageRoutes.map(route => route.path)
-				const routeExists = trailingSlashRoutes.includes(routeWithSlash)
-
-				if (routeExists) {
-					// Redirect to the route with trailing slash
-					ctx.response.status = 302
-					ctx.response.headers.set("Location", routeWithSlash)
-					return
-				}
-			}
-		}
-
-		// Continue to next middleware
-		await next()
-	})
-
 	// Root path handler: try to serve home page from Keystone
 	router.get("/", keystonePageFallback)
 
