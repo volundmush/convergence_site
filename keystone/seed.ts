@@ -20,7 +20,18 @@ async function main() {
 				title: 'Home',
 				slug: '',
 				status: 'published',
-				content: 'Welcome to Convergence',
+				content: {
+					document: [
+						{
+							type: 'paragraph',
+							children: [
+								{
+									text: 'Welcome to Convergence',
+								}
+							]
+						}
+					]
+				},
 				publishedAt: new Date(),
 			},
 		});

@@ -57,8 +57,35 @@ export const lists = {
 				defaultValue: 'draft',
 			}),
 			content: document({
-				formatting: { inlineMarks: 'inherit', softBreaks: 'inherit' },
-				dividers: 'inherit',
+				formatting: {
+					inlineMarks: {
+						bold: true,
+						italic: true,
+						underline: true,
+						strikethrough: true,
+						code: true,
+						superscript: true,
+						subscript: true,
+						keyboard: true,
+					},
+					listTypes: {
+						ordered: true,
+						unordered: true,
+					},
+					alignment: {
+						center: true,
+						end: true,
+					},
+					headingLevels: [1, 2, 3, 4, 5, 6],
+					blockTypes: {
+						blockquote: true,
+						code: true,
+					},
+					softBreaks: true,
+				},
+				links: true,
+				dividers: true,
+				layouts: [[1, 1], [1, 1, 1]],
 			}),
 			images: relationship({
 				ref: 'Image',
