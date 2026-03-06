@@ -1,33 +1,23 @@
-<!--
-{
-  "title": "Staff Sign In"
-}
--->
+<!-- {"title": "Staff Sign In", "slug": "signin"} -->
 
-<div class="signin-container">
-  <div class="signin-box">
-    <h1>Staff Sign In</h1>
-    <form id="signin-form">
-      <div class="form-group">
-        <label for="accountName">Account Name</label>
-        <input type="text" id="accountName" name="accountName" required>
-      </div>
-
-      <div class="form-group">
-        <label for="characterName">Character Name</label>
-        <input type="text" id="characterName" name="characterName" required>
-      </div>
-
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required>
-      </div>
-
-      <button type="submit" class="signin-button">Sign In</button>
-
-      <div id="error-message" class="error-message"></div>
-    </form>
-  </div>
+<h2>Staff Sign In</h2>
+<div class="signin-form-container">
+	<form id="signin-form">
+		<div>
+			<label for="accountName">Account Name:</label>
+			<input type="text" id="accountName" name="accountName" required />
+		</div>
+		<div>
+			<label for="characterName">Character Name:</label>
+			<input type="text" id="characterName" name="characterName" required />
+		</div>
+		<div>
+			<label for="password">Password:</label>
+			<input type="password" id="password" name="password" required />
+		</div>
+		<button type="submit" id="signin-button">Sign In</button>
+		<div id="error-message" class="error-message"></div>
+	</form>
 </div>
 
 <script>
