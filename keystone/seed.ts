@@ -5,9 +5,9 @@ const prisma = new PrismaClient();
 async function main() {
 	try {
 		// Check if home page already exists
-		const existingHomePage = await prisma.page.findUnique({
-			where: { slug: '/' },
-		});
+	const existingHomePage = await prisma.page.findUnique({
+		where: { slug: '' },
+	});
 
 		if (existingHomePage) {
 			console.log('Home page already exists, skipping seed');
@@ -18,7 +18,7 @@ async function main() {
 		const homePage = await prisma.page.create({
 			data: {
 				title: 'Home',
-				slug: '/',
+				slug: '',
 				status: 'published',
 				content: 'Welcome to Convergence',
 				publishedAt: new Date(),
