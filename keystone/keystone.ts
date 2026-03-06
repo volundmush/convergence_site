@@ -32,6 +32,7 @@ export default config({
 		cors: { origin: true, credentials: true },
 		extendExpressApp: (app, commonContext) => {
 			app.set('trust proxy', true);
+			app.use(express.json());
 			const cookieParser = require('cookie-parser');
 			app.use(cookieParser());
 			// Custom session middleware to validate JWT from auth cookie
@@ -77,7 +78,6 @@ export default config({
 			)
 
 			// GraphQL endpoint for external API requests
-			app.use(express.json());
 			app.post('/graphql', async (req, res) => {
 				try {
 					const { query, variables } = req.body;
