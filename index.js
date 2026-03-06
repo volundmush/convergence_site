@@ -271,7 +271,15 @@ async function main() {
 
 	// Fallback handler to check Keystone for pages
 	const keystonePageFallback = async (ctx) => {
-		const slug = ctx.request.url.pathname.replace(/^\/+|\/+$/g, '') // Remove leading/trailing slashes
+		let url = ctx.request.url.pathname
+		// Redirect to trailing slash if not present and no file extension
+		if (!url.endsWith("/") && !url.includes(".")) {
+			ctx.response.status = 302
+			ctx.response.headers.set("Location", url + "/")
+			return
+		}
+		
+		const slug = url.replace(/^\/+|\/+$/g, '') // Remove leading/trailing slashes
 
 		try {
 			const query = `
