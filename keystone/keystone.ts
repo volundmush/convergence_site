@@ -21,6 +21,7 @@ export default config({
 			storagePath: 'public/images',
 			publicPath: '/images',
 		},
+		publicPages: ['/no-access'],
 		files: {
 			kind: 'local',
 			type: 'file',
