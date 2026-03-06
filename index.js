@@ -188,11 +188,17 @@ async function renderPage(siteTemplate, templatePath, data = {}) {
 		}
 	}
 
+	// If cmspage data is provided, merge it into page metadata for the layout
+	if (data.cmspage) {
+		page = { ...page, ...data.cmspage }
+	}
+
+	var cmspage = data.cmspage || {}
 	var pageTemplate = Handlebars.compile(pageContent)
-	var renderedPage = pageTemplate({ ...data, page })
+	var renderedPage = pageTemplate({ ...data, page, cmspage })
 
 	// Inject the rendered page into the layout
-	return siteTemplate({ ...data, page, body: renderedPage })
+	return siteTemplate({ ...data, page, cmspage, body: renderedPage })
 }
 
 async function main() {
