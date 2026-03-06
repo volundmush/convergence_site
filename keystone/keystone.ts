@@ -80,7 +80,7 @@ export default config({
 		},
 	},
 	ui: {
-		basePath: '/admin',
+
 		isAccessAllowed: (context) => {
 			return !!context.session?.isSignedIn;
 		},
