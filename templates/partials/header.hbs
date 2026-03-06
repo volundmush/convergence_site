@@ -9,5 +9,31 @@
 			<a href="/logs/">Logs</a>
 			<a href="/logs/upcoming/">Upcoming</a>
 		</div>
+		<div class="nav-auth">
+			{{#if user}}
+				<span class="user-info">{{ user.characterName }}</span>
+				<a href="/admin/" class="admin-link">Admin</a>
+				<button id="signout-btn" class="signout-button">Sign Out</button>
+			{{else}}
+				<a href="/signin/" class="signin-link">Sign In</a>
+			{{/if}}
+		</div>
 	</nav>
 </header>
+
+<script>
+	document.getElementById('signout-btn')?.addEventListener('click', async () => {
+		try {
+			const response = await fetch('/signout/', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' }
+			})
+
+			if (response.ok) {
+				window.location.href = '/'
+			}
+		} catch (error) {
+			console.error('Sign out failed:', error)
+		}
+	})
+</script>

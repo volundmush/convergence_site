@@ -201,6 +201,19 @@ async function main() {
 	const app = new Application()
 	const router = new Router()
 
+	// Auth middleware - parse JWT from auth cookie and set user context
+	app.use(async (ctx, next) => {
+		ctx.state.user = null
+		const token = ctx.cookies.get('auth')
+		if (token) {
+			const payload = await verifyJWT(token)
+			if (payload) {
+				ctx.state.user = payload
+			}
+		}
+		await next()
+	})
+
 	// Access logging middleware
 	app.use(async (ctx, next) => {
 		const start = Date.now()
@@ -870,8 +883,28 @@ ORDER BY s.scene_date_scheduled ASC
 			ctx.response.body = { success: true, message: "Signed in successfully", token }
 		} catch (error) {
 			await logError(error, "POST /signin")
+		ctx.response.status = 500
+		ctx.response.body = { error: "Failed to sign in" }
+	}
+	})
+
+	// Signout endpoint
+	router.post("/signout/", async (ctx) => {
+		try {
+			// Clear the auth cookie
+			ctx.cookies.set("auth", "", {
+				httpOnly: true,
+				secure: Deno.env.get("NODE_ENV") === "production",
+				sameSite: "Lax",
+				maxAge: 0 // Expire immediately
+			})
+
+			ctx.response.status = 200
+			ctx.response.body = { success: true, message: "Signed out successfully" }
+		} catch (error) {
+			await logError(error, "POST /signout")
 			ctx.response.status = 500
-			ctx.response.body = { error: "Failed to sign in" }
+			ctx.response.body = { error: "Failed to sign out" }
 		}
 	})
 
