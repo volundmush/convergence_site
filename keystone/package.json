@@ -1,23 +1,23 @@
 {
-  "name": "convergence-keystone-cms",
-  "version": "1.0.0",
-  "description": "Keystone CMS for Convergence - serves images and pages",
-  "scripts": {
-    "dev": "keystone dev",
-    "start": "keystone start",
-    "build": "keystone build"
-  },
-  "dependencies": {
-    "@keystone-6/core": "6.5.1",
-    "@keystone-6/document-renderer": "1.1.2",
-    "@prisma/client": "5.22.0",
-    "graphql": "16.8.1",
-    "next": "14.2.35",
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
-  },
-  "devDependencies": {
-    "typescript": "5.3.3",
-    "prisma": "5.22.0"
-  }
+	"name": "convergence-keystone-cms",
+	"version": "1.0.0",
+	"description": "Keystone CMS for Convergence - serves images and pages",
+	"scripts": {
+		"dev": "keystone dev",
+		"start": "keystone start",
+		"build": "keystone build"
+	},
+	"dependencies": {
+		"@keystone-6/core": "6.5.1",
+		"@keystone-6/document-renderer": "1.1.2",
+		"@prisma/client": "5.22.0",
+		"graphql": "16.8.1",
+		"next": "14.2.35",
+		"react": "18.3.1",
+		"react-dom": "18.3.1"
+	},
+	"devDependencies": {
+		"typescript": "5.3.3",
+		"prisma": "5.22.0"
+	}
 }
