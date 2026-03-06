@@ -58,9 +58,15 @@ services:
       start_period: 40s
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.keystone.rule=PathPrefix(`/`)"
-      - "traefik.http.routers.keystone.entrypoints=web"
-      - "traefik.http.routers.keystone.priority=1"
+      - "traefik.http.routers.keystone-admin.rule=PathPrefix(`/admin`)"
+      - "traefik.http.routers.keystone-admin.entrypoints=web"
+      - "traefik.http.routers.keystone-admin.priority=100"
+      - "traefik.http.routers.keystone-api.rule=PathPrefix(`/api`)"
+      - "traefik.http.routers.keystone-api.entrypoints=web"
+      - "traefik.http.routers.keystone-api.priority=50"
+      - "traefik.http.routers.keystone-static.rule=PathPrefix(`/images`) || PathPrefix(`/files`)"
+      - "traefik.http.routers.keystone-static.entrypoints=web"
+      - "traefik.http.routers.keystone-static.priority=30"
       - "traefik.http.services.keystone.loadbalancer.server.port=3000"
 
   dynamic-webpages:
@@ -80,9 +86,9 @@ services:
       - RHOST_ENDPOINT=${RHOST_ENDPOINT}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.dynamic-webpages.rule=PathPrefix(`/`) && !PathPrefix(`/admin`) && !PathPrefix(`/api`) && !PathPrefix(`/graphql`) && !PathPrefix(`/images`) && !PathPrefix(`/files`) || PathPrefix(`/gapi`)"
+      - "traefik.http.routers.dynamic-webpages.rule=PathPrefix(`/`) && !PathPrefix(`/admin`) && !PathPrefix(`/api`) && !PathPrefix(`/images`) && !PathPrefix(`/files`) || PathPrefix(`/gapi`)"
       - "traefik.http.routers.dynamic-webpages.entrypoints=web"
-      - "traefik.http.routers.dynamic-webpages.priority=10"
+      - "traefik.http.routers.dynamic-webpages.priority=20"
       - "traefik.http.services.dynamic-webpages.loadbalancer.server.port=8000"
 
 volumes:
