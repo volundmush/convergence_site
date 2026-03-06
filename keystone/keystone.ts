@@ -30,7 +30,7 @@ export default config({
 	},
 	server: {
 		cors: { origin: true, credentials: true },
-		extendExpressApp: app => {
+		extendExpressApp: (app, commonContext) => {
 			app.set('trust proxy', true);
 			const cookieParser = require('cookie-parser');
 			app.use(cookieParser());
@@ -75,6 +75,22 @@ export default config({
 					lastModified: false,
 				})
 			)
+
+			// GraphQL endpoint for external API requests
+			app.use(express.json());
+			app.post('/graphql', async (req, res) => {
+				try {
+					const { query, variables } = req.body;
+					const result = await commonContext.graphql.raw({
+						source: query,
+						variableValues: variables,
+					});
+					res.json(result);
+				} catch (error) {
+					console.error('GraphQL error:', error);
+					res.status(500).json({ errors: [{ message: error.message }] });
+				}
+			});
 		},
 	},
 	ui: {
