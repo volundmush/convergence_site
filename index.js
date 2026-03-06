@@ -937,6 +937,9 @@ ORDER BY s.scene_date_scheduled ASC
 		await next()
 	})
 
+	// Root path handler: try to serve home page from Keystone
+	router.get("/", keystonePageFallback)
+
 	// Fallback handler: try to serve pages from Keystone
 	router.get("/:path+", keystonePageFallback)
 
