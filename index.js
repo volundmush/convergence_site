@@ -282,7 +282,7 @@ async function main() {
 				if (page.status === 'published') {
 					const pageData = {
 						user: ctx.state.user || null,
-						page: {
+						cmspage: {
 							title: page.title,
 							slug: page.slug,
 							content: page.content
