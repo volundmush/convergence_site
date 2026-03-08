@@ -65,7 +65,7 @@ export default config({
 			app.use(
 				'/images',
 				express.static('public/images', { index: false, redirect: false, lastModified: false })
-			)
+			);
 			app.use(
 				'/files',
 				express.static('public/files', {
@@ -75,8 +75,8 @@ export default config({
 					index: false,
 					redirect: false,
 					lastModified: false,
-				}
-				)
+				})
+			);
 
 			// Seed endpoint - POST /seed to run after system is up
 			app.post('/seed', async (req, res) => {
@@ -88,11 +88,7 @@ export default config({
 					console.error('[Seed] Error:', error);
 					res.status(500).json({ success: false, error: error.message });
 				}
-			})
-				})
-			)
-
-
+			});
 		},
 	},
 	ui: {
