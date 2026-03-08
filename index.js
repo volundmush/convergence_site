@@ -294,8 +294,8 @@ async function main() {
 
 		try {
 			const query = `
-				query {
-					pages(where: { slug: { equals: "${slug}" } }) {
+				query GetPage($slug: String!) {
+					pages(where: { slug: { equals: $slug } }) {
 						id
 						title
 						slug
@@ -309,7 +309,7 @@ async function main() {
 			const response = await fetch('http://keystone:3000/api/graphql', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ query })
+				body: JSON.stringify({ query, variables: { slug } })
 			})
 
 			const data = await response.json()
