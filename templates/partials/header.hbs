@@ -32,32 +32,32 @@
 			</div>
 		</div>
 	</nav>
-	<div class="sidebar" id="sidebar">
-		<nav class="sidebar-nav">
-			{{#each (nav "main")}}
-				<div class="sidebar-item">
-					<a href="{{this.url}}" class="sidebar-link">{{this.label}}</a>
-					{{#if this.children}}
-						<ul class="sidebar-submenu">
-							{{#each this.children}}
-								<li><a href="{{this.url}}">{{this.label}}</a></li>
-							{{/each}}
-						</ul>
-					{{/if}}
-				</div>
-			{{/each}}
-			{{#if user}}
-				<div class="sidebar-separator"></div>
-				<div class="sidebar-user">{{ user.characterName }}</div>
-				<a href="/admin/" class="sidebar-link">Admin</a>
-				<button id="sidebar-signout" class="sidebar-link">Sign Out</button>
-			{{else}}
-				<div class="sidebar-separator"></div>
-				<a href="/signin/" class="sidebar-link">Sign In</a>
-			{{/if}}
-		</nav>
-	</div>
+	</nav>
 </header>
+
+<aside class="sidebar" id="sidebar">
+	{{#each (nav "main")}}
+		<div class="sidebar-item">
+			<a href="{{this.url}}" class="sidebar-link">{{this.label}}</a>
+			{{#if this.children}}
+				<ul class="sidebar-submenu">
+					{{#each this.children}}
+						<li><a href="{{this.url}}">{{this.label}}</a></li>
+					{{/each}}
+				</ul>
+			{{/if}}
+		</div>
+	{{/each}}
+	{{#if user}}
+		<div class="sidebar-separator"></div>
+		<div class="sidebar-user">{{ user.characterName }}</div>
+		<a href="/admin/" class="sidebar-link">Admin</a>
+		<button id="sidebar-signout" class="sidebar-link">Sign Out</button>
+	{{else}}
+		<div class="sidebar-separator"></div>
+		<a href="/signin/" class="sidebar-link">Sign In</a>
+	{{/if}}
+</aside>
 
 <script>
 	const hamburger = document.getElementById('hamburger')
