@@ -42,13 +42,12 @@ export const lists = {
 	Page: list({
 		access: allowAll,
 		fields: {
-			title: text({
-				validation: { isRequired: true },
-			}),
-			slug: text({
-				validation: { isRequired: true },
-				isIndexed: 'unique',
-			}),
+		title: text({
+			validation: { isRequired: true },
+		}),
+		slug: text({
+			isIndexed: 'unique',
+		}),
 			status: select({
 				type: 'enum',
 				options: [
