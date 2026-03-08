@@ -293,30 +293,20 @@ async function main() {
 		const slug = url
 
 		try {
-			const query = `
-				query GetPage($slug: String!) {
-					pages(where: { slug: { equals: $slug } }) {
-						id
-						title
-						slug
-						status
-						content
-						publishedAt
-					}
-				}
-			`
+			const query = `query{pages(where:{slug:{equals:"${slug}"}}){id title slug status content publishedAt}}`
 
 			const response = await fetch('http://keystone:3000/api/graphql', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ query, variables: { slug } })
+				body: JSON.stringify({ query })
 			})
 
-			if (!response.ok) {
-				throw new Error(`GraphQL request failed: ${response.status}`)
-			}
-
 			const data = await response.json()
+
+			if (data.errors || !response.ok) {
+				console.log(`[GraphQL Response] Status: ${response.status}, Body:`, JSON.stringify(data))
+				throw new Error(`GraphQL error: ${JSON.stringify(data.errors || data)}`)
+			}
 
 			if (data.data?.pages?.length > 0) {
 				const page = data.data.pages[0]
