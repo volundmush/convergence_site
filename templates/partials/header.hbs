@@ -6,8 +6,8 @@
 		<div class="nav-links">
 			{{#each (nav "main")}}
 				<div class="nav-item-wrapper {{this.cssClass}}">
-					<a href="{{this.url}}" class="nav-link">{{this.label}}</a>
 					{{#if this.children}}
+						<button class="nav-dropdown-toggle">{{this.label}}</button>
 						<ul class="nav-submenu">
 							{{#each this.children}}
 								<li class="nav-subitem {{this.cssClass}}">
@@ -15,6 +15,8 @@
 								</li>
 							{{/each}}
 						</ul>
+					{{else}}
+						<a href="{{this.url}}" class="nav-link">{{this.label}}</a>
 					{{/if}}
 				</div>
 			{{/each}}
@@ -32,6 +34,33 @@
 </header>
 
 <script>
+	// Dropdown toggle functionality
+	document.querySelectorAll('.nav-dropdown-toggle').forEach(toggle => {
+		toggle.addEventListener('click', (e) => {
+			e.preventDefault()
+			const wrapper = toggle.closest('.nav-item-wrapper')
+			wrapper.classList.toggle('active')
+		})
+	})
+
+	// Close dropdowns when clicking outside
+	document.addEventListener('click', (e) => {
+		if (!e.target.closest('.nav-item-wrapper')) {
+			document.querySelectorAll('.nav-item-wrapper.active').forEach(item => {
+				item.classList.remove('active')
+			})
+		}
+	})
+
+	// Close dropdowns when a submenu link is clicked
+	document.querySelectorAll('.nav-submenu a').forEach(link => {
+		link.addEventListener('click', () => {
+			document.querySelectorAll('.nav-item-wrapper.active').forEach(item => {
+				item.classList.remove('active')
+			})
+		})
+	})
+
 	document.getElementById('signout-btn')?.addEventListener('click', async () => {
 		try {
 			const response = await fetch('/signout/', {
