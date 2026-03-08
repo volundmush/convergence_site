@@ -7,24 +7,30 @@ export async function runSeed(context: any) {
 
 		if (existingHomePages.length === 0) {
 			// Create default home page
-			await context.query.Page.createOne({
-				data: {
-					title: 'Home',
-					slug: '',
-					status: 'published',
-					content: {
-						root: {
-							type: 'root',
-							children: [
-								{
-									type: 'paragraph',
-									children: [{ text: 'Welcome to Convergence MUSH' }],
-								},
-							],
-						},
+			const pageData = {
+				title: 'Home',
+				slug: '',
+				status: 'published',
+				content: {
+					root: {
+						type: 'root',
+						children: [
+							{
+								type: 'paragraph',
+								children: [
+									{
+										text: 'Welcome to Convergence MUSH',
+									},
+								],
+							},
+						],
 					},
-					publishedAt: new Date().toISOString(),
 				},
+				publishedAt: new Date().toISOString(),
+			};
+			console.log('[Seed] Creating page with data:', JSON.stringify(pageData, null, 2));
+			await context.query.Page.createOne({
+				data: pageData,
 			});
 			console.log('[Seed] Default home page created');
 		}
