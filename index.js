@@ -404,9 +404,11 @@ async function main() {
 			await logError(error, "Keystone page fallback")
 		}
 
-		// No page found, continue to 404
+		// No page found, render 404 page
 		ctx.response.status = 404
-		ctx.response.body = { error: "Not Found" }
+		const html = await renderPage(siteTemplate, "/app/templates/pages/404.hbs", { user: ctx.state.user || null })
+		ctx.response.headers.set("Content-Type", "text/html")
+		ctx.response.body = html
 	}
 
 	router.get("/gapi/logs/get/:key", async (ctx) => {
