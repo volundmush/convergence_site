@@ -805,3 +805,126 @@ main a, main a:active, main a:visited, main a:hover {
   background: var(--tertiary-bg);
   color: var(--tertiary-fg);
 }
+
+/* Hamburger Button */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--primary-fg);
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+}
+
+/* Sidebar */
+.sidebar {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 300px;
+  height: 100%;
+  background: var(--primary-bg);
+  border-left: 1px solid var(--primary-hi);
+  z-index: 1000;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+}
+
+.sidebar.open {
+  right: 0;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0;
+  margin-top: 60px;
+}
+
+.sidebar-link {
+  padding: 1rem;
+  color: var(--primary-fg);
+  text-decoration: none;
+  border-bottom: 1px solid var(--primary-hi);
+}
+
+.sidebar-link:hover {
+  background: var(--primary-inner-bg);
+}
+
+.sidebar-divider {
+  border-bottom: 2px solid var(--primary-hi);
+  margin: 0.5rem 0;
+}
+
+.sidebar-user {
+  display: block;
+  padding: 1rem;
+  color: var(--primary-fg);
+  font-weight: bold;
+}
+
+.sidebar-btn {
+  width: 100%;
+  padding: 1rem;
+  background: none;
+  border: 1px solid var(--primary-hi);
+  color: var(--primary-fg);
+  cursor: pointer;
+  font: inherit;
+}
+
+@media (max-width: 1024px) {
+  .hamburger {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+  }
+}
+
+.sidebar-item {
+  border-bottom: 1px solid var(--primary-hi);
+}
+
+.sidebar-toggle {
+  width: 100%;
+  padding: 1rem;
+  background: none;
+  border: none;
+  text-align: left;
+  color: var(--primary-fg);
+  cursor: pointer;
+  font: inherit;
+  border-bottom: 1px solid var(--primary-hi);
+}
+
+.sidebar-submenu {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--primary-inner-bg);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.sidebar-item.active .sidebar-submenu {
+  max-height: 500px;
+}
+
+.sidebar-submenu li a {
+  display: block;
+  padding: 0.75rem 2rem;
+  color: var(--primary-fg);
+  text-decoration: none;
+  border-bottom: 1px solid var(--primary-hi);
+}
+
+.sidebar-submenu li a:hover {
+  background: var(--primary-bg);
+}

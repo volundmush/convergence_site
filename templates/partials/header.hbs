@@ -3,6 +3,7 @@
 		<div class="nav-brand">
 			<a href="/">Convergence MUSH</a>
 		</div>
+		<button class="hamburger" id="hamburger" aria-label="Toggle menu">☰</button>
 		<div class="nav-links">
 			{{#each (nav "main")}}
 				<div class="nav-item-wrapper {{this.cssClass}}">
@@ -31,9 +32,81 @@
 			</div>
 		</div>
 	</nav>
+	<div class="sidebar" id="sidebar">
+		<div class="sidebar-menu">
+			{{#each (nav "main")}}
+				<div class="sidebar-item">
+					{{#if this.children}}
+						<button class="sidebar-toggle">{{this.label}}</button>
+						<ul class="sidebar-submenu">
+							{{#each this.children}}
+								<li><a href="{{this.url}}">{{this.label}}</a></li>
+							{{/each}}
+						</ul>
+					{{else}}
+						<a href="{{this.url}}" class="sidebar-link">{{this.label}}</a>
+					{{/if}}
+				</div>
+			{{/each}}
+			{{#if user}}
+				<div class="sidebar-divider"></div>
+				<span class="sidebar-user">{{ user.characterName }}</span>
+				<a href="/admin/" class="sidebar-link">Admin</a>
+				<button id="sidebar-signout" class="sidebar-btn">Sign Out</button>
+			{{else}}
+				<div class="sidebar-divider"></div>
+				<a href="/signin/" class="sidebar-link">Sign In</a>
+			{{/if}}
+		</div>
+	</div>
 </header>
 
 <script>
+	const hamburger = document.getElementById('hamburger')
+	const sidebar = document.getElementById('sidebar')
+	
+	hamburger.addEventListener('click', () => {
+		sidebar.classList.toggle('open')
+	})
+	
+	// Submenu toggle
+	sidebar.querySelectorAll('.sidebar-toggle').forEach(toggle => {
+		toggle.addEventListener('click', (e) => {
+			e.preventDefault()
+			const item = toggle.closest('.sidebar-item')
+			item.classList.toggle('active')
+		})
+	})
+	
+	// Close sidebar when clicking outside
+	document.addEventListener('click', (e) => {
+		if (!e.target.closest('.sidebar') && !e.target.closest('.hamburger')) {
+			sidebar.classList.remove('open')
+		}
+	})
+	
+	// Close sidebar when a link is clicked
+	sidebar.querySelectorAll('.sidebar-link, .sidebar-submenu a').forEach(link => {
+		link.addEventListener('click', () => {
+			sidebar.classList.remove('open')
+		})
+	})
+	
+	// Sidebar signout
+	document.getElementById('sidebar-signout')?.addEventListener('click', async () => {
+		try {
+			const response = await fetch('/signout/', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' }
+			})
+			if (response.ok) {
+				window.location.href = '/'
+			}
+		} catch (error) {
+			console.error('Sign out failed:', error)
+		}
+	})
+
 	// Dropdown toggle functionality
 	document.querySelectorAll('.nav-dropdown-toggle').forEach(toggle => {
 		toggle.addEventListener('click', (e) => {
