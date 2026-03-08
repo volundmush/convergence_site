@@ -168,6 +168,16 @@ async function initializeHandlebars() {
 		return `${path}?v=${SERVER_START_TIME}`
 	})
 
+	// Navigation helper - fetches nav from Keystone
+	Handlebars.registerHelper("nav", async (slug, options) => {
+		const query = `query{navigations(where:{slug:{equals:"${slug}"}}){isActive items(orderBy:{sort:asc}){label url target sort isActive cssClass icon children(orderBy:{sort:asc}){label url target sort isActive cssClass icon}}}}`
+		const resp = await fetch("http://keystone:3000/api/graphql", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({query})})
+		const result = await resp.json()
+		const nav = result.data?.navigations?.[0]
+		if (!nav || !nav.isActive) return ""
+		return nav.items.filter(i => i.isActive)
+	})
+
 	console.log("Handlebars initialized with templates, partials, and helpers")
 
 	return siteTemplate
