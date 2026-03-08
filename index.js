@@ -293,7 +293,7 @@ async function main() {
 		const slug = url
 
 		try {
-			const query = `query{pages(where:{slug:{equals:"${slug}"}}){id title slug status content publishedAt}}`
+			const query = `query{pages(where:{slug:{equals:"${slug}"}}){id title slug status content{document} publishedAt}}`
 
 			const response = await fetch('http://keystone:3000/api/graphql', {
 				method: 'POST',
