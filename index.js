@@ -215,6 +215,12 @@ async function initializeHandlebars() {
 				}
 				case 'layout-area': return `<div>${childrenHtml}</div>`
 				case 'link': return `<a href="${escapeHtml(node.href || '')}">${childrenHtml}</a>`
+				case 'image': {
+					const src = escapeHtml(node.src || '')
+					const alt = escapeHtml(node.alt || '')
+					const title = node.title ? ` title="${escapeHtml(node.title)}"` : ''
+					return `<img src="${src}" alt="${alt}"${title} />`
+				}
 				case 'relationship': {
 					const label = node.data?.label || node.data?.id || '(unknown)'
 					return `<span class="relationship" data-id="${escapeHtml(node.data?.id || '')}">${escapeHtml(label)}</span>`
