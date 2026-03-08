@@ -73,8 +73,8 @@ async function main(): Promise<void> {
 
 	console.log('🚀 Starting Keystone...');
 
-	// Start Keystone
-	const keystone = spawn('pnpm', ['start'], {
+	// Start Keystone - use keystone start directly to avoid tsx socket conflicts
+	const keystone = spawn('keystone', ['start'], {
 		stdio: 'inherit',
 		shell: true,
 	});
