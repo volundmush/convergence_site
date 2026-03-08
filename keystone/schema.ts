@@ -147,7 +147,7 @@ export const lists = {
 				options: [
 					{ label: 'Same Window', value: '_self' },
 					{ label: 'New Window', value: '_blank' },
-					{ label: 'New Tab', value: '_blank' },
+
 				],
 				defaultValue: '_self',
 			}),
