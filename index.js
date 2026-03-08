@@ -289,7 +289,12 @@ async function main() {
 			return
 		}
 		
-		const slug = url.replace(/^\/+|\/+$/g, '') // Remove leading/trailing slashes
+		let slug = url.replace(/^\/+|\/+$/g, '') // Remove leading/trailing slashes
+		
+		// Homepage slug translation
+		if (slug === '') {
+			slug = 'home'
+		}
 
 		try {
 			const query = `
