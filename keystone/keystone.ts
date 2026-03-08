@@ -2,6 +2,7 @@ import { config } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { lists } from './schema';
 import express from 'express';
+import { runSeed } from './lib/seedService';
 
 export default config({
 	db: {
@@ -74,6 +75,20 @@ export default config({
 					index: false,
 					redirect: false,
 					lastModified: false,
+				}
+				)
+
+			// Seed endpoint - POST /seed to run after system is up
+			app.post('/seed', async (req, res) => {
+				try {
+					const context = commonContext.sudo();
+					const result = await runSeed(context);
+					res.json({ success: true, message: 'Seed completed successfully' });
+				} catch (error: any) {
+					console.error('[Seed] Error:', error);
+					res.status(500).json({ success: false, error: error.message });
+				}
+			})
 				})
 			)
 

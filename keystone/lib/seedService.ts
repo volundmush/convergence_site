@@ -1,21 +1,13 @@
-import { getContext } from '@keystone-6/core/context';
-import config from './keystone';
-
-async function main() {
-	const context = getContext(config).sudo();
-
+export async function runSeed(context: any) {
 	try {
 		// Check if home page already exists
 		const existingHomePages = await context.query.Page.findMany({
 			where: { slug: { equals: '' } },
-			query: 'id slug title',
 		});
 
-		if (existingHomePages.length > 0) {
-			console.log('Home page already exists, skipping seed');
-		} else {
+		if (existingHomePages.length === 0) {
 			// Create default home page
-			const homePage = await context.query.Page.createOne({
+			await context.query.Page.createOne({
 				data: {
 					title: 'Home',
 					slug: '',
@@ -28,20 +20,17 @@ async function main() {
 					]),
 					publishedAt: new Date().toISOString(),
 				},
-				query: 'id title slug',
 			});
-
-			console.log('Default home page created:', homePage);
+			console.log('[Seed] Default home page created');
 		}
 
 		// Check if main navigation already exists
 		const existingNavs = await context.query.Navigation.findMany({
 			where: { slug: { equals: 'main' } },
-			query: 'id slug name',
 		});
 
 		if (existingNavs.length === 0) {
-			// Create navigation items first (without parent/children relationships)
+			// Create navigation items first
 			const homeItem = await context.query.NavigationItem.createOne({
 				data: {
 					label: 'Home',
@@ -52,7 +41,6 @@ async function main() {
 					icon: 'home',
 					cssClass: 'nav-home',
 				},
-				query: 'id label',
 			});
 
 			const logsItem = await context.query.NavigationItem.createOne({
@@ -63,7 +51,6 @@ async function main() {
 					sort: 0,
 					isActive: true,
 				},
-				query: 'id label',
 			});
 
 			const upcomingItem = await context.query.NavigationItem.createOne({
@@ -74,7 +61,6 @@ async function main() {
 					sort: 1,
 					isActive: true,
 				},
-				query: 'id label',
 			});
 
 			const gameRulesItem = await context.query.NavigationItem.createOne({
@@ -85,7 +71,6 @@ async function main() {
 					sort: 0,
 					isActive: true,
 				},
-				query: 'id label',
 			});
 
 			const charactersItem = await context.query.NavigationItem.createOne({
@@ -96,10 +81,8 @@ async function main() {
 					sort: 0,
 					isActive: true,
 				},
-				query: 'id label',
 			});
 
-			// Create parent items with their children
 			const eventsItem = await context.query.NavigationItem.createOne({
 				data: {
 					label: 'Events',
@@ -113,7 +96,6 @@ async function main() {
 						connect: [{ id: logsItem.id }, { id: upcomingItem.id }],
 					},
 				},
-				query: 'id label',
 			});
 
 			const policiesItem = await context.query.NavigationItem.createOne({
@@ -129,7 +111,6 @@ async function main() {
 						connect: [{ id: gameRulesItem.id }],
 					},
 				},
-				query: 'id label',
 			});
 
 			const settingsItem = await context.query.NavigationItem.createOne({
@@ -145,10 +126,8 @@ async function main() {
 						connect: [{ id: charactersItem.id }],
 					},
 				},
-				query: 'id label',
 			});
 
-			// Create Main Navigation with all items
 			const mainNav = await context.query.Navigation.createOne({
 				data: {
 					name: 'Main Navigation',
@@ -164,16 +143,13 @@ async function main() {
 						],
 					},
 				},
-				query: 'id slug name',
 			});
-			console.log('Main navigation created:', mainNav);
+			console.log('[Seed] Main navigation created');
 		}
+
+		return { success: true };
 	} catch (error) {
-		console.error('Error seeding database:', error);
-		process.exit(1);
+		console.error('[Seed] Error:', error);
+		throw error;
 	}
-
-	process.exit(0);
 }
-
-main();
