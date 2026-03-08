@@ -888,11 +888,6 @@ main a, main a:active, main a:visited, main a:hover {
   background: var(--primary-bg);
 }
 
-.sidebar-separator {
-  border-bottom: 2px solid var(--primary-hi);
-  margin: 0.5rem 0;
-}
-
 .sidebar-user {
   padding: 1rem;
   color: var(--primary-fg);
