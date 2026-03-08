@@ -18,18 +18,7 @@ async function main() {
 				title: 'Home',
 				slug: '',
 				status: 'published',
-				content: {
-					document: [
-						{
-							type: 'paragraph',
-							children: [
-								{
-									text: 'Welcome to Convergence',
-								}
-							]
-						}
-					]
-				},
+				content: '[{\"type\":\"paragraph\",\"children\":[{\"text\":\"Welcome to Convergence MUSH\"}]}]',
 				publishedAt: new Date(),
 			},
 		});
