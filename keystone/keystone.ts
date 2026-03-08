@@ -94,9 +94,24 @@ export default config({
 	ui: {
 		basePath: '/admin',
 		isAccessAllowed: (context) => {
-			const allowed = !!context.session?.isSignedIn;
-			console.log('[Admin Access]', 'session:', context.session, 'allowed:', allowed);
-			return allowed;
+			// Allow if user is signed in
+			if (context.session?.isSignedIn) {
+				return true;
+			}
+			
+			// Allow anonymous access from internal network
+			const req = context.req as any;
+			if (req) {
+				const ip = req.ip || req.connection?.remoteAddress || '';
+				const isInternal = /^(127\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.|192\.168\.)/.test(ip);
+				if (isInternal) {
+					console.log('[Admin Access] Allowed from internal IP:', ip);
+					return true;
+				}
+			}
+			
+			console.log('[Admin Access] Denied - not authenticated and not from internal network');
+			return false;
 		},
 	},
 });
