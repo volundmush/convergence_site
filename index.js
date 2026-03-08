@@ -312,6 +312,10 @@ async function main() {
 				body: JSON.stringify({ query, variables: { slug } })
 			})
 
+			if (!response.ok) {
+				throw new Error(`GraphQL request failed: ${response.status}`)
+			}
+
 			const data = await response.json()
 
 			if (data.data?.pages?.length > 0) {
