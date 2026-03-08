@@ -8,6 +8,7 @@ import {
 	text,
 	timestamp,
 	select,
+	integer,
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 
@@ -92,6 +93,95 @@ export const lists = {
 				many: true,
 			}),
 			publishedAt: timestamp(),
+			createdAt: timestamp({
+				defaultValue: { kind: 'now' },
+			}),
+		updatedAt: timestamp({
+			db: { updatedAt: true },
+		}),
+	},
+}),
+
+	Navigation: list({
+		access: allowAll,
+		fields: {
+			name: text({
+				validation: { isRequired: true },
+			}),
+			slug: text({
+				validation: { isRequired: true },
+				isIndexed: 'unique',
+			}),
+			description: text({
+				ui: {
+					displayMode: 'textarea',
+				},
+			}),
+			isActive: checkbox({
+				defaultValue: true,
+			}),
+			items: relationship({
+				ref: 'NavigationItem.navigation',
+				many: true,
+			}),
+			createdAt: timestamp({
+				defaultValue: { kind: 'now' },
+			}),
+			updatedAt: timestamp({
+				db: { updatedAt: true },
+			}),
+		},
+	}),
+
+	NavigationItem: list({
+		access: allowAll,
+		fields: {
+			label: text({
+				validation: { isRequired: true },
+			}),
+			url: text({
+				validation: { isRequired: true },
+			}),
+			target: select({
+				type: 'enum',
+				options: [
+					{ label: 'Same Window', value: '_self' },
+					{ label: 'New Window', value: '_blank' },
+					{ label: 'New Tab', value: '_blank' },
+				],
+				defaultValue: '_self',
+			}),
+			navigation: relationship({
+				ref: 'Navigation.items',
+			}),
+			parent: relationship({
+				ref: 'NavigationItem.children',
+			}),
+			children: relationship({
+				ref: 'NavigationItem.parent',
+				many: true,
+			}),
+			sort: integer({
+				defaultValue: 0,
+			}),
+			isActive: checkbox({
+				defaultValue: true,
+			}),
+			cssClass: text({
+				ui: {
+					placeholder: 'e.g., btn-primary, nav-highlight',
+				},
+			}),
+			icon: text({
+				ui: {
+					placeholder: 'e.g., home, users, settings',
+				},
+			}),
+			description: text({
+				ui: {
+					displayMode: 'textarea',
+				},
+			}),
 			createdAt: timestamp({
 				defaultValue: { kind: 'now' },
 			}),
