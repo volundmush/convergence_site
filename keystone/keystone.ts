@@ -107,10 +107,13 @@ export default config({
 				// Check direct connection IP
 				const directIp = req.ip || req.connection?.remoteAddress || '';
 				
-				const ip = forwardedFor.split(',')[0].trim() || directIp;
+				let ip = forwardedFor.split(',')[0].trim() || directIp;
 				
-				// Match private IP ranges: 127.x, 10.x, 172.16-31.x, 192.168.x
-				const isInternal = /^(127\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.|192\.168\.)/.test(ip);
+				// Strip IPv6 prefix if present (::ffff:x.x.x.x)
+				ip = ip.replace(/^::ffff:/, '');
+				
+				// Match private IP ranges: 127.x, 10.x, 172.16-31.x, 192.168.x, ::1 (IPv6 localhost)
+				const isInternal = /^(127\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.|192\.168\.|::1)/.test(ip);
 				
 				// Allow health checks from any source
 				const isHealthCheck = req.path === '/' && req.method === 'GET';
