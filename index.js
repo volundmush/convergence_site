@@ -231,14 +231,13 @@ async function initializeHandlebars() {
 		return new Handlebars.SafeString(html)
 	})
 
-	// Navigation helper - fetches nav from Keystone
-	Handlebars.registerHelper("nav", async (slug, options) => {
-		const query = `query{navigations(where:{slug:{equals:"${slug}"}}){isActive items(orderBy:{sort:asc}){label url target sort isActive cssClass icon children(orderBy:{sort:asc}){label url target sort isActive cssClass icon}}}}`
-		const resp = await fetch("http://keystone:3000/api/graphql", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({query})})
-		const result = await resp.json()
-		const nav = result.data?.navigations?.[0]
-		if (!nav || !nav.isActive) return ""
-		return nav.items.filter(i => i.isActive)
+	// Navigation helper - returns nav data that was preloaded during renderPage
+	Handlebars.registerHelper("nav", function(slug) {
+		// The data is passed as context, so we can access it via this
+		if (slug === "main" && this.nav) {
+			return this.nav
+		}
+		return []
 	})
 
 	console.log("Handlebars initialized with templates, partials, and helpers")
@@ -264,6 +263,17 @@ async function renderPage(siteTemplate, templatePath, data = {}) {
 	// If cmspage data is provided, merge it into page metadata for the layout
 	if (data.cmspage) {
 		page = { ...page, ...data.cmspage }
+	}
+
+	// Fetch navigation data if not already provided
+	if (!data.nav) {
+		const navQuery = `query{navigations(where:{slug:{equals:"main"}}){isActive items(orderBy:{sort:asc}){label url target sort isActive cssClass icon children(orderBy:{sort:asc}){label url target sort isActive cssClass icon}}}}`
+		const navResp = await fetch("http://keystone:3000/api/graphql", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({query: navQuery})})
+		const navResult = await navResp.json()
+		const nav = navResult.data?.navigations?.[0]
+		if (nav && nav.isActive) {
+			data.nav = nav.items.filter(i => i.isActive)
+		}
 	}
 
 	var cmspage = data.cmspage || {}
