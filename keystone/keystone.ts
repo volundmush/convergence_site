@@ -102,10 +102,32 @@ export default config({
 			// Allow anonymous access from internal network
 			const req = context.req as any;
 			if (req) {
-				const ip = req.ip || req.connection?.remoteAddress || '';
+				// Check X-Forwarded-For header first (set by Traefik/proxies)
+				const forwardedFor = req.headers?.['x-forwarded-for'] || '';
+				// Check direct connection IP
+				const directIp = req.ip || req.connection?.remoteAddress || '';
+				
+				const ip = forwardedFor.split(',')[0].trim() || directIp;
+				
+				// Match private IP ranges: 127.x, 10.x, 172.16-31.x, 192.168.x
 				const isInternal = /^(127\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.|192\.168\.)/.test(ip);
-				if (isInternal) {
-					console.log('[Admin Access] Allowed from internal IP:', ip);
+				
+				// Allow health checks from any source
+				const isHealthCheck = req.path === '/' && req.method === 'GET';
+				
+				console.log('[Admin Access]', {
+					path: req.path,
+					method: req.method,
+					xForwardedFor: forwardedFor,
+					directIp,
+					resolvedIp: ip,
+					isInternal,
+					isHealthCheck,
+					userAgent: req.headers?.['user-agent']
+				});
+				
+				if (isInternal || isHealthCheck) {
+					console.log('[Admin Access] Allowed from internal IP or health check:', ip);
 					return true;
 				}
 			}
