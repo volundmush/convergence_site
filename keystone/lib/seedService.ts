@@ -2,7 +2,7 @@ export async function runSeed(context: any) {
 	try {
 		// Check if home page already exists
 		const existingHomePages = await context.query.Page.findMany({
-			where: { slug: { equals: '' } },
+			where: { slug: { equals: '/' } },
 		});
 
 		if (existingHomePages.length === 0) {
