@@ -10,7 +10,7 @@ export async function runSeed(context: any) {
 			await context.query.Page.createOne({
 				data: {
 					title: 'Home',
-					slug: '',
+					slug: 'home',
 					status: 'published',
 					content: [
 						{
