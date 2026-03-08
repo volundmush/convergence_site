@@ -7,7 +7,7 @@ export interface NavigationItem {
 	id: string;
 	label: string;
 	url: string;
-	target: '_self' | '_blank';
+	target: 'self' | 'blank';
 	sort: number;
 	isActive: boolean;
 	cssClass?: string;
@@ -143,7 +143,8 @@ export function generateNavigationHTML(items: NavigationItem[], cssClass = 'nav-
 		.filter((item) => item.isActive)
 		.map((item) => {
 			const itemClass = ['nav-item', item.cssClass].filter(Boolean).join(' ');
-			const linkAttrs = [`href="${escapeHTML(item.url)}"`, `class="nav-link"`, `target="${item.target}"`]
+			const targetAttr = item.target === 'blank' ? '_blank' : '_self';
+			const linkAttrs = [`href="${escapeHTML(item.url)}"`, `class="nav-link"`, `target="${targetAttr}"`]
 				.filter(Boolean)
 				.join(' ');
 

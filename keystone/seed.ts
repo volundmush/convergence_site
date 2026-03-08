@@ -55,7 +55,7 @@ async function main() {
 							{
 								label: 'Home',
 								url: '/',
-								target: '_self',
+								target: 'self',
 								sort: 0,
 								isActive: true,
 								icon: 'home',
@@ -64,7 +64,7 @@ async function main() {
 							{
 								label: 'Characters',
 								url: '/characters',
-								target: '_self',
+								target: 'self',
 								sort: 1,
 								isActive: true,
 								icon: 'users',
@@ -73,7 +73,7 @@ async function main() {
 							{
 								label: 'Logs',
 								url: '/logs',
-								target: '_self',
+								target: 'self',
 								sort: 2,
 								isActive: true,
 								icon: 'book',
@@ -82,7 +82,7 @@ async function main() {
 							{
 								label: 'Information',
 								url: '/info',
-								target: '_self',
+								target: 'self',
 								sort: 3,
 								isActive: true,
 								icon: 'info',
@@ -106,28 +106,28 @@ async function main() {
 							{
 								label: 'Privacy Policy',
 								url: '/privacy',
-								target: '_self',
+								target: 'self',
 								sort: 0,
 								isActive: true,
 							},
 							{
 								label: 'Terms of Service',
 								url: '/terms',
-								target: '_self',
+								target: 'self',
 								sort: 1,
 								isActive: true,
 							},
 							{
 								label: 'Contact Us',
 								url: '/contact',
-								target: '_self',
+								target: 'self',
 								sort: 2,
 								isActive: true,
 							},
 							{
 								label: 'Sitemap',
 								url: '/sitemap',
-								target: '_self',
+								target: 'self',
 								sort: 3,
 								isActive: true,
 							},
@@ -149,7 +149,7 @@ async function main() {
 							{
 								label: 'Profile',
 								url: '/profile',
-								target: '_self',
+								target: 'self',
 								sort: 0,
 								isActive: true,
 								icon: 'user',
@@ -157,7 +157,7 @@ async function main() {
 							{
 								label: 'Settings',
 								url: '/settings',
-								target: '_self',
+								target: 'self',
 								sort: 1,
 								isActive: true,
 								icon: 'cog',
@@ -165,7 +165,7 @@ async function main() {
 							{
 								label: 'Help',
 								url: '/help',
-								target: '_self',
+								target: 'self',
 								sort: 2,
 								isActive: true,
 								icon: 'question',
@@ -173,7 +173,7 @@ async function main() {
 							{
 								label: 'Logout',
 								url: '/logout',
-								target: '_self',
+								target: 'self',
 								sort: 3,
 								isActive: true,
 								icon: 'logout',

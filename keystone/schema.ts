@@ -54,7 +54,7 @@ export const lists = {
 				options: [
 					{ label: 'Draft', value: 'draft' },
 					{ label: 'Published', value: 'published' },
-				],
+			],
 				defaultValue: 'draft',
 			}),
 			content: document({
@@ -145,11 +145,11 @@ export const lists = {
 			target: select({
 				type: 'enum',
 				options: [
-					{ label: 'Same Window', value: '_self' },
-					{ label: 'New Window', value: '_blank' },
+					{ label: 'Same Window', value: 'self' },
+					{ label: 'New Window', value: 'blank' },
 
 				],
-				defaultValue: '_self',
+			defaultValue: 'self',
 			}),
 			navigation: relationship({
 				ref: 'Navigation.items',
