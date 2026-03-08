@@ -4,17 +4,29 @@
 			<a href="/">Convergence MUSH</a>
 		</div>
 		<div class="nav-links">
-			<a href="/">Home</a>
-			<a href="/characters/">Characters</a>
-			<a href="/logs/">Logs</a>
-			<a href="/logs/upcoming/">Upcoming</a>
-			{{#if user}}
-				<span class="user-info">{{ user.characterName }}</span>
-				<a href="/admin/" class="admin-link">Admin</a>
-				<button id="signout-btn" class="signout-button">Sign Out</button>
-			{{else}}
-				<a href="/signin/" class="signin-link">Sign In</a>
-			{{/if}}
+			{{#each (nav "main")}}
+				<div class="nav-item-wrapper {{this.cssClass}}">
+					<a href="{{this.url}}" class="nav-link">{{this.label}}</a>
+					{{#if this.children}}
+						<ul class="nav-submenu">
+							{{#each this.children}}
+								<li class="nav-subitem {{this.cssClass}}">
+									<a href="{{this.url}}" class="nav-link">{{this.label}}</a>
+								</li>
+							{{/each}}
+						</ul>
+					{{/if}}
+				</div>
+			{{/each}}
+			<div class="nav-user">
+				{{#if user}}
+					<span class="user-info">{{ user.characterName }}</span>
+					<a href="/admin/" class="admin-link">Admin</a>
+					<button id="signout-btn" class="signout-button">Sign Out</button>
+				{{else}}
+					<a href="/signin/" class="signin-link">Sign In</a>
+				{{/if}}
+			</div>
 		</div>
 	</nav>
 </header>
