@@ -118,24 +118,11 @@ export default config({
 				// Allow health checks from any source
 				const isHealthCheck = req.path === '/' && req.method === 'GET';
 				
-				console.log('[Admin Access]', {
-					path: req.path,
-					method: req.method,
-					xForwardedFor: forwardedFor,
-					directIp,
-					resolvedIp: ip,
-					isInternal,
-					isHealthCheck,
-					userAgent: req.headers?.['user-agent']
-				});
-				
 				if (isInternal || isHealthCheck) {
-					console.log('[Admin Access] Allowed from internal IP or health check:', ip);
 					return true;
 				}
 			}
 			
-			console.log('[Admin Access] Denied - not authenticated and not from internal network');
 			return false;
 		},
 	},
