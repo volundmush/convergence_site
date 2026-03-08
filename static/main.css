@@ -116,9 +116,8 @@ header nav {
 	vertical-align: middle;
 
 	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: center;
+	flex-direction: column;
+	justify-content: center;
 
 	margin-left: 100px;
 	width: calc(100% - 100px);
@@ -817,7 +816,7 @@ main a, main a:active, main a:visited, main a:hover {
   background: none;
   border: none;
   font-size: 1.5rem;
-  color: var(--primary-fg);
+  color: var(--secondary-fg);
   cursor: pointer;
   padding: 0.5rem;
   z-index: 1001;
@@ -825,7 +824,6 @@ main a, main a:active, main a:visited, main a:hover {
 
 /* Sidebar */
 .sidebar {
-  display: none;
   position: fixed;
   top: 0;
   right: -300px;
