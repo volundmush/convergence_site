@@ -48,14 +48,19 @@
 			{{/if}}
 		</div>
 	{{/each}}
+	<div class="sidebar-separator"></div>
 	{{#if user}}
-		<div class="sidebar-separator"></div>
 		<div class="sidebar-user">{{ user.characterName }}</div>
-		<a href="/admin/" class="sidebar-link">Admin</a>
-		<button id="sidebar-signout" class="sidebar-link">Sign Out</button>
+		<div class="sidebar-item">
+			<a href="/admin/" class="sidebar-link">Admin</a>
+		</div>
+		<div class="sidebar-item">
+			<button id="sidebar-signout" class="sidebar-link">Sign Out</button>
+		</div>
 	{{else}}
-		<div class="sidebar-separator"></div>
-		<a href="/signin/" class="sidebar-link">Sign In</a>
+		<div class="sidebar-item">
+			<a href="/signin/" class="sidebar-link">Sign In</a>
+		</div>
 	{{/if}}
 </aside>
 
