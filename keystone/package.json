@@ -6,7 +6,7 @@
 		"dev": "keystone dev",
 		"start": "keystone start",
 		"build": "keystone build",
-		"seed": "pnpm exec tsx seed.ts"
+		"startup": "pnpm exec tsx startup.ts"
 	},
 	"dependencies": {
 		"@keystone-6/core": "6.5.1",
