@@ -731,8 +731,6 @@ main a, main a:active, main a:visited, main a:hover {
 }
 .keystone-page {
   padding: 0;
-  max-width: 900px;
-  margin: 0 auto;
 }
 
 .keystone-page h1 {
