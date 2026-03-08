@@ -168,6 +168,69 @@ async function initializeHandlebars() {
 		return `${path}?v=${SERVER_START_TIME}`
 	})
 
+	// Document renderer helper - converts Keystone document structure to HTML
+	Handlebars.registerHelper("renderDocument", (document) => {
+		if (!document || !Array.isArray(document)) return ""
+		
+		const escapeHtml = (text) => {
+			return String(text)
+				.replace(/&/g, '&amp;')
+				.replace(/</g, '&lt;')
+				.replace(/>/g, '&gt;')
+				.replace(/"/g, '&quot;')
+				.replace(/'/g, '&#39;')
+		}
+		
+		const renderNode = (node) => {
+			// Text node with marks
+			if (typeof node.text === 'string') {
+				let html = escapeHtml(node.text)
+				if (node.bold) html = `<strong>${html}</strong>`
+				if (node.italic) html = `<em>${html}</em>`
+				if (node.underline) html = `<u>${html}</u>`
+				if (node.strikethrough) html = `<s>${html}</s>`
+				if (node.code) html = `<code>${html}</code>`
+				if (node.superscript) html = `<sup>${html}</sup>`
+				if (node.subscript) html = `<sub>${html}</sub>`
+				if (node.keyboard) html = `<kbd>${html}</kbd>`
+				return html
+			}
+			
+			// Element node
+			const childrenHtml = (node.children || []).map(renderNode).join('')
+			const style = node.textAlign ? ` style="text-align: ${node.textAlign}"` : ""
+			
+			switch (node.type) {
+				case 'paragraph': return `<p${style}>${childrenHtml}</p>`
+				case 'heading': return `<h${node.level || 1}${style}>${childrenHtml}</h${node.level || 1}>`
+				case 'blockquote': return `<blockquote>${childrenHtml}</blockquote>`
+				case 'code': return `<pre><code>${childrenHtml}</code></pre>`
+				case 'divider': return `<hr>`
+				case 'ordered-list': return `<ol>${childrenHtml}</ol>`
+				case 'unordered-list': return `<ul>${childrenHtml}</ul>`
+				case 'list-item': return `<li>${childrenHtml}</li>`
+				case 'layout': {
+					const gridCols = (node.layout || [1]).map(x => `${x}fr`).join(' ')
+					return `<div style="display: grid; grid-template-columns: ${gridCols};">${childrenHtml}</div>`
+				}
+				case 'layout-area': return `<div>${childrenHtml}</div>`
+				case 'link': return `<a href="${escapeHtml(node.href || '')}">${childrenHtml}</a>`
+				case 'relationship': {
+					const label = node.data?.label || node.data?.id || '(unknown)'
+					return `<span class="relationship" data-id="${escapeHtml(node.data?.id || '')}">${escapeHtml(label)}</span>`
+				}
+				case 'component-block': {
+					// Component blocks are complex - for now just render their children
+					return childrenHtml
+				}
+				default: return childrenHtml
+			}
+		}
+		
+		const html = document.map(renderNode).join('')
+		return new Handlebars.SafeString(html)
+	})
+
 	// Navigation helper - fetches nav from Keystone
 	Handlebars.registerHelper("nav", async (slug, options) => {
 		const query = `query{navigations(where:{slug:{equals:"${slug}"}}){isActive items(orderBy:{sort:asc}){label url target sort isActive cssClass icon children(orderBy:{sort:asc}){label url target sort isActive cssClass icon}}}}`
@@ -317,7 +380,7 @@ async function main() {
 						cmspage: {
 							title: page.title,
 							slug: page.slug,
-							content: page.content
+							content: page.content.document
 						}
 					}
 
