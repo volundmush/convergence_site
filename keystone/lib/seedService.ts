@@ -6,31 +6,24 @@ export async function runSeed(context: any) {
 		});
 
 		if (existingHomePages.length === 0) {
-			// Create default home page
-			const pageData = {
-				title: 'Home',
-				slug: '',
-				status: 'published',
-				content: {
-					root: {
-						type: 'root',
-						children: [
-							{
-								type: 'paragraph',
-								children: [
-									{
-										text: 'Welcome to Convergence MUSH',
-									},
-								],
-							},
-						],
-					},
-				},
-				publishedAt: new Date().toISOString(),
-			};
-			console.log('[Seed] Creating page with data:', JSON.stringify(pageData, null, 2));
+			// Create default home page with correct document structure (array of blocks, not root object)
 			await context.query.Page.createOne({
-				data: pageData,
+				data: {
+					title: 'Home',
+					slug: '',
+					status: 'published',
+					content: [
+						{
+							type: 'paragraph',
+							children: [
+								{
+									text: 'Welcome to Convergence MUSH',
+								},
+							],
+						},
+					],
+					publishedAt: new Date().toISOString(),
+				},
 			});
 			console.log('[Seed] Default home page created');
 		}
