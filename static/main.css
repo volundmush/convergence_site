@@ -834,50 +834,70 @@ main a, main a:active, main a:visited, main a:hover {
   z-index: 1000;
   transition: right 0.3s ease;
   overflow-y: auto;
+  padding-top: 4.5rem;
 }
 
 .sidebar.open {
   right: 0;
 }
 
-.sidebar-menu {
+.sidebar-nav {
   display: flex;
   flex-direction: column;
-  padding: 1rem 0;
-  margin-top: 60px;
+}
+
+.sidebar-item {
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar-link {
   padding: 1rem;
   color: var(--primary-fg);
   text-decoration: none;
+  background: none;
+  border: none;
   border-bottom: 1px solid var(--primary-hi);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
 }
 
 .sidebar-link:hover {
   background: var(--primary-inner-bg);
 }
 
-.sidebar-divider {
+.sidebar-submenu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--primary-inner-bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-submenu li a {
+  display: block;
+  padding: 0.75rem 0 0.75rem 2rem;
+  color: var(--primary-fg);
+  text-decoration: none;
+  border-bottom: 1px solid var(--primary-hi);
+}
+
+.sidebar-submenu li a:hover {
+  background: var(--primary-bg);
+}
+
+.sidebar-separator {
   border-bottom: 2px solid var(--primary-hi);
   margin: 0.5rem 0;
 }
 
 .sidebar-user {
-  display: block;
   padding: 1rem;
   color: var(--primary-fg);
   font-weight: bold;
-}
-
-.sidebar-btn {
-  width: 100%;
-  padding: 1rem;
-  background: none;
-  border: 1px solid var(--primary-hi);
-  color: var(--primary-fg);
-  cursor: pointer;
-  font: inherit;
+  border-bottom: 1px solid var(--primary-hi);
 }
 
 @media (max-width: 1024px) {
@@ -888,47 +908,4 @@ main a, main a:active, main a:visited, main a:hover {
   header nav .nav-links {
     display: none !important;
   }
-}
-
-.sidebar-item {
-  border-bottom: 1px solid var(--primary-hi);
-}
-
-.sidebar-toggle {
-  width: 100%;
-  padding: 1rem;
-  background: none;
-  border: none;
-  text-align: left;
-  color: var(--primary-fg);
-  cursor: pointer;
-  font: inherit;
-  border-bottom: 1px solid var(--primary-hi);
-}
-
-.sidebar-submenu {
-  display: none;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  background: var(--primary-inner-bg);
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-}
-
-.sidebar-item.active .sidebar-submenu {
-  max-height: 500px;
-}
-
-.sidebar-submenu li a {
-  display: block;
-  padding: 0.75rem 2rem;
-  color: var(--primary-fg);
-  text-decoration: none;
-  border-bottom: 1px solid var(--primary-hi);
-}
-
-.sidebar-submenu li a:hover {
-  background: var(--primary-bg);
 }

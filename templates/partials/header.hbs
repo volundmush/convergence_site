@@ -33,31 +33,29 @@
 		</div>
 	</nav>
 	<div class="sidebar" id="sidebar">
-		<div class="sidebar-menu">
+		<nav class="sidebar-nav">
 			{{#each (nav "main")}}
 				<div class="sidebar-item">
+					<a href="{{this.url}}" class="sidebar-link">{{this.label}}</a>
 					{{#if this.children}}
-						<button class="sidebar-toggle">{{this.label}}</button>
 						<ul class="sidebar-submenu">
 							{{#each this.children}}
 								<li><a href="{{this.url}}">{{this.label}}</a></li>
 							{{/each}}
 						</ul>
-					{{else}}
-						<a href="{{this.url}}" class="sidebar-link">{{this.label}}</a>
 					{{/if}}
 				</div>
 			{{/each}}
 			{{#if user}}
-				<div class="sidebar-divider"></div>
-				<span class="sidebar-user">{{ user.characterName }}</span>
+				<div class="sidebar-separator"></div>
+				<div class="sidebar-user">{{ user.characterName }}</div>
 				<a href="/admin/" class="sidebar-link">Admin</a>
-				<button id="sidebar-signout" class="sidebar-btn">Sign Out</button>
+				<button id="sidebar-signout" class="sidebar-link">Sign Out</button>
 			{{else}}
-				<div class="sidebar-divider"></div>
+				<div class="sidebar-separator"></div>
 				<a href="/signin/" class="sidebar-link">Sign In</a>
 			{{/if}}
-		</div>
+		</nav>
 	</div>
 </header>
 
@@ -65,17 +63,9 @@
 	const hamburger = document.getElementById('hamburger')
 	const sidebar = document.getElementById('sidebar')
 	
+	// Toggle sidebar on hamburger click
 	hamburger.addEventListener('click', () => {
 		sidebar.classList.toggle('open')
-	})
-	
-	// Submenu toggle
-	sidebar.querySelectorAll('.sidebar-toggle').forEach(toggle => {
-		toggle.addEventListener('click', (e) => {
-			e.preventDefault()
-			const item = toggle.closest('.sidebar-item')
-			item.classList.toggle('active')
-		})
 	})
 	
 	// Close sidebar when clicking outside
@@ -107,7 +97,7 @@
 		}
 	})
 
-	// Dropdown toggle functionality
+	// Dropdown toggle functionality for desktop nav
 	document.querySelectorAll('.nav-dropdown-toggle').forEach(toggle => {
 		toggle.addEventListener('click', (e) => {
 			e.preventDefault()
@@ -134,6 +124,7 @@
 		})
 	})
 
+	// Desktop nav signout
 	document.getElementById('signout-btn')?.addEventListener('click', async () => {
 		try {
 			const response = await fetch('/signout/', {
