@@ -12,12 +12,17 @@ export async function runSeed(context: any) {
 					title: 'Home',
 					slug: '',
 					status: 'published',
-					content: JSON.stringify([
-						{
-							type: 'paragraph',
-							children: [{ text: 'Welcome to Convergence MUSH' }],
+					content: {
+						root: {
+							type: 'root',
+							children: [
+								{
+									type: 'paragraph',
+									children: [{ text: 'Welcome to Convergence MUSH' }],
+								},
+							],
 						},
-					]),
+					},
 					publishedAt: new Date().toISOString(),
 				},
 			});
