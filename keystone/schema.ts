@@ -86,7 +86,9 @@ export const lists = {
 				links: true,
 				dividers: true,
 				layouts: [[1, 1], [1, 1, 1]],
-				images: true,
+				images: {
+					storage: 'images',
+				},
 			}),
 			images: relationship({
 				ref: 'Image',
