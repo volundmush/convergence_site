@@ -89,7 +89,7 @@ export const lists = {
 				layouts: [[1, 1], [1, 1, 1]],
 				componentBlocks,
 			ui: {
-				views: './component-blocks',
+				views: './admin/views',
 			},
 			}),
 			images: relationship({
