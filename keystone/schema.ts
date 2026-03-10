@@ -88,9 +88,9 @@ export const lists = {
 				dividers: true,
 				layouts: [[1, 1], [1, 1, 1]],
 				componentBlocks,
-				ui: {
-					views: './component-blocks',
-				},
+			ui: {
+				views: './keystone/component-blocks',
+			},
 			}),
 			images: relationship({
 				ref: 'Image',
