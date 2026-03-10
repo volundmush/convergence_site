@@ -89,7 +89,7 @@ export const lists = {
 				layouts: [[1, 1], [1, 1, 1]],
 				componentBlocks,
 			ui: {
-				views: './keystone/component-blocks',
+				views: './component-blocks',
 			},
 			}),
 			images: relationship({

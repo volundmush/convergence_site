@@ -64,6 +64,7 @@ export const componentBlocks = {
 				label: 'Image',
 				labelField: 'name',
 				selection: 'id name image { url }',
+				many: false,
 			}),
 			alt: fields.text({
 				label: 'Alt text',
