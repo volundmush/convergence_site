@@ -226,9 +226,32 @@ async function initializeHandlebars() {
 					return `<span class="relationship" data-id="${escapeHtml(node.data?.id || '')}">${escapeHtml(label)}</span>`
 				}
 				case 'component-block': {
-					// Component blocks are complex - for now just render their children
-					return childrenHtml
+				// Handle image component block
+				if (node.component === 'image') {
+					// The image relationship is stored as node.props.image which is an object with data property
+					const imageData = node.props?.image?.data
+					const imageUrl = imageData?.image?.url
+					const alt = escapeHtml(node.props?.alt || '')
+					const caption = escapeHtml(node.props?.caption || '')
+					const float = node.props?.float || 'none'
+					
+					if (!imageUrl) {
+						return ''
+					}
+					
+					const style = float === 'none'
+						? 'margin: 1rem 0; text-align: center;'
+						: float === 'left'
+							? 'float: left; margin: 0 1rem 1rem 0; max-width: 300px;'
+							: 'float: right; margin: 0 0 1rem 1rem; max-width: 300px;'
+					
+					const captionHtml = caption ? `<p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: #666; font-style: italic;">${caption}</p>` : ''
+					
+					return `<div style="${style}"><img src="${escapeHtml(imageUrl)}" alt="${alt}" style="max-width: 100%; height: auto; display: block; border-radius: 4px;" />${captionHtml}</div>`
 				}
+				// For other component blocks, just render their children
+				return childrenHtml
+			}
 				default: return childrenHtml
 			}
 		}
@@ -372,7 +395,7 @@ async function main() {
 		const slug = url
 
 		try {
-			const query = `query{pages(where:{slug:{equals:"${slug}"}}){id title slug status content{document} publishedAt}}`
+			const query = `query{pages(where:{slug:{equals:"${slug}"}}){id title slug status content{document(hydrateRelationships:true)} publishedAt}}`
 
 			const response = await fetch('http://keystone:3000/api/graphql', {
 				method: 'POST',

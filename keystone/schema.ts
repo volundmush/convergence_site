@@ -11,6 +11,7 @@ import {
 	integer,
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
+import { componentBlocks } from './component-blocks';
 
 export const lists = {
 	Image: list({
@@ -86,8 +87,9 @@ export const lists = {
 				links: true,
 				dividers: true,
 				layouts: [[1, 1], [1, 1, 1]],
-				images: {
-					storage: 'images',
+				componentBlocks,
+				ui: {
+					views: './component-blocks',
 				},
 			}),
 			images: relationship({
