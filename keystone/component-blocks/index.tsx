@@ -4,7 +4,8 @@ import { component, fields } from '@keystone-6/fields-document/component-blocks'
 export const componentBlocks = {
 	image: component({
 		preview: (props) => {
-			const imageUrl = props.fields.imageUrl.value;
+			const imageData = props.fields.image.value?.data?.image;
+			const imageUrl = imageData?.url;
 			const float = props.fields.float.value;
 			
 			if (!imageUrl) {
@@ -59,8 +60,12 @@ export const componentBlocks = {
 		},
 		label: 'Image',
 		schema: {
-			imageUrl: fields.url({
-				label: 'Image URL',
+			image: fields.relationship({
+				listKey: 'Image',
+				label: 'Image',
+				labelField: 'name',
+				selection: 'id name image { url }',
+				many: false,
 			}),
 			alt: fields.text({
 				label: 'Alt text',
