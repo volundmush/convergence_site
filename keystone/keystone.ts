@@ -20,14 +20,16 @@ export default config({
 			kind: 'local',
 			type: 'image',
 			storagePath: '/app/keystone/public/images',
-			publicPath: '/images',
+			publicPath: '/admin/public/images',
+			generateUrl: (filename: string) => `/admin/public/images/${filename}`,
 		},
 		publicPages: ['/no-access'],
 		files: {
 			kind: 'local',
 			type: 'file',
 			storagePath: '/app/keystone/public/files',
-			publicPath: '/files',
+			publicPath: '/admin/public/files',
+			generateUrl: (filename: string) => `/admin/public/files/${filename}`,
 		},
 	},
 	server: {
@@ -62,21 +64,21 @@ export default config({
 				next();
 			});
 
-			app.use(
-				'/images',
-				express.static('public/images', { index: false, redirect: false, lastModified: false })
-			);
-			app.use(
-				'/files',
-				express.static('public/files', {
-					setHeaders(res) {
-						res.setHeader('Content-Type', 'application/octet-stream')
-					},
-					index: false,
-					redirect: false,
-					lastModified: false,
-				})
-			);
+		app.use(
+			'/admin/public/images',
+			express.static('public/images', { index: false, redirect: false, lastModified: false })
+		);
+		app.use(
+			'/admin/public/files',
+			express.static('public/files', {
+				setHeaders(res) {
+					res.setHeader('Content-Type', 'application/octet-stream')
+				},
+				index: false,
+				redirect: false,
+				lastModified: false,
+			})
+		);
 
 			// Seed endpoint - POST /seed to run after system is up
 			app.post('/seed', async (req, res) => {
