@@ -130,7 +130,6 @@ export default config({
 				mode: 'write',
 				outputPath: 'next.config.js',
 				src: `const nextConfig = {
-  bundlePagesRouterDependencies: true,
   typescript: {
     ignoreBuildErrors: true,
   },
