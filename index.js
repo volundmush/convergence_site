@@ -228,9 +228,8 @@ async function initializeHandlebars() {
 				case 'component-block': {
 				// Handle image component block
 				if (node.component === 'image') {
-					// The image relationship is stored as node.props.image which is an object with data property
-					const imageData = node.props?.image?.data
-					const imageUrl = imageData?.image?.url
+					// The image URL is stored as node.props.imageUrl (simple URL field)
+					const imageUrl = node.props?.imageUrl
 					const alt = escapeHtml(node.props?.alt || '')
 					const caption = escapeHtml(node.props?.caption || '')
 					const float = node.props?.float || 'none'
