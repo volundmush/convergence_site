@@ -19,14 +19,14 @@ export default config({
 		images: {
 			kind: 'local',
 			type: 'image',
-			storagePath: 'keystone/public/images',
+			storagePath: 'public/images',
 			publicPath: '/images',
 		},
 		publicPages: ['/no-access'],
 		files: {
 			kind: 'local',
 			type: 'file',
-			storagePath: 'keystone/public/files',
+			storagePath: 'public/files',
 			publicPath: '/files',
 		},
 	},
