@@ -125,8 +125,8 @@ export default config({
 			
 			return false;
 		},
-		getAdditionalFiles: async () => [
-			{
+		getAdditionalFiles: [
+			async () => ({
 				mode: 'write',
 				outputPath: 'next.config.js',
 				src: `const nextConfig = {
@@ -148,7 +148,7 @@ export default config({
 }
 
 module.exports = nextConfig`,
-			},
+			}),
 		],
 	},
 });
