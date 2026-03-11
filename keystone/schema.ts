@@ -22,7 +22,6 @@ export const lists = {
 			}),
 			image: image({
 				storage: 'images',
-				validation: { isRequired: true },
 			}),
 			alt: text({
 				ui: {
