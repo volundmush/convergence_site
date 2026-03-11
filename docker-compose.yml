@@ -44,7 +44,9 @@ services:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
     volumes:
-      - ./keystone/public/uploads:/app/public/uploads
+      - ./keystone/public/images:/app/keystone/public/images
+      - ./keystone/public/files:/app/keystone/public/files
+      - ./keystone/public/uploads:/app/keystone/public/uploads
     networks:
       - internal
     depends_on:
