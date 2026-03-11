@@ -125,5 +125,30 @@ export default config({
 			
 			return false;
 		},
+		getAdditionalFiles: async () => [
+			{
+				mode: 'write',
+				outputPath: 'next.config.js',
+				src: `const nextConfig = {
+  bundlePagesRouterDependencies: true,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  transpilePackages: ['../../admin'],
+  basePath: '/admin',
+  webpack: (config, { dev, isServer }) => {
+    if (!isServer) {
+      config.optimization.minimize = false;
+    }
+    return config;
+  },
+}
+
+module.exports = nextConfig`,
+			},
+		],
 	},
 });
