@@ -9,7 +9,7 @@ export const componentBlocks = {
 			
 			if (!imageUrl) {
 				return (
-					<div style={{ 
+					<div contentEditable={false} style={{ 
 						padding: '1rem', 
 						border: '2px dashed #ccc', 
 						borderRadius: '4px',
@@ -33,7 +33,7 @@ export const componentBlocks = {
 				};
 			
 			return (
-				<div style={containerStyle}>
+				<div contentEditable={false} style={containerStyle}>
 					<img
 						src={imageUrl}
 						alt={props.fields.alt.value || 'Image'}
