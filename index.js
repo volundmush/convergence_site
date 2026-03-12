@@ -1005,10 +1005,10 @@ ORDER BY s.scene_date_scheduled ASC
 			ctx.response.status = 200
 			ctx.response.body = { success: true, message: "Signed in successfully", token }
 		} catch (error) {
-			await logError(error, "POST /signin")
-		ctx.response.status = 500
-		ctx.response.body = { error: "Failed to sign in" }
-	}
+			await logError(error, "POST /signin", error)
+			ctx.response.status = 500
+			ctx.response.body = { error: "Failed to sign in" }
+		}
 	})
 
 	// Signout endpoint
