@@ -21,14 +21,12 @@
 					{{/if}}
 				</div>
 			{{/each}}
-			<div class="nav-user">
-				{{#if user}}
-					<a href="/admin/" class="admin-link">Admin UI</a>
-					<a href="/signout/" id="signout-btn" class="signout-link">Sign Out as {{ user.characterName }}</a>
-				{{else}}
-					<a href="/signin/" class="signin-link">Sign In</a>
-				{{/if}}
-			</div>
+			{{#if user}}
+				<a href="/admin/" class="nav-link admin-link">Admin</a>
+				<a href="/signout/" id="signout-btn" class="nav-link signout-link">Sign Out</a>
+			{{else}}
+				<a href="/signin/" class="nav-link signin-link">Sign In</a>
+			{{/if}}
 		</div>
 	</nav>
 	</nav>
