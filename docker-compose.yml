@@ -7,12 +7,19 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.email=${LETSENCRYPT_EMAIL:-admin@example.com}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
       - "--core.defaultRuleSyntax=v2"
     ports:
       - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
       - "0.0.0.0:8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/letsencrypt
     networks:
       - internal
 
@@ -61,14 +68,20 @@ services:
       start_period: 40s
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.keystone-admin.rule=PathPrefix(`/admin`)"
-      - "traefik.http.routers.keystone-admin.entrypoints=web"
+      - "traefik.http.routers.keystone-admin.rule=Host(`convergencemush.org`) && PathPrefix(`/admin`)"
+      - "traefik.http.routers.keystone-admin.entrypoints=web,websecure"
+      - "traefik.http.routers.keystone-admin.tls=true"
+      - "traefik.http.routers.keystone-admin.tls.certresolver=letsencrypt"
       - "traefik.http.routers.keystone-admin.priority=100"
-      - "traefik.http.routers.keystone-api.rule=PathPrefix(`/api`)"
-      - "traefik.http.routers.keystone-api.entrypoints=web"
+      - "traefik.http.routers.keystone-api.rule=Host(`convergencemush.org`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.keystone-api.entrypoints=web,websecure"
+      - "traefik.http.routers.keystone-api.tls=true"
+      - "traefik.http.routers.keystone-api.tls.certresolver=letsencrypt"
       - "traefik.http.routers.keystone-api.priority=50"
-      - "traefik.http.routers.keystone-static.rule=PathPrefix(`/images`) || PathPrefix(`/files`)"
-      - "traefik.http.routers.keystone-static.entrypoints=web"
+      - "traefik.http.routers.keystone-static.rule=Host(`convergencemush.org`) && (PathPrefix(`/images`) || PathPrefix(`/files`))"
+      - "traefik.http.routers.keystone-static.entrypoints=web,websecure"
+      - "traefik.http.routers.keystone-static.tls=true"
+      - "traefik.http.routers.keystone-static.tls.certresolver=letsencrypt"
       - "traefik.http.routers.keystone-static.priority=30"
       - "traefik.http.services.keystone.loadbalancer.server.port=3000"
 
@@ -89,8 +102,10 @@ services:
       - RHOST_ENDPOINT=${RHOST_ENDPOINT}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.dynamic-webpages.rule=PathPrefix(`/`) && !PathPrefix(`/admin`) && !PathPrefix(`/api`) && !PathPrefix(`/images`) && !PathPrefix(`/files`) || PathPrefix(`/gapi`)"
-      - "traefik.http.routers.dynamic-webpages.entrypoints=web"
+      - "traefik.http.routers.dynamic-webpages.rule=Host(`convergencemush.org`) && (PathPrefix(`/`) && !PathPrefix(`/admin`) && !PathPrefix(`/api`) && !PathPrefix(`/images`) && !PathPrefix(`/files`) || PathPrefix(`/gapi`))"
+      - "traefik.http.routers.dynamic-webpages.entrypoints=web,websecure"
+      - "traefik.http.routers.dynamic-webpages.tls=true"
+      - "traefik.http.routers.dynamic-webpages.tls.certresolver=letsencrypt"
       - "traefik.http.routers.dynamic-webpages.priority=20"
       - "traefik.http.services.dynamic-webpages.loadbalancer.server.port=8000"
 
