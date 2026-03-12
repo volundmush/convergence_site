@@ -107,7 +107,7 @@ const JWT_SECRET = Deno.env.get("JWT_SECRET") || "change-this-in-production"
 const jwtSecret = new TextEncoder().encode(JWT_SECRET)
 
 async function createJWT(accountName, characterName, bittype) {
-	const token = await jose.SignJWT({ accountName, characterName, bittype })
+	const token = await new jose.SignJWT({ accountName, characterName, bittype })
 		.setProtectedHeader({ alg: 'HS256' })
 		.setExpirationTime('7d')
 		.sign(jwtSecret)
