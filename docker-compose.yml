@@ -49,6 +49,7 @@ services:
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-convergence_web}
       - SESSION_SECRET=${KEYSTONE_SESSION_SECRET}
+      - JWT_SECRET=${JWT_SECRET}
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
     volumes:
