@@ -996,7 +996,6 @@ ORDER BY s.scene_date_scheduled ASC
 
 			// Set JWT cookie
 			ctx.cookies.set("auth", token, {
-				httpOnly: true,
 				secure: Deno.env.get("NODE_ENV") === "production",
 				sameSite: "Lax",
 				maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
