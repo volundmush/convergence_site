@@ -323,6 +323,7 @@ async function main() {
 	app.use(async (ctx, next) => {
 		ctx.state.user = null
 		const token = ctx.cookies.get('auth')
+		console.log("[auth middleware] token", token)
 		if (token) {
 			const payload = await verifyJWT(token)
 			if (payload) {
