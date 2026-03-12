@@ -140,12 +140,6 @@ export default config({
   },
   transpilePackages: ['../../admin'],
   basePath: '/admin',
-  webpack: (config, { dev, isServer }) => {
-    if (!isServer) {
-      config.optimization.minimize = false;
-    }
-    return config;
-  },
 }
 
 module.exports = nextConfig`,
