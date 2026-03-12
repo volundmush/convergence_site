@@ -14,7 +14,19 @@ export default config({
 	session: {
 		secret: process.env.SESSION_SECRET || 'development-secret-key-change-in-production',
 		data: 'authenticated',
-		get: ({ item }) => ({ isSignedIn: !!item, bittype: item?.bittype }),
+		get: ({ item, req }) => {
+			// Check if JWT middleware set isSignedIn on req
+			if (req?.session?.isSignedIn) {
+				return {
+					isSignedIn: true,
+					bittype: req.session.bittype,
+					accountName: req.session.accountName,
+					characterName: req.session.characterName,
+				};
+			}
+			// Fall back to database item
+			return { isSignedIn: !!item, bittype: item?.bittype };
+		},
 	},
 	storage: {
 		images: {
