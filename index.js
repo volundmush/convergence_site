@@ -322,8 +322,7 @@ async function main() {
 	// Auth middleware - parse JWT from auth cookie and set user context
 	app.use(async (ctx, next) => {
 		ctx.state.user = null
-		const token = ctx.cookies.get('auth')
-		console.log("[auth middleware] token", token)
+		const token = await ctx.cookies.get('auth')
 		if (token) {
 			const payload = await verifyJWT(token)
 			if (payload) {
@@ -697,22 +696,18 @@ return '"' .. str .. '"'
 			}
 			if(css) {
 				const resp = await triggerInfo("css", css)
-				console.log("[/api/characters/edit/] css returns:", resp)
 			}
 
 			if(gallery) {
 				const resp = await triggerInfo("gallery", gallery)
-				console.log("[/api/characters/edit/] galleryreturns:", resp)
 			}
 
 			if(portrait) {
 				const resp = await triggerInfo("portrait", portrait)
-				console.log("[/api/characters/edit/] portrait returns:", resp)
 			}
 
 			if(banner) {
 				const resp = await triggerInfo("banner", banner)
-				console.log("[/api/characters/edit/] banner returns:", resp)
 			}
 
 			ctx.response.status = 200
