@@ -2,6 +2,7 @@ import { config } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 import { lists } from './schema';
 import express from 'express';
+import * as jose from 'jose';
 import { runSeed } from './lib/seedService';
 
 export default config({
@@ -39,12 +40,14 @@ export default config({
 			const cookieParser = require('cookie-parser');
 			app.use(cookieParser());
 			// Custom session middleware to validate JWT from auth cookie
-			app.use((req, res, next) => {
+			app.use(async (req, res, next) => {
 				const token = req.cookies?.auth;
 				if (token) {
 					try {
-						const parts = token.split('.');
-						const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
+						const JWT_SECRET = process.env.JWT_SECRET || 'change-this-in-production';
+						const jwtSecret = new TextEncoder().encode(JWT_SECRET);
+						const verified = await jose.jwtVerify(token, jwtSecret);
+						const payload = verified.payload;
 						req.session = {
 							isSignedIn: true,
 							bittype: payload.bittype,
@@ -53,7 +56,8 @@ export default config({
 							item: { authenticated: true }
 						};
 					} catch (e) {
-						// Invalid token, continue without session
+						// Invalid token or verification failed, continue without session
+						console.log('[JWT Validation] Failed to verify token:', e instanceof Error ? e.message : e);
 					}
 				}
 				next();
