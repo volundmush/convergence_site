@@ -4,6 +4,7 @@ import { lists } from './schema';
 import express from 'express';
 import * as jose from 'jose';
 import { runSeed } from './lib/seedService';
+import cookieParser from 'cookie-parser';
 
 export default config({
 	db: {
@@ -14,19 +15,7 @@ export default config({
 	session: {
 		secret: process.env.SESSION_SECRET || 'development-secret-key-change-in-production',
 		data: 'authenticated',
-		get: ({ item, req }) => {
-			// Check if JWT middleware set isSignedIn on req
-			if (req?.session?.isSignedIn) {
-				return {
-					isSignedIn: true,
-					bittype: req.session.bittype,
-					accountName: req.session.accountName,
-					characterName: req.session.characterName,
-				};
-			}
-			// Fall back to database item
-			return { isSignedIn: !!item, bittype: item?.bittype };
-		},
+		get: ({ item }) => ({ isSignedIn: !!item }),
 	},
 	storage: {
 		images: {
@@ -49,52 +38,23 @@ export default config({
 		cors: { origin: true, credentials: true },
 		extendExpressApp: (app, commonContext) => {
 			app.set('trust proxy', true);
-			const cookieParser = require('cookie-parser');
 			app.use(cookieParser());
-			// Custom session middleware to validate JWT from auth cookie
-			app.use(async (req, res, next) => {
-				const token = req.cookies?.auth;
-				if (token) {
-					try {
-						const JWT_SECRET = process.env.JWT_SECRET || 'change-this-in-production';
-						const jwtSecret = new TextEncoder().encode(JWT_SECRET);
-						const verified = await jose.jwtVerify(token, jwtSecret);
-						const payload = verified.payload;
-						req.session = {
-							isSignedIn: true,
-							bittype: payload.bittype,
-							accountName: payload.accountName,
-							characterName: payload.characterName,
-							item: { authenticated: true }
-						};
-					} catch (e) {
-						// Invalid token or verification failed, continue without session
-						console.log('[JWT Validation] Failed to verify token:', e instanceof Error ? e.message : e);
-					}
-				}
-				next();
-			});
-			// Log all requests
-			app.use((req, res, next) => {
-				console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
-				next();
-			});
 
-		app.use(
-			'/admin/public/images',
-			express.static('public/images', { index: false, redirect: false, lastModified: false })
-		);
-		app.use(
-			'/admin/public/files',
-			express.static('public/files', {
-				setHeaders(res) {
-					res.setHeader('Content-Type', 'application/octet-stream')
-				},
-				index: false,
-				redirect: false,
-				lastModified: false,
-			})
-		);
+			app.use(
+				'/admin/public/images',
+				express.static('public/images', { index: false, redirect: false, lastModified: false })
+			);
+			app.use(
+				'/admin/public/files',
+				express.static('public/files', {
+					setHeaders(res) {
+						res.setHeader('Content-Type', 'application/octet-stream')
+					},
+					index: false,
+					redirect: false,
+					lastModified: false,
+				})
+			);
 
 			// Seed endpoint - POST /seed to run after system is up
 			app.post('/seed', async (req, res) => {
@@ -111,14 +71,22 @@ export default config({
 	},
 	ui: {
 		basePath: '/admin',
-		isAccessAllowed: (context) => {
-			// Allow if user is signed in
-			if (context.session?.isSignedIn) {
-				return true;
+		isAccessAllowed: async (context) => {
+			const req = context.req as any;
+			
+			// Check JWT cookie
+			if (req?.cookies?.auth) {
+				try {
+					const JWT_SECRET = process.env.JWT_SECRET || 'change-this-in-production';
+					const jwtSecret = new TextEncoder().encode(JWT_SECRET);
+					await jose.jwtVerify(req.cookies.auth, jwtSecret);
+					return true;
+				} catch (e) {
+					// Invalid JWT, fall through
+				}
 			}
 			
 			// Allow anonymous access from internal network
-			const req = context.req as any;
 			if (req) {
 				// Check X-Forwarded-For header first (set by Traefik/proxies)
 				const forwardedFor = req.headers?.['x-forwarded-for'] || '';
