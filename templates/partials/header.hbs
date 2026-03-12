@@ -22,11 +22,9 @@
 				</div>
 			{{/each}}
 			<div class="nav-user">
-				<!-- {{ user }} -->
 				{{#if user}}
-					<span class="user-info">{{ user.characterName }}</span>
-					<a href="/admin/" class="admin-link">Admin</a>
-					<button id="signout-btn" class="signout-button">Sign Out</button>
+					<a href="/admin/" class="admin-link">Admin UI</a>
+					<a href="/signout/" id="signout-btn" class="signout-link">Sign Out as {{ user.characterName }}</a>
 				{{else}}
 					<a href="/signin/" class="signin-link">Sign In</a>
 				{{/if}}
@@ -55,7 +53,7 @@
 			<a href="/admin/" class="sidebar-link">Admin</a>
 		</div>
 		<div class="sidebar-item">
-			<button id="sidebar-signout" class="sidebar-link">Sign Out</button>
+			<a href="/signout/" id="sidebar-signout" class="sidebar-link">Sign Out</a>
 		</div>
 	{{else}}
 		<div class="sidebar-item">
@@ -88,7 +86,8 @@
 	})
 	
 	// Sidebar signout
-	document.getElementById('sidebar-signout')?.addEventListener('click', async () => {
+	document.getElementById('sidebar-signout')?.addEventListener('click', async (e) => {
+		e.preventDefault()
 		try {
 			const response = await fetch('/signout/', {
 				method: 'POST',
@@ -130,7 +129,8 @@
 	})
 
 	// Desktop nav signout
-	document.getElementById('signout-btn')?.addEventListener('click', async () => {
+	document.getElementById('signout-btn')?.addEventListener('click', async (e) => {
+		e.preventDefault()
 		try {
 			const response = await fetch('/signout/', {
 				method: 'POST',
