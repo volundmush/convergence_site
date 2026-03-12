@@ -7,6 +7,9 @@ MYSQL_DB=fruity
 # Traefik & SSL
 LETSENCRYPT_EMAIL=your-email@example.com
 
+# JWT Authentication
+JWT_SECRET=your-jwt-secret-key-change-this-in-production
+
 # Keystone CMS
 KEYSTONE_SESSION_SECRET=your-secret-key-change-this-in-production
 POSTGRES_DB=convergence_web
