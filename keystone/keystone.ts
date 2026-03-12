@@ -73,6 +73,7 @@ export default config({
 		basePath: '/admin',
 		isAccessAllowed: async (context) => {
 			const req = context.req as any;
+			console.log("[isAccessAllowed] auth", req?.cookies?.auth)
 			
 			// Check JWT cookie
 			if (req?.cookies?.auth) {
@@ -80,8 +81,10 @@ export default config({
 					const JWT_SECRET = process.env.JWT_SECRET || 'change-this-in-production';
 					const jwtSecret = new TextEncoder().encode(JWT_SECRET);
 					await jose.jwtVerify(req.cookies.auth, jwtSecret);
+					console.log("[isAccessAllowed] token verified")
 					return true;
 				} catch (e) {
+					console.log("[isAccessAllowed] token did not verify")
 					// Invalid JWT, fall through
 				}
 			}
