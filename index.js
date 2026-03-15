@@ -361,7 +361,10 @@ async function renderPage(siteTemplate, templatePath, data = {}) {
 		`
 		const navQuery = `query{navigations(where:{slug:{equals:"main"}}){isActive items(orderBy:{sort:asc})${navFragment}}}`
 		const navResp = await fetch("http://traefik/api/graphql", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({query: navQuery})})
-		const navResult = await navResp.json()
+		console.log(`[Nav Fetch] Status: ${navResp.status}, Content-Type: ${navResp.headers.get('content-type')}`)
+		const navText = await navResp.text()
+		console.log(`[Nav Response] First 200 chars: ${navText.substring(0, 200)}`)
+		const navResult = JSON.parse(navText)
 		const nav = navResult.data?.navigations?.[0]
 		if (nav && nav.isActive) {
 			data.nav = nav.items.filter(i => i.isActive)
@@ -466,7 +469,10 @@ async function main() {
 				body: JSON.stringify({ query })
 			})
 
-			const data = await response.json()
+			console.log(`[Page Fetch] Status: ${response.status}, Content-Type: ${response.headers.get('content-type')}`)
+			const responseText = await response.text()
+			console.log(`[Page Response] First 300 chars: ${responseText.substring(0, 300)}`)
+			const data = JSON.parse(responseText)
 
 			if (data.errors || !response.ok) {
 				console.log(`[GraphQL Response] Status: ${response.status}, Body:`, JSON.stringify(data))
