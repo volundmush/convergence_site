@@ -69,17 +69,17 @@ services:
       start_period: 40s
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.keystone-admin.rule=Host(`convergencemush.org`) && PathPrefix(`/admin`)"
+      - "traefik.http.routers.keystone-admin.rule=(Host(`convergencemush.org`) || Host(`localhost`)) && PathPrefix(`/admin`)"
       - "traefik.http.routers.keystone-admin.entrypoints=web,websecure"
       - "traefik.http.routers.keystone-admin.tls=true"
       - "traefik.http.routers.keystone-admin.tls.certresolver=letsencrypt"
       - "traefik.http.routers.keystone-admin.priority=100"
-      - "traefik.http.routers.keystone-api.rule=Host(`convergencemush.org`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.keystone-api.rule=(Host(`convergencemush.org`) || Host(`localhost`)) && PathPrefix(`/api`)"
       - "traefik.http.routers.keystone-api.entrypoints=web,websecure"
       - "traefik.http.routers.keystone-api.tls=true"
       - "traefik.http.routers.keystone-api.tls.certresolver=letsencrypt"
       - "traefik.http.routers.keystone-api.priority=50"
-      - "traefik.http.routers.keystone-static.rule=Host(`convergencemush.org`) && (PathPrefix(`/images`) || PathPrefix(`/files`))"
+      - "traefik.http.routers.keystone-static.rule=(Host(`convergencemush.org`) || Host(`localhost`)) && (PathPrefix(`/images`) || PathPrefix(`/files`))"
       - "traefik.http.routers.keystone-static.entrypoints=web,websecure"
       - "traefik.http.routers.keystone-static.tls=true"
       - "traefik.http.routers.keystone-static.tls.certresolver=letsencrypt"
@@ -103,7 +103,7 @@ services:
       - RHOST_ENDPOINT=${RHOST_ENDPOINT}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.dynamic-webpages.rule=Host(`convergencemush.org`) && (PathPrefix(`/`) && !PathPrefix(`/admin`) && !PathPrefix(`/api`) && !PathPrefix(`/images`) && !PathPrefix(`/files`) || PathPrefix(`/gapi`))"
+      - "traefik.http.routers.dynamic-webpages.rule=(Host(`convergencemush.org`) || Host(`localhost`)) && (PathPrefix(`/`) && !PathPrefix(`/admin`) && !PathPrefix(`/api`) && !PathPrefix(`/images`) && !PathPrefix(`/files`) || PathPrefix(`/gapi`))"
       - "traefik.http.routers.dynamic-webpages.entrypoints=web,websecure"
       - "traefik.http.routers.dynamic-webpages.tls=true"
       - "traefik.http.routers.dynamic-webpages.tls.certresolver=letsencrypt"
