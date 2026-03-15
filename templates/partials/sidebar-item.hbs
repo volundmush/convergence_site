@@ -1,0 +1,18 @@
+{{!-- Recursive partial for rendering sidebar navigation with unlimited nesting --}}
+<div class="sidebar-item {{this.cssClass}}" data-nav-id="{{this.id}}">
+	{{#if this.children.length}}
+		<button class="sidebar-item-toggle" aria-label="Toggle {{this.label}} submenu">
+			{{this.label}}
+			<span class="sidebar-arrow">▶</span>
+		</button>
+		<ul class="sidebar-submenu" role="navigation">
+			{{#each this.children}}
+				<li class="sidebar-subitem">
+					{{> sidebar-item}}
+				</li>
+			{{/each}}
+		</ul>
+	{{else}}
+		<a href="{{this.url}}" target="{{this.target}}" class="sidebar-link">{{this.label}}</a>
+	{{/if}}
+</div>

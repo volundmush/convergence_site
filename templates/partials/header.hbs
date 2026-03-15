@@ -6,20 +6,7 @@
 		</div>
 		<div class="nav-links">
 			{{#each (nav "main")}}
-				<div class="nav-item-wrapper {{this.cssClass}}">
-					{{#if this.children}}
-						<button class="nav-dropdown-toggle">{{this.label}} <span class="dropdown-arrow">▼</span></button>
-						<ul class="nav-submenu">
-							{{#each this.children}}
-								<li class="nav-subitem {{this.cssClass}}">
-									<a href="{{this.url}}" class="nav-link">{{this.label}}</a>
-								</li>
-							{{/each}}
-						</ul>
-					{{else}}
-						<a href="{{this.url}}" class="nav-link">{{this.label}}</a>
-					{{/if}}
-				</div>
+				{{> nav-item}}
 			{{/each}}
 			{{#if user}}
 				<a href="/admin/" class="nav-link admin-link">Admin</a>
@@ -29,21 +16,11 @@
 			{{/if}}
 		</div>
 	</nav>
-	</nav>
 </header>
 
 <aside class="sidebar" id="sidebar">
 	{{#each (nav "main")}}
-		<div class="sidebar-item">
-			<a href="{{this.url}}" class="sidebar-link">{{this.label}}</a>
-			{{#if this.children}}
-				<ul class="sidebar-submenu">
-					{{#each this.children}}
-						<li><a href="{{this.url}}">{{this.label}}</a></li>
-					{{/each}}
-				</ul>
-			{{/if}}
-		</div>
+		{{> sidebar-item}}
 	{{/each}}
 	{{#if user}}
 		<div class="sidebar-user">{{ user.characterName }}</div>
@@ -64,7 +41,7 @@
 	const hamburger = document.getElementById('hamburger')
 	const sidebar = document.getElementById('sidebar')
 	
-	// Toggle sidebar on hamburger click
+	// ===== HAMBURGER & SIDEBAR =====
 	hamburger.addEventListener('click', () => {
 		sidebar.classList.toggle('open')
 	})
@@ -77,12 +54,21 @@
 	})
 	
 	// Close sidebar when a link is clicked
-	sidebar.querySelectorAll('.sidebar-link, .sidebar-submenu a').forEach(link => {
+	sidebar.querySelectorAll('.sidebar-link').forEach(link => {
 		link.addEventListener('click', () => {
 			sidebar.classList.remove('open')
 		})
 	})
 	
+	// ===== SIDEBAR NESTED TOGGLE =====
+	sidebar.querySelectorAll('.sidebar-item-toggle').forEach(toggle => {
+		toggle.addEventListener('click', (e) => {
+			e.preventDefault()
+			const sidebarItem = toggle.closest('.sidebar-item')
+			sidebarItem.classList.toggle('open')
+		})
+	})
+
 	// Sidebar signout
 	document.getElementById('sidebar-signout')?.addEventListener('click', async (e) => {
 		e.preventDefault()
@@ -99,26 +85,45 @@
 		}
 	})
 
-	// Dropdown toggle functionality for desktop nav
+	// ===== NAVBAR NESTED DROPDOWNS =====
+	// Handle navbar dropdown toggle with nested support
 	document.querySelectorAll('.nav-dropdown-toggle').forEach(toggle => {
 		toggle.addEventListener('click', (e) => {
-			e.preventDefault()
+			e.stopPropagation()
 			const wrapper = toggle.closest('.nav-item-wrapper')
+			const isActive = wrapper.classList.contains('active')
+			
+			// Close all other dropdowns at the same level
+			const parent = wrapper.parentElement
+			if (parent) {
+				parent.querySelectorAll(':scope > .nav-item-wrapper.active').forEach(item => {
+					if (item !== wrapper) item.classList.remove('active')
+				})
+			}
+			
+			// Toggle current dropdown
 			wrapper.classList.toggle('active')
 		})
 	})
 
-	// Close dropdowns when clicking outside
+	// Close dropdowns when clicking outside navbar
 	document.addEventListener('click', (e) => {
-		if (!e.target.closest('.nav-item-wrapper')) {
+		if (!e.target.closest('.navbar')) {
 			document.querySelectorAll('.nav-item-wrapper.active').forEach(item => {
 				item.classList.remove('active')
 			})
 		}
 	})
 
-	// Close dropdowns when a submenu link is clicked
-	document.querySelectorAll('.nav-submenu a').forEach(link => {
+	// Prevent closing dropdown when clicking inside it
+	document.querySelectorAll('.nav-submenu').forEach(submenu => {
+		submenu.addEventListener('click', (e) => {
+			e.stopPropagation()
+		})
+	})
+
+	// Close dropdown when a final link (no children) is clicked
+	document.querySelectorAll('.nav-link:not(.nav-dropdown-toggle)').forEach(link => {
 		link.addEventListener('click', () => {
 			document.querySelectorAll('.nav-item-wrapper.active').forEach(item => {
 				item.classList.remove('active')
