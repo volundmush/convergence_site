@@ -360,7 +360,7 @@ async function renderPage(siteTemplate, templatePath, data = {}) {
 			}
 		`
 		const navQuery = `query{navigations(where:{slug:{equals:"main"}}){isActive items(orderBy:{sort:asc})${navFragment}}}`
-		const navResp = await fetch("http://keystone:3000/api/graphql", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({query: navQuery})})
+		const navResp = await fetch("http://traefik/api/graphql", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({query: navQuery})})
 		const navResult = await navResp.json()
 		const nav = navResult.data?.navigations?.[0]
 		if (nav && nav.isActive) {
@@ -460,7 +460,7 @@ async function main() {
 		try {
 			const query = `query{pages(where:{slug:{equals:"${slug}"}}){id title slug status content{document(hydrateRelationships:true)} publishedAt}}`
 
-			const response = await fetch('http://keystone:3000/api/graphql', {
+			const response = await fetch('http://traefik/api/graphql', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ query })
