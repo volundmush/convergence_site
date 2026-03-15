@@ -82,7 +82,7 @@ header {
 	background: linear-gradient(120deg, var(--secondary-bg), hsl(from var(--secondary-bg) h s calc(l + 10)));
 	color: var(--secondary-fg);
 	text-shadow: none;
-	height: 200px;
+	height: 100px;
 }
 
 header::before {
@@ -98,6 +98,10 @@ header::before {
 }
 
 @media (min-width: 1024px) {
+	header {
+		height: 200px;
+	}
+
 	header::before {
 		width: 200px;
 		height: 200px;
@@ -834,8 +838,14 @@ main a, main a:active, main a:visited, main a:hover {
   z-index: 1000;
   transition: right 0.3s ease;
   overflow-y: auto;
-  padding-top: 4.5rem;
+  padding-top: 100px;
   box-sizing: border-box;
+}
+
+@media (min-width: 1024px) {
+  .sidebar {
+    padding-top: 200px;
+  }
 }
 
 .sidebar.open {
