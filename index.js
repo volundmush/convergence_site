@@ -296,7 +296,70 @@ async function renderPage(siteTemplate, templatePath, data = {}) {
 
 	// Fetch navigation data if not already provided
 	if (!data.nav) {
-		const navQuery = `query{navigations(where:{slug:{equals:"main"}}){isActive items(orderBy:{sort:asc}){label url target sort isActive cssClass icon children(orderBy:{sort:asc}){label url target sort isActive cssClass icon}}}}`
+		// GraphQL fragment for recursive navigation structure (up to 5 levels deep)
+		const navFragment = `
+			{
+				id
+				label
+				url
+				target
+				sort
+				isActive
+				cssClass
+				icon
+				children(orderBy:{sort:asc}) {
+					id
+					label
+					url
+					target
+					sort
+					isActive
+					cssClass
+					icon
+					children(orderBy:{sort:asc}) {
+						id
+						label
+						url
+						target
+						sort
+						isActive
+						cssClass
+						icon
+						children(orderBy:{sort:asc}) {
+							id
+							label
+							url
+							target
+							sort
+							isActive
+							cssClass
+							icon
+							children(orderBy:{sort:asc}) {
+								id
+								label
+								url
+								target
+								sort
+								isActive
+								cssClass
+								icon
+								children(orderBy:{sort:asc}) {
+									id
+									label
+									url
+									target
+									sort
+									isActive
+									cssClass
+									icon
+								}
+							}
+						}
+					}
+				}
+			}
+		`
+		const navQuery = `query{navigations(where:{slug:{equals:"main"}}){isActive items(orderBy:{sort:asc})${navFragment}}}`
 		const navResp = await fetch("http://keystone:3000/api/graphql", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({query: navQuery})})
 		const navResult = await navResp.json()
 		const nav = navResult.data?.navigations?.[0]

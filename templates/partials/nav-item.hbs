@@ -1,6 +1,6 @@
 {{!-- Recursive partial for rendering navigation items with unlimited nesting --}}
-{{#if this.children.length}}
-	<div class="nav-item-wrapper {{this.cssClass}}" data-nav-id="{{this.id}}">
+<div class="nav-item-wrapper {{this.cssClass}}" data-nav-id="{{this.id}}">
+	{{#if this.children.length}}
 		<button class="nav-dropdown-toggle" aria-label="Toggle {{this.label}} submenu">
 			{{this.label}} 
 			<span class="dropdown-arrow">▼</span>
@@ -12,9 +12,7 @@
 				</li>
 			{{/each}}
 		</ul>
-	</div>
-{{else}}
-	<div class="nav-item-wrapper {{this.cssClass}}" data-nav-id="{{this.id}}">
+	{{else}}
 		<a href="{{this.url}}" target="{{this.target}}" class="nav-link">{{this.label}}</a>
-	</div>
-{{/if}}
+	{{/if}}
+</div>
