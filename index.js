@@ -12,7 +12,7 @@ const cache = createClient({
 	url: 'redis://keydb:6379'
 })
 cache.on('error', (err) => console.log('Cache Client Error', err))
-await cache.connect()
+cache.connect().catch((err) => console.log('Cache connection failed:', err))
 
 // Cache helper functions
 async function getCached(key) {
