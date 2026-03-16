@@ -67,9 +67,8 @@ function cachedGetRoute(handler) {
 function cachedPostRoute(handler) {
 	return async (ctx) => {
 		// Read and buffer the body once
-		const bodyRaw = await ctx.request.body.value
-		const bodyStr = new TextDecoder().decode(bodyRaw)
-		const bodyData = JSON.parse(bodyStr)
+		const bodyData = await ctx.request.body.json()
+		const bodyStr = JSON.stringify(bodyData)
 		
 		const cacheKey = getCacheKey('gapi', ctx.request.url.pathname + '-' + hashString(bodyStr))
 		let cached = await getCached(cacheKey)
@@ -79,10 +78,8 @@ function cachedPostRoute(handler) {
 		}
 		
 		// Override ctx.request.body.json() to return the cached parsed body
-		const originalBody = ctx.request.body
 		ctx.request.body = {
-			json: async () => bodyData,
-			value: bodyRaw
+			json: async () => bodyData
 		}
 		
 		await handler(ctx)
