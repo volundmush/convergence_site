@@ -1084,7 +1084,7 @@ ORDER BY s.scene_date_scheduled ASC
 			await logError(error, "/characters/:key")
 			throw error
 		}
-	}))
+	})
 
 	router.get("/logs/:key([0-9]+)/", async (ctx) => {
 		const sceneKey = ctx.params.key
