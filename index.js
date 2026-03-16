@@ -836,9 +836,15 @@ return json.encode(char)
 		ctx.response.body = ret
 	}))
 
-	router.post("/gapi/characters/edit/", cachedPostRoute(async (ctx) => {
+	router.post("/gapi/characters/edit/", async (ctx) => {
 		try {
 			const payload = await ctx.request.body.json()
+			const cacheKey = getCacheKey('gapi', ctx.request.url.pathname + '-' + hashString(JSON.stringify(payload)))
+			const cached = await getCached(cacheKey)
+			if (cached) {
+				ctx.response.body = cached
+				return
+			}
 
 			const { accountName, password, characterName, portrait, gallery, css, banner } = payload
 
@@ -882,16 +888,23 @@ return '"' .. str .. '"'
 
 			ctx.response.status = 200
 			ctx.response.body = { success: true, message: "Character edited!" }
+			await setCached(cacheKey, ctx.response.body, 600)
 		} catch (error) {
 			await logError(error, "POST /api/characters/edit")
 			ctx.response.status = 500
 			ctx.response.body = { error: "Failed to process character edit" }
 		}
-	}))
+	})
 
-	router.post("/gapi/logs/list/", cachedPostRoute(async (ctx) => {
+	router.post("/gapi/logs/list/", async (ctx) => {
 		try {
 			const payload = await ctx.request.body.json()
+			const cacheKey = getCacheKey('gapi', ctx.request.url.pathname + '-' + hashString(JSON.stringify(payload)))
+			const cached = await getCached(cacheKey)
+			if (cached) {
+				ctx.response.body = cached
+				return
+			}
 			const start = payload?.start || 0
 			const desc = payload?.desc ? "DESC" : "ASC"
 
@@ -968,12 +981,13 @@ ORDER BY s.scene_id ${desc};
 			}))
 			ctx.response.status = 200
 			ctx.response.body = parsedScenes
+			await setCached(cacheKey, ctx.response.body, 600)
 		} catch (error) {
 			await logError(error, "POST /api/logs/list")
 			ctx.response.status = 500
 			ctx.response.body = { error: "Failed to list logs" }
 		}
-	}))
+	})
 
 	router.get("/gapi/logs/player/:objid", cachedGetRoute(async (ctx) => {
 		try {
@@ -1013,8 +1027,16 @@ INNER JOIN entity e ON e.entity_id = a.entity_id
 		}
 	}))
 
-	router.post("/gapi/logs/pagecount/", cachedPostRoute(async (ctx) => {
+	router.post("/gapi/logs/pagecount/", async (ctx) => {
 		try {
+			const payload = await ctx.request.body.json()
+			const cacheKey = getCacheKey('gapi', ctx.request.url.pathname + '-' + hashString(JSON.stringify(payload)))
+			const cached = await getCached(cacheKey)
+			if (cached) {
+				ctx.response.body = cached
+				return
+			}
+			
 			const client = await mysql()
 
 			const result = await client.query(`
@@ -1028,16 +1050,23 @@ WHERE scene_status != -1
 
 			ctx.response.status = 200
 			ctx.response.body = { pageCount, total }
+			await setCached(cacheKey, ctx.response.body, 600)
 		} catch (error) {
 			await logError(error, "POST /api/logs/pagecount")
 			ctx.response.status = 500
 			ctx.response.body = { error: "Failed to get page count" }
 		}
-	}))
+	})
 
-	router.post("/gapi/logs/upcoming/", cachedPostRoute(async (ctx) => {
+	router.post("/gapi/logs/upcoming/", async (ctx) => {
 		try {
 			const payload = await ctx.request.body.json()
+			const cacheKey = getCacheKey('gapi', ctx.request.url.pathname + '-' + hashString(JSON.stringify(payload)))
+			const cached = await getCached(cacheKey)
+			if (cached) {
+				ctx.response.body = cached
+				return
+			}
 			const start = payload?.start || 0
 
 			const client = await mysql()
@@ -1069,12 +1098,13 @@ ORDER BY s.scene_date_scheduled ASC
 			}))
 			ctx.response.status = 200
 			ctx.response.body = parsedScenes
+			await setCached(cacheKey, ctx.response.body, 600)
 		} catch (error) {
 			await logError(error, "POST /api/logs/upcoming")
 			ctx.response.status = 500
 			ctx.response.body = { error: "Failed to list upcoming logs" }
 		}
-	}))
+	})
 
 	router.get("/characters/:key/", async (ctx) => {
 		const dbref = `#${ctx.params.key}`
