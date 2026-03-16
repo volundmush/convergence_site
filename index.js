@@ -9,8 +9,7 @@ const SERVER_START_TIME = Date.now()
 
 // KeyDB cache client
 const cache = createClient({
-	host: 'keydb',
-	port: 6379
+	url: 'redis://keydb:6379'
 })
 cache.on('error', (err) => console.log('Cache Client Error', err))
 await cache.connect()
