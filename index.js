@@ -1117,30 +1117,24 @@ for dbref in string.gmatch(factionsRaw, "([^%s]+)") do
 	private = rhost.strfunc("get", dbref .. "/" .. config.private.value)) == '1'
 	membersRaw = rhost.strfunc("get", dbref .. "/" .. members))
 
-	pcobjid = rhost.strfunc("objid", dbref)
-	pctotem = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",PC)]") == '1'
-	approved = rhost.strfunc("eval", "[hasflag(" .. dbref .. ",WANDERER)]") == '0'
-	bittype = tonumber(rhost.strfunc("bittype", dbref))
-	npc = not pctotem and not approved and bittype == 0
-	pc = approved and pctotem and bittype <= 1
-	staff = pctotem and bittype > 1
+	players = {}
+	for pdbref in string.gmatch(membersRaw, "([^%s]+)") do
+		player = {}
+		player.name = rhost.strfunc("name", pdbref)
+		player.cname = rhost.parseansi(rhost.strfunc("cname", pdbref))
+		player.dbref = pdbref
+		table.insert(players, player)
+	end
+
 	if not private and not hidden then
 		fac = {}
 		fac.name = rhost.strfunc("name", dbref)
 		fac.cname = rhost.parseansi(rhost.strfunc("cname", dbref))
-		fac.members = rhost.strfunc("bittype", dbref)
-		fac.approved = rhost.strfunc("eval", "[hasflag(" .. dbref .. ",WANDERER)]") == '0'
+		fac.members = players
 		fac.dbref = dbref
-		fac.pc = pc
-		fac.npc = npc
-		fac.staff = staff
-		fac.objid = pcobjid
 		table.insert(ret, fac)
 	end
 end
-return json.encode(ret)
-
-
 return json.encode(ret)
 `
 			const factionData = await rhostLua(luaScript)
