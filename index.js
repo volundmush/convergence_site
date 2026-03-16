@@ -676,21 +676,6 @@ ORDER BY p.pose_date_created ASC
 		}
 	})
 
-		ctx.response.status = 200
-		ctx.response.body = {
-			scene: {
-				...sceneData,
-				scene_status: statusMap[sceneData.scene_status] || "Unknown"
-			},
-			poses: formattedPoses
-		}
-		} catch (error) {
-			await logError(error, "GET /api/logs/get/:key")
-			ctx.response.status = 500
-			ctx.response.body = { error: "Failed to get log" }
-		}
-	})
-
 	router.get("/logs/:key(\\d+)/", async (ctx) => {
 		const sceneKey = ctx.params.key
 
