@@ -1029,8 +1029,7 @@ INNER JOIN entity e ON e.entity_id = a.entity_id
 
 	router.post("/gapi/logs/pagecount/", async (ctx) => {
 		try {
-			const payload = await ctx.request.body.json()
-			const cacheKey = getCacheKey('gapi', ctx.request.url.pathname + '-' + hashString(JSON.stringify(payload)))
+			const cacheKey = getCacheKey('gapi', ctx.request.url.pathname)
 			const cached = await getCached(cacheKey)
 			if (cached) {
 				ctx.response.body = cached
