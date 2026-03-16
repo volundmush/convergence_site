@@ -66,13 +66,25 @@ function cachedGetRoute(handler) {
 // Wrapper for POST routes with caching
 function cachedPostRoute(handler) {
 	return async (ctx) => {
-		const body = await ctx.request.body().value
-		const cacheKey = getCacheKey('gapi', ctx.request.url.pathname + '-' + hashString(JSON.stringify(body)))
+		// Read and buffer the body once
+		const bodyRaw = await ctx.request.body().value
+		const bodyStr = new TextDecoder().decode(bodyRaw)
+		const bodyData = JSON.parse(bodyStr)
+		
+		const cacheKey = getCacheKey('gapi', ctx.request.url.pathname + '-' + hashString(bodyStr))
 		let cached = await getCached(cacheKey)
 		if (cached) {
 			ctx.response.body = cached
 			return
 		}
+		
+		// Override ctx.request.body.json() to return the cached parsed body
+		const originalBody = ctx.request.body
+		ctx.request.body = {
+			json: async () => bodyData,
+			value: bodyRaw
+		}
+		
 		await handler(ctx)
 		if (ctx.response.body) {
 			await setCached(cacheKey, ctx.response.body, 600)
