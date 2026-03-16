@@ -1138,6 +1138,7 @@ end
 return json.encode(ret)
 `
 			const factionData = await rhostLua(luaScript)
+			console.log("[gapi/factions/list/] factionData", factionData)
 			let factions = []
 			
 			try {
