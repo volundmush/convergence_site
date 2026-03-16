@@ -2,9 +2,84 @@ import { Application, Router, send } from "jsr:@oak/oak@17.1.6"
 import Handlebars from "npm:handlebars@^4.7.8"
 import { Client } from "https://deno.land/x/mysql@v2.12.1/mod.ts"
 import * as jose from "https://deno.land/x/jose@v4.14.1/index.ts"
+import { createClient } from "npm:redis@^4.6.0"
 
 const rhost = Deno.env.get("RHOST_ENDPOINT") || "http://%2322222umicupcake@127.0.0.1:2061/"
 const SERVER_START_TIME = Date.now()
+
+// KeyDB cache client
+const cache = createClient({
+	host: 'keydb',
+	port: 6379
+})
+cache.on('error', (err) => console.log('Cache Client Error', err))
+await cache.connect()
+
+// Cache helper functions
+async function getCached(key) {
+	try {
+		const val = await cache.get(key)
+		return val ? JSON.parse(val) : null
+	} catch (e) {
+		console.log('Cache get error:', e)
+		return null
+	}
+}
+
+async function setCached(key, value, ttlSeconds = 600) {
+	try {
+		await cache.setEx(key, ttlSeconds, JSON.stringify(value))
+	} catch (e) {
+		console.log('Cache set error:', e)
+	}
+}
+
+function getCacheKey(type, identifier) {
+	return `cache:${type}:${identifier}`
+}
+
+function hashString(str) {
+	let hash = 0
+	for (let i = 0; i < str.length; i++) {
+		const char = str.charCodeAt(i)
+		hash = ((hash << 5) - hash) + char
+		hash = hash & hash
+	}
+	return Math.abs(hash).toString(16)
+}
+
+// Wrapper for GET routes with caching
+function cachedGetRoute(handler) {
+	return async (ctx) => {
+		const cacheKey = getCacheKey('gapi', ctx.request.url.pathname)
+		let cached = await getCached(cacheKey)
+		if (cached) {
+			ctx.response.body = cached
+			return
+		}
+		await handler(ctx)
+		if (ctx.response.body) {
+			await setCached(cacheKey, ctx.response.body, 600)
+		}
+	}
+}
+
+// Wrapper for POST routes with caching
+function cachedPostRoute(handler) {
+	return async (ctx) => {
+		const body = await ctx.request.body().value
+		const cacheKey = getCacheKey('gapi', ctx.request.url.pathname + '-' + hashString(JSON.stringify(body)))
+		let cached = await getCached(cacheKey)
+		if (cached) {
+			ctx.response.body = cached
+			return
+		}
+		await handler(ctx)
+		if (ctx.response.body) {
+			await setCached(cacheKey, ctx.response.body, 600)
+		}
+	}
+}
 
 async function mysql() {
 	const mysql = await new Client().connect({
@@ -360,11 +435,14 @@ async function renderPage(siteTemplate, templatePath, data = {}) {
 			}
 		`
 		const navQuery = `query{navigations(where:{slug:{equals:"main"}}){isActive items(orderBy:{sort:asc})${navFragment}}}`
-		const navResp = await fetch("http://traefik/api/graphql", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({query: navQuery})})
-		console.log(`[Nav Fetch] Status: ${navResp.status}, Content-Type: ${navResp.headers.get('content-type')}`)
-		const navText = await navResp.text()
-		console.log(`[Nav Response] First 200 chars: ${navText.substring(0, 200)}`)
-		const navResult = JSON.parse(navText)
+		const navCacheKey = getCacheKey('gql', 'nav-' + hashString(navQuery))
+		let navResult = await getCached(navCacheKey)
+		if (!navResult) {
+			const navResp = await fetch("http://traefik/api/graphql", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({query: navQuery})})
+			const navText = await navResp.text()
+			navResult = JSON.parse(navText)
+			await setCached(navCacheKey, navResult, 600)
+		}
 		const nav = navResult.data?.navigations?.[0]
 		if (nav && nav.isActive) {
 			data.nav = nav.items.filter(i => i.isActive)
@@ -462,20 +540,22 @@ async function main() {
 
 		try {
 			const query = `query{pages(where:{slug:{equals:"${slug}"}}){id title slug status content{document(hydrateRelationships:true)} publishedAt}}`
+			const pageCacheKey = getCacheKey('gql', 'page-' + hashString(query))
+			let data = await getCached(pageCacheKey)
+			let response
+			if (!data) {
+				response = await fetch('http://traefik/api/graphql', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ query })
+				})
+				const responseText = await response.text()
+				data = JSON.parse(responseText)
+				await setCached(pageCacheKey, data, 600)
+			}
 
-			const response = await fetch('http://traefik/api/graphql', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ query })
-			})
-
-			console.log(`[Page Fetch] Status: ${response.status}, Content-Type: ${response.headers.get('content-type')}`)
-			const responseText = await response.text()
-			console.log(`[Page Response] First 300 chars: ${responseText.substring(0, 300)}`)
-			const data = JSON.parse(responseText)
-
-			if (data.errors || !response.ok) {
-				console.log(`[GraphQL Response] Status: ${response.status}, Body:`, JSON.stringify(data))
+			if (data.errors || (response && !response.ok)) {
+				console.log(`[GraphQL Response] Status: ${response?.status}, Body:`, JSON.stringify(data))
 				throw new Error(`GraphQL error: ${JSON.stringify(data.errors || data)}`)
 			}
 
@@ -512,6 +592,15 @@ async function main() {
 	router.get("/gapi/logs/get/:key", async (ctx) => {
 		try {
 			const sceneKey = ctx.params.key
+			const cacheKey = getCacheKey('gapi', ctx.request.url.pathname)
+			
+			// Check cache first
+			let cached = await getCached(cacheKey)
+			if (cached) {
+				ctx.response.body = cached
+				return
+			}
+
 			const client = await mysql()
 
 		const sceneResult = await client.query(`
@@ -576,6 +665,25 @@ ORDER BY p.pose_date_created ASC
 			},
 			poses: formattedPoses
 		}
+
+		// Cache with different TTL based on scene status (1 = Active)
+		const ttl = sceneData.scene_status === 1 ? 60 : 600
+		await setCached(cacheKey, ctx.response.body, ttl)
+		} catch (error) {
+			await logError(error, "GET /api/logs/get/:key")
+			ctx.response.status = 500
+			ctx.response.body = { error: "Failed to get log" }
+		}
+	})
+
+		ctx.response.status = 200
+		ctx.response.body = {
+			scene: {
+				...sceneData,
+				scene_status: statusMap[sceneData.scene_status] || "Unknown"
+			},
+			poses: formattedPoses
+		}
 		} catch (error) {
 			await logError(error, "GET /api/logs/get/:key")
 			ctx.response.status = 500
@@ -601,7 +709,7 @@ ORDER BY p.pose_date_created ASC
 		}
 	})
 
-	router.get("/gapi/characters/get/", async (ctx) => {
+	router.get("/gapi/characters/get/", cachedGetRoute(async (ctx) => {
 		const luaScript = `
 ret = {}
 playersRaw = rhost.strfunc("search", "type=player")
@@ -639,9 +747,9 @@ return json.encode(ret)
 
 		ctx.response.status = 200
 		ctx.response.body = ret
-	})
+	}))
 
-	router.get("/gapi/characters/get/:key", async (ctx) => {
+	router.get("/gapi/characters/get/:key", cachedGetRoute(async (ctx) => {
 		const dbref = `${ctx.params.key}`
 		const luaScript = `
 datatypes = {
@@ -733,9 +841,9 @@ return json.encode(char)
 
 		ctx.response.status = 200
 		ctx.response.body = ret
-	})
+	}))
 
-	router.post("/gapi/characters/edit/", async (ctx) => {
+	router.post("/gapi/characters/edit/", cachedPostRoute(async (ctx) => {
 		try {
 			const payload = await ctx.request.body.json()
 
@@ -786,9 +894,9 @@ return '"' .. str .. '"'
 			ctx.response.status = 500
 			ctx.response.body = { error: "Failed to process character edit" }
 		}
-	})
+	}))
 
-	router.post("/gapi/logs/list/", async (ctx) => {
+	router.post("/gapi/logs/list/", cachedPostRoute(async (ctx) => {
 		try {
 			const payload = await ctx.request.body.json()
 			const start = payload?.start || 0
@@ -872,9 +980,9 @@ ORDER BY s.scene_id ${desc};
 			ctx.response.status = 500
 			ctx.response.body = { error: "Failed to list logs" }
 		}
-	})
+	}))
 
-	router.get("/gapi/logs/player/:objid", async (ctx) => {
+	router.get("/gapi/logs/player/:objid", cachedGetRoute(async (ctx) => {
 		try {
 			const objid = ctx.params.objid
 			const client = await mysql()
@@ -910,9 +1018,9 @@ INNER JOIN entity e ON e.entity_id = a.entity_id
 			ctx.response.status = 500
 			ctx.response.body = { error: "Failed to get player logs" }
 		}
-	})
+	}))
 
-	router.post("/gapi/logs/pagecount/", async (ctx) => {
+	router.post("/gapi/logs/pagecount/", cachedPostRoute(async (ctx) => {
 		try {
 			const client = await mysql()
 
@@ -932,9 +1040,9 @@ WHERE scene_status != -1
 			ctx.response.status = 500
 			ctx.response.body = { error: "Failed to get page count" }
 		}
-	})
+	}))
 
-	router.post("/gapi/logs/upcoming/", async (ctx) => {
+	router.post("/gapi/logs/upcoming/", cachedPostRoute(async (ctx) => {
 		try {
 			const payload = await ctx.request.body.json()
 			const start = payload?.start || 0
@@ -973,7 +1081,7 @@ ORDER BY s.scene_date_scheduled ASC
 			ctx.response.status = 500
 			ctx.response.body = { error: "Failed to list upcoming logs" }
 		}
-	})
+	}))
 
 	router.get("/characters/:key/", async (ctx) => {
 		const dbref = `#${ctx.params.key}`
@@ -991,7 +1099,7 @@ ORDER BY s.scene_date_scheduled ASC
 			await logError(error, "/characters/:key")
 			throw error
 		}
-	})
+	}))
 
 	router.get("/logs/:key([0-9]+)/", async (ctx) => {
 		const sceneKey = ctx.params.key
