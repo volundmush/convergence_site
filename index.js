@@ -1290,7 +1290,7 @@ return json.encode(ret)
 		{ path: "/characters/", template: "/app/templates/pages/characters/index.hbs", errorContext: "Characters list page render" },
 		{ path: "/logs/", template: "/app/templates/pages/logs/index.hbs", errorContext: "Logs list page render" },
 		{ path: "/logs/upcoming/", template: "/app/templates/pages/logs/upcoming.hbs", errorContext: "Upcoming logs page render" },
-		{ path: "/factions/", template: "/app/templates/pages/factions.hbs", errorContext: "Factions list page render" },
+		{ path: "/factions/", template: "/app/templates/pages/factions/index.hbs", errorContext: "Factions list page render" },
 	]
 
 	// Helper function for rendering page routes
