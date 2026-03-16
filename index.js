@@ -1105,6 +1105,66 @@ ORDER BY s.scene_date_scheduled ASC
 		}
 	})
 
+
+
+	router.get("/gapi/factions/list/", cachedGetRoute(async (ctx) => {
+		try {
+			const luaScript = `
+ret = {}
+factionsRaw = rhost.strfunc("lcon", "#33")
+for dbref in string.gmatch(factionsRaw, "([^%s]+)") do
+	hidden = rhost.strfunc("get", dbref .. "/" .. config.hidden.value)) == '1'
+	private = rhost.strfunc("get", dbref .. "/" .. config.private.value)) == '1'
+	membersRaw = rhost.strfunc("get", dbref .. "/" .. members))
+
+	pcobjid = rhost.strfunc("objid", dbref)
+	pctotem = rhost.strfunc("eval", "[hastotem(" .. dbref .. ",PC)]") == '1'
+	approved = rhost.strfunc("eval", "[hasflag(" .. dbref .. ",WANDERER)]") == '0'
+	bittype = tonumber(rhost.strfunc("bittype", dbref))
+	npc = not pctotem and not approved and bittype == 0
+	pc = approved and pctotem and bittype <= 1
+	staff = pctotem and bittype > 1
+	if not private and not hidden then
+		fac = {}
+		fac.name = rhost.strfunc("name", dbref)
+		fac.cname = rhost.parseansi(rhost.strfunc("cname", dbref))
+		fac.members = rhost.strfunc("bittype", dbref)
+		fac.approved = rhost.strfunc("eval", "[hasflag(" .. dbref .. ",WANDERER)]") == '0'
+		fac.dbref = dbref
+		fac.pc = pc
+		fac.npc = npc
+		fac.staff = staff
+		fac.objid = pcobjid
+		table.insert(ret, fac)
+	end
+end
+return json.encode(ret)
+
+
+return json.encode(ret)
+`
+			const factionData = await rhostLua(luaScript)
+			let factions = []
+			
+			try {
+				factions = JSON.parse(factionData)
+				if (!Array.isArray(factions)) {
+					factions = []
+				}
+			} catch (e) {
+				console.log('Failed to parse faction data:', e)
+				factions = []
+			}
+
+			ctx.response.status = 200
+			ctx.response.body = factions
+		} catch (error) {
+			await logError(error, "GET /gapi/factions/list")
+			ctx.response.status = 500
+			ctx.response.body = { error: "Failed to get factions" }
+		}
+	}))
+
 	router.get("/characters/:key/", async (ctx) => {
 		const dbref = `#${ctx.params.key}`
 
@@ -1230,6 +1290,7 @@ ORDER BY s.scene_date_scheduled ASC
 		{ path: "/characters/", template: "/app/templates/pages/characters/index.hbs", errorContext: "Characters list page render" },
 		{ path: "/logs/", template: "/app/templates/pages/logs/index.hbs", errorContext: "Logs list page render" },
 		{ path: "/logs/upcoming/", template: "/app/templates/pages/logs/upcoming.hbs", errorContext: "Upcoming logs page render" },
+		{ path: "/factions/", template: "/app/templates/pages/factions.hbs", errorContext: "Factions list page render" },
 	]
 
 	// Helper function for rendering page routes

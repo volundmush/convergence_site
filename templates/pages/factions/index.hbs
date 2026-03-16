@@ -1,0 +1,74 @@
+<!-- {"title": "Factions", "slug": "factions"} -->
+
+<h2>Factions</h2>
+
+<div class="factions-container" id="factions-container">
+	<p>Loading factions...</p>
+</div>
+
+<script>
+	async function loadFactions() {
+		try {
+			const res = await fetch('/gapi/factions/list/')
+			const factions = await res.json()
+			const container = document.getElementById('factions-container')
+			
+			if (!factions || factions.length === 0) {
+				container.innerHTML = '<p>No factions found.</p>'
+				return
+			}
+			
+			container.innerHTML = factions.map(faction => `
+				<div class="faction-card">
+					<div class="faction-header">
+						<h3>${faction.name}</h3>
+						<button class="expand-toggle" data-faction-id="${faction.id}">▼</button>
+					</div>
+					
+					<div class="faction-content" id="faction-${faction.id}">
+						<div class="faction-description">
+							<p>${faction.description}</p>
+						</div>
+						
+						<div class="faction-members">
+							<h4>Members (${faction.members?.length || 0})</h4>
+							<div class="members-list">
+								${(faction.members || []).map(member => `
+									<div class="member-item">
+										<div class="member-name">${member.name}</div>
+										<div class="member-info">
+											<span class="member-rank">${member.rank}</span>
+											${member.title ? `<span class="member-title">${member.title}</span>` : ''}
+										</div>
+									</div>
+								`).join('')}
+							</div>
+						</div>
+					</div>
+				</div>
+			`).join('')
+			
+			// Add event listeners to the expand toggles
+			document.querySelectorAll('.expand-toggle').forEach(btn => {
+				btn.addEventListener('click', (e) => {
+					e.stopPropagation();
+					const factionId = btn.dataset.factionId;
+					const content = document.getElementById(`faction-${factionId}`);
+					btn.classList.toggle('collapsed');
+					content.classList.toggle('collapsed');
+				});
+			});
+			
+			document.querySelectorAll('.faction-header').forEach(header => {
+				header.addEventListener('click', () => {
+					header.querySelector('.expand-toggle').click();
+				});
+			});
+		} catch (error) {
+			console.error('Failed to load factions:', error)
+			document.getElementById('factions-container').innerHTML = '<p>Failed to load factions.</p>'
+		}
+	}
+	
+	document.addEventListener('DOMContentLoaded', loadFactions)
+</script>
