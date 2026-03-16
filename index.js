@@ -67,7 +67,7 @@ function cachedGetRoute(handler) {
 function cachedPostRoute(handler) {
 	return async (ctx) => {
 		// Read and buffer the body once
-		const bodyRaw = await ctx.request.body().value
+		const bodyRaw = await ctx.request.body.value
 		const bodyStr = new TextDecoder().decode(bodyRaw)
 		const bodyData = JSON.parse(bodyStr)
 		
