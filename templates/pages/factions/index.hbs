@@ -48,22 +48,26 @@
 				</div>
 			`).join('')
 			
-			// Add event listeners to the expand toggles
-			container.querySelectorAll('.expand-toggle').forEach(btn => {
-				btn.addEventListener('click', (e) => {
-					e.stopPropagation();
-					const factionId = btn.dataset.factionId;
-					const content = document.getElementById(`faction-${factionId}`);
-					btn.classList.toggle('collapsed');
-					content.classList.toggle('collapsed');
-				});
-			});
+			// Event delegation for toggle buttons
+			container.addEventListener('click', (e) => {
+				const toggle = e.target.closest('.expand-toggle')
+				if (toggle) {
+					e.stopPropagation()
+					const factionId = toggle.dataset.factionId
+					const content = document.getElementById(`faction-${factionId}`)
+					toggle.classList.toggle('collapsed')
+					content.classList.toggle('collapsed')
+				}
+			})
 			
-			container.querySelectorAll('.faction-header').forEach(header => {
-				header.addEventListener('click', () => {
-					header.querySelector('.expand-toggle').click();
-				});
-			});
+			// Event delegation for header click
+			container.addEventListener('click', (e) => {
+				const header = e.target.closest('.faction-header')
+				if (header) {
+					const toggle = header.querySelector('.expand-toggle')
+					toggle.click()
+				}
+			})
 		} catch (error) {
 			console.error('Failed to load factions:', error)
 			document.getElementById('factions-container').innerHTML = '<p>Failed to load factions.</p>'
