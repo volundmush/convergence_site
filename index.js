@@ -18,6 +18,7 @@ cache.connect().catch((err) => console.log('Cache connection failed:', err))
 async function getCached(key) {
 	try {
 		const val = await cache.get(key)
+		console.log("[getCached] Reading cached", key, "as", value)
 		return val ? JSON.parse(val) : null
 	} catch (e) {
 		console.log('Cache get error:', e)
@@ -27,6 +28,7 @@ async function getCached(key) {
 
 async function setCached(key, value, ttlSeconds = 600) {
 	try {
+		console.log("[setCached] caching", key, "as", value)
 		await cache.setEx(key, ttlSeconds, JSON.stringify(value))
 	} catch (e) {
 		console.log('Cache set error:', e)
@@ -228,6 +230,7 @@ async function logError(error, context = "") {
 	console.error(`${context}:`, error)
 }
 
+const CACHEBUSTER = SERVER_START_TIME
 async function initializeHandlebars() {
 	// Register site layout
 	const siteLayout = await Deno.readTextFile("/app/templates/layouts/site.hbs")
@@ -248,7 +251,7 @@ async function initializeHandlebars() {
 
 	// Register cachebuster helper
 	Handlebars.registerHelper("cachebuster", (path) => {
-		return `${path}?v=${SERVER_START_TIME}`
+		return `${path}?v=${CACHEBUSTER}`
 	})
 
 	// Document renderer helper - converts Keystone document structure to HTML
@@ -600,7 +603,7 @@ async function main() {
 	router.get("/gapi/logs/get/:key", async (ctx) => {
 		try {
 			const sceneKey = ctx.params.key
-			const cacheKey = getCacheKey('gapi', ctx.request.url.pathname)
+			const cacheKey = getCacheKey('gapi', `${CACHEBUSTER}-${ctx.request.url.pathname}`)
 			
 			// Check cache first
 			let cached = await getCached(cacheKey)
@@ -1104,8 +1107,6 @@ ORDER BY s.scene_date_scheduled ASC
 			ctx.response.body = { error: "Failed to list upcoming logs" }
 		}
 	})
-
-
 
 	router.get("/gapi/factions/list/", cachedGetRoute(async (ctx) => {
 		try {
