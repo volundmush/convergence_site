@@ -1112,8 +1112,10 @@ ORDER BY s.scene_date_scheduled ASC
 ret = {}
 factionsRaw = rhost.strfunc("lcon", "#33")
 for dbref in string.gmatch(factionsRaw, "([^%s]+)") do
+	objid = rhost.strfunc("objid", dbref)
 	hidden = rhost.strfunc("get", dbref .. "/config.hidden.value") == '1'
 	private = rhost.strfunc("get", dbref .. "/config.private.value") == '1'
+	descrption = rhost.strfunc("get", dbref .. "/desc") == '1'
 	membersRaw = rhost.strfunc("get", dbref .. "/members")
 
 	players = {}
@@ -1121,6 +1123,9 @@ for dbref in string.gmatch(factionsRaw, "([^%s]+)") do
 		player = {}
 		player.name = rhost.strfunc("name", pdbref)
 		player.cname = rhost.parseansi(rhost.strfunc("cname", pdbref))
+		rankid = rhost.strfunc("get", pdbref .. "/FAC." .. objid .. ".RANK")
+		player.title = rhost.strfunc("get", pdbref .. "/FAC." .. objid .. ".TITLE")
+		player.rank = rhost.parseansi( rhost.strfunc("get", dbref .. "/RANK." .. rankid.. ".name") )
 		player.dbref = pdbref
 		table.insert(players, player)
 	end
