@@ -806,7 +806,7 @@ else
 		private = rhost.strfunc("eval", "[getconf(" .. factionref .. ", PRIVATE)") == "1"
 		if not hidden and not private then
 			faction = {
-				name = rhost.strfunc("name", factionref)
+				name = rhost.strfunc("name", factionref),
 				objid = rhost.strfunc("name", factionref)
 			}
 			table.insert(char.factions, faction)
