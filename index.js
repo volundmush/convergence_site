@@ -603,7 +603,7 @@ async function main() {
 	router.get("/gapi/logs/get/:key", async (ctx) => {
 		try {
 			const sceneKey = ctx.params.key
-			const cacheKey = getCacheKey('gapi', `${CACHEBUSTER}-${ctx.request.url.pathname}`)
+			const cacheKey = getCacheKey('gapi', ctx.request.url.pathname)
 			
 			// Check cache first
 			let cached = await getCached(cacheKey)
@@ -1108,7 +1108,7 @@ ORDER BY s.scene_date_scheduled ASC
 		}
 	})
 
-	router.get("/gapi/factions/list/", cachedGetRoute(async (ctx) => {
+	router.get("/gapi/factions/list/", /*cachedGetRoute(*/async (ctx) => {
 		try {
 			console.log("[gapi/factions/list/] BEGINS")
 			const luaScript = `
@@ -1162,7 +1162,7 @@ return json.encode(ret)
 			ctx.response.status = 500
 			ctx.response.body = { error: "Failed to get factions" }
 		}
-	}))
+	})/*)*/
 
 	router.get("/characters/:key/", async (ctx) => {
 		const dbref = `#${ctx.params.key}`
