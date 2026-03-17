@@ -1113,9 +1113,10 @@ ret = {}
 factionsRaw = rhost.strfunc("lcon", "#33")
 for dbref in string.gmatch(factionsRaw, "([^%s]+)") do
 	objid = rhost.strfunc("objid", dbref)
+	attrobjid = string.gsub(objid, ":", "_")
 	hidden = rhost.strfunc("get", dbref .. "/config.hidden.value") == '1'
 	private = rhost.strfunc("get", dbref .. "/config.private.value") == '1'
-	descrption = rhost.parseansi( rhost.strfunc("get", dbref .. "/desc") )
+	description = rhost.parseansi( rhost.strfunc("get", dbref .. "/desc") )
 	membersRaw = rhost.strfunc("get", dbref .. "/members")
 
 	players = {}
@@ -1123,9 +1124,9 @@ for dbref in string.gmatch(factionsRaw, "([^%s]+)") do
 		player = {}
 		player.name = rhost.strfunc("name", pdbref)
 		player.cname = rhost.parseansi(rhost.strfunc("cname", pdbref))
-		rankid = rhost.strfunc("get", pdbref .. "/FAC." .. objid .. ".RANK")
+		rankid = rhost.strfunc("get", pdbref .. "/FAC." .. attrobjid .. ".RANK")
 		player.rank = rhost.parseansi( rhost.strfunc("get", dbref .. "/RANK." .. rankid.. ".name") )
-		player.title = rhost.parseansi( rhost.strfunc("get", pdbref .. "/FAC." .. objid .. ".TITLE") )
+		player.title = rhost.parseansi( rhost.strfunc("get", pdbref .. "/FAC." .. attrobjid .. ".TITLE") )
 		player.dbref = pdbref
 		table.insert(players, player)
 	end
