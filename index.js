@@ -1116,8 +1116,8 @@ ret = {}
 factionsRaw = rhost.strfunc("lcon", "#33")
 ret.factionsRaw = factionsRaw
 for dbref in string.gmatch(factionsRaw, "([^%s]+)") do
-	hidden = rhost.strfunc("get", dbref .. "/" .. config.hidden.value) == '1'
-	private = rhost.strfunc("get", dbref .. "/" .. config.private.value) == '1'
+	hidden = rhost.strfunc("get", dbref .. "/config.hidden.value") == '1'
+	private = rhost.strfunc("get", dbref .. "/config.private.value") == '1'
 	membersRaw = rhost.strfunc("get", dbref .. "/" .. members)
 
 	players = {}
