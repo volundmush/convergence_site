@@ -18,7 +18,7 @@ cache.connect().catch((err) => console.log('Cache connection failed:', err))
 async function getCached(key) {
 	try {
 		const val = await cache.get(key)
-		console.log("[getCached] Reading cached", key, "as", value)
+		console.log("[getCached] Reading cached", key)
 		return val ? JSON.parse(val) : null
 	} catch (e) {
 		console.log('Cache get error:', e)
@@ -28,7 +28,7 @@ async function getCached(key) {
 
 async function setCached(key, value, ttlSeconds = 600) {
 	try {
-		console.log("[setCached] caching", key, "as", value)
+		console.log("[setCached] caching", key)
 		await cache.setEx(key, ttlSeconds, JSON.stringify(value))
 	} catch (e) {
 		console.log('Cache set error:', e)
