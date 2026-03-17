@@ -221,7 +221,7 @@ async function logError(error, context = "") {
 	const timestamp = new Date().toISOString()
 	const logLine = `${timestamp} - ERROR - ${context}: ${error.message}\n${error.stack}\n\n`
 	try {
-		await Deno.writeTextFile("/app/logs/error.log", logLine, { append: true })
+		// await Deno.writeTextFile("/app/logs/error.log", logLine, { append: true })
 	} catch (writeError) {
 		console.error("Failed to write error log:", writeError)
 	}
@@ -1109,6 +1109,7 @@ ORDER BY s.scene_date_scheduled ASC
 
 	router.get("/gapi/factions/list/", cachedGetRoute(async (ctx) => {
 		try {
+			console.log("[gapi/factions/list/] BEGINS")
 			const luaScript = `
 ret = {}
 factionsRaw = rhost.strfunc("lcon", "#33"
@@ -1138,6 +1139,7 @@ for dbref in string.gmatch(factionsRaw, "([^%s]+)") do
 end
 return json.encode(ret)
 `
+			console.log("[gapi/factions/list/] lua", lua)
 			const factionData = await rhostLua(luaScript)
 			console.log("[gapi/factions/list/] factionData", factionData)
 			let factions = []
