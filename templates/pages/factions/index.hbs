@@ -19,13 +19,13 @@
 			}
 			
 			container.innerHTML = factions.map(faction => `
-				<div class="faction-card">
+				<div class="faction-card" id="faction-${faction.dbref.replace('#', '')}">
 					<div class="faction-header">
 						<h3>${faction.name}</h3>
 						<button class="expand-toggle collapsed" data-faction-id="${faction.dbref.replace('#', '')}">▼</button>
 					</div>
 					
-					<div class="faction-content collapsed" id="faction-${faction.dbref.replace('#', '')}">
+					<div class="faction-content collapsed" id="faction-content-${faction.dbref.replace('#', '')}">
 						<div class="faction-description">
 							<p>${faction.description}</p>
 						</div>
@@ -56,10 +56,22 @@
 				if (!toggle) return
 				
 				const factionId = toggle.dataset.factionId
-				const content = document.getElementById(`faction-${factionId}`)
+				const content = document.getElementById(`faction-content-${factionId}`)
 				toggle.classList.toggle('collapsed')
 				content.classList.toggle('collapsed')
 			})
+			
+			// Auto-expand if linked via anchor
+			const hash = window.location.hash.slice(1)
+			if (hash.startsWith('faction-')) {
+				const factionId = hash.replace('faction-', '')
+				const toggle = document.querySelector(`[data-faction-id="${factionId}"]`)
+				const content = document.getElementById(`faction-content-${factionId}`)
+				if (toggle && content) {
+					toggle.classList.remove('collapsed')
+					content.classList.remove('collapsed')
+				}
+			}
 		} catch (error) {
 			console.error('Failed to load factions:', error)
 			document.getElementById('factions-container').innerHTML = '<p>Failed to load factions.</p>'

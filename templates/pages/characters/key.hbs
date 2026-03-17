@@ -54,7 +54,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 	character.finger.sex = character.sex
 	character.finger.theme = character.theme
-	character.finger.factions = character.factions.map(fac => fac.name).join(", ")
+	character.finger.factions = character.factions.map(fac => {
+		const processedName = optionalANSI(fac.name)
+		return `<a href="/factions/#faction-${fac.dbref.replace('#', '')}">${processedName}</a>`
+	}).join(", ")
 
 	const specialProfiles = ["PROFILE", "SKILLS"]
 
@@ -68,7 +71,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 		entryKey.classList.add("key")
 		entryKey.innerText = key
 		const entryValue = document.createElement("td")
-		entryValue.innerHTML = optionalANSI(value)
+		// For factions, don't apply optionalANSI since it contains HTML links
+		if(key === "factions") {
+			entryValue.innerHTML = value
+		} else {
+			entryValue.innerHTML = optionalANSI(value)
+		}
 		entryValue.classList.add("value")
 		entry.appendChild(entryKey)
 		entry.appendChild(entryValue)
