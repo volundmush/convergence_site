@@ -56,7 +56,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 	character.finger.theme = character.theme
 	character.finger.factions = character.factions.map(fac => {
 		const processedName = optionalANSI(fac.name)
-		return `<a href="/factions/#faction-${fac.dbref.replace('#', '')}">${processedName}</a>`
+		const factionId = fac.objid ? fac.objid.split(':')[0].replace('#', '') : fac.id
+		return `<a href="/factions/#faction-${factionId}">${processedName}</a>`
 	}).join(", ")
 
 	const specialProfiles = ["PROFILE", "SKILLS"]
