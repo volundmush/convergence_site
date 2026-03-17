@@ -1140,7 +1140,7 @@ for dbref in string.gmatch(factionsRaw, "([^%s]+)") do
 end
 return json.encode(ret)
 `
-			console.log("[gapi/factions/list/] lua", lua)
+			console.log("[gapi/factions/list/] lua", luaScript)
 			const factionData = await rhostLua(luaScript)
 			console.log("[gapi/factions/list/] factionData", factionData)
 			let factions = []
