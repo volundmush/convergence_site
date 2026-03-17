@@ -807,6 +807,7 @@ else
 		if not hidden and not private then
 			faction = {
 				name = rhost.strfunc("name", factionref)
+				objid = rhost.strfunc("name", factionref)
 			}
 			table.insert(char.factions, faction)
 		end
