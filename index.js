@@ -1115,7 +1115,7 @@ for dbref in string.gmatch(factionsRaw, "([^%s]+)") do
 	objid = rhost.strfunc("objid", dbref)
 	hidden = rhost.strfunc("get", dbref .. "/config.hidden.value") == '1'
 	private = rhost.strfunc("get", dbref .. "/config.private.value") == '1'
-	descrption = rhost.strfunc("get", dbref .. "/desc") == '1'
+	descrption = rhost.parseansi( rhost.strfunc("get", dbref .. "/desc") )
 	membersRaw = rhost.strfunc("get", dbref .. "/members")
 
 	players = {}
@@ -1124,14 +1124,15 @@ for dbref in string.gmatch(factionsRaw, "([^%s]+)") do
 		player.name = rhost.strfunc("name", pdbref)
 		player.cname = rhost.parseansi(rhost.strfunc("cname", pdbref))
 		rankid = rhost.strfunc("get", pdbref .. "/FAC." .. objid .. ".RANK")
-		player.title = rhost.strfunc("get", pdbref .. "/FAC." .. objid .. ".TITLE")
 		player.rank = rhost.parseansi( rhost.strfunc("get", dbref .. "/RANK." .. rankid.. ".name") )
+		player.title = rhost.parseansi( rhost.strfunc("get", pdbref .. "/FAC." .. objid .. ".TITLE") )
 		player.dbref = pdbref
 		table.insert(players, player)
 	end
 
 	if not private and not hidden then
 		fac = {}
+		fac.description = description
 		fac.name = rhost.strfunc("name", dbref)
 		fac.cname = rhost.parseansi(rhost.strfunc("cname", dbref))
 		fac.members = players
