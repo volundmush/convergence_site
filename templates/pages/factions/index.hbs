@@ -37,7 +37,7 @@
 									<div class="member-item">
 										<div class="member-name">
 											${member.title ? `<span class="member-title">${member.title}</span>` : ''}
-											${member.name}
+											<a href="/characters/${member.dbref.replace('#', '')}/">${member.name}</a>
 										</div>
 										<div class="member-info">
 											<span class="member-rank">${member.rank}</span>
