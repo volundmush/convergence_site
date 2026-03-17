@@ -35,10 +35,12 @@
 							<div class="members-list">
 								${(faction.members || []).map(member => `
 									<div class="member-item">
-										<div class="member-name">${member.name}</div>
+										<div class="member-name">
+											${member.title ? `<span class="member-title">${member.title}</span>` : ''}
+											${member.name}
+										</div>
 										<div class="member-info">
 											<span class="member-rank">${member.rank}</span>
-											${member.title ? `<span class="member-title">${member.title}</span>` : ''}
 										</div>
 									</div>
 								`).join('')}
