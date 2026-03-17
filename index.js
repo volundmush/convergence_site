@@ -1137,19 +1137,19 @@ end
 return json.encode(ret)
 `
 			const factions = await rhostLua(luaScript)
-			let factions = []
+			var ret = factions
 			
 			try {
 				if (!Array.isArray(factions)) {
-					factions = []
+					ret = []
 				}
 			} catch (e) {
 				console.log('[/gapi/factions/list/] Failed to parse faction data:', e)
-				factions = []
+				ret = []
 			}
 
 			ctx.response.status = 200
-			ctx.response.body = factions
+			ctx.response.body = ret
 		} catch (error) {
 			await logError(error, "GET /gapi/factions/list")
 			ctx.response.status = 500
