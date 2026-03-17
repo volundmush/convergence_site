@@ -22,10 +22,10 @@
 				<div class="faction-card">
 					<div class="faction-header">
 						<h3>${faction.name}</h3>
-						<button class="expand-toggle collapsed" data-faction-id="${faction.id}">▼</button>
+						<button class="expand-toggle collapsed" data-faction-objid="${faction.objid}">▼</button>
 					</div>
 					
-					<div class="faction-content collapsed" id="faction-${faction.id}">
+					<div class="faction-content collapsed" id="faction-${faction.objid.replace('#', '')}">
 						<div class="faction-description">
 							<p>${faction.description}</p>
 						</div>
@@ -53,8 +53,9 @@
 				const toggle = e.target.closest('.expand-toggle')
 				if (!toggle) return
 				
-				const factionId = toggle.dataset.factionId
-				const content = document.getElementById(`faction-${factionId}`)
+				const factionObjid = toggle.dataset.factionObjid
+				const contentId = `faction-${factionObjid.replace('#', '')}`
+				const content = document.getElementById(contentId)
 				toggle.classList.toggle('collapsed')
 				content.classList.toggle('collapsed')
 			})
