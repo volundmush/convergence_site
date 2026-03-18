@@ -42,11 +42,11 @@ export default config({
 
 			app.use(
 				'/admin/public/images',
-				express.static('public/images', { index: false, redirect: false, lastModified: false })
+				express.static('/app/keystone/public/images', { index: false, redirect: false, lastModified: false })
 			);
 			app.use(
 				'/admin/public/files',
-				express.static('public/files', {
+				express.static('/app/keystone/public/files', {
 					setHeaders(res) {
 						res.setHeader('Content-Type', 'application/octet-stream')
 					},
