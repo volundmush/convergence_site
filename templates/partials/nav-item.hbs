@@ -13,6 +13,6 @@
 			{{/each}}
 		</ul>
 	{{else}}
-		<a href="{{this.url}}" target="{{this.target}}" class="nav-link">{{this.label}}</a>
+		<a href="{{this.url}}" {{#if this.target}}target="{{this.target}}"{{/if}} class="nav-link">{{this.label}}</a>
 	{{/if}}
 </div>
