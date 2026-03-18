@@ -1168,7 +1168,7 @@ return json.encode(ret)
 		try {
 			const luaScript = `
 ret = {}
-themesRaw = rhost.strfunc("lcon", "#faction")
+themesRaw = rhost.strfunc("lcon", "#theme")
 for dbref in string.gmatch(themesRaw, "([^%s]+)") do
 	objid = rhost.strfunc("objid", dbref)
 	attrobjid = string.gsub(objid, ":", "_")
