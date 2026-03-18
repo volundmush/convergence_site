@@ -1183,9 +1183,6 @@ for dbref in string.gmatch(themesRaw, "([^%s]+)") do
 		player = {}
 		player.name = rhost.strfunc("name", pdbref)
 		player.cname = rhost.parseansi(rhost.strfunc("cname", pdbref))
-		rankid = rhost.strfunc("get", pdbref .. "/FAC." .. attrobjid .. ".RANK")
-		player.rank = rhost.parseansi( rhost.strfunc("get", dbref .. "/RANK." .. rankid.. ".name") )
-		player.title = rhost.parseansi( rhost.strfunc("get", pdbref .. "/FAC." .. attrobjid .. ".TITLE") )
 		player.dbref = pdbref
 		table.insert(players, player)
 	end
