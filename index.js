@@ -1167,6 +1167,43 @@ return json.encode(ret)
 	router.get("/gapi/themes/list/", cachedGetRoute(async (ctx) => {
 		try {
 			const luaScript = `
+ret = {}
+themesRaw = rhost.strfunc("lcon", "#faction")
+for dbref in string.gmatch(themesRaw, "([^%s]+)") do
+	objid = rhost.strfunc("objid", dbref)
+	attrobjid = string.gsub(objid, ":", "_")
+	approved = rhost.strfunc("get", dbref .. "/approved") == '1'
+	category = rhost.strfunc("get", dbref .. "/category")
+	spireway = rhost.strfunc("get", dbref .. "/spireway_link")
+	description = rhost.parseansi( rhost.strfunc("get", dbref .. "/desc") )
+	membersRaw = rhost.strfunc("get", dbref .. "/members")
+
+	players = {}
+	for pdbref in string.gmatch(membersRaw, "([^%s]+)") do
+		player = {}
+		player.name = rhost.strfunc("name", pdbref)
+		player.cname = rhost.parseansi(rhost.strfunc("cname", pdbref))
+		rankid = rhost.strfunc("get", pdbref .. "/FAC." .. attrobjid .. ".RANK")
+		player.rank = rhost.parseansi( rhost.strfunc("get", dbref .. "/RANK." .. rankid.. ".name") )
+		player.title = rhost.parseansi( rhost.strfunc("get", pdbref .. "/FAC." .. attrobjid .. ".TITLE") )
+		player.dbref = pdbref
+		table.insert(players, player)
+	end
+
+	if approved then
+		theme = {}
+		theme.description = description
+		theme.name = rhost.strfunc("name", dbref)
+		theme.cname = rhost.parseansi(rhost.strfunc("cname", dbref))
+		theme.members = players
+		theme.dbref = dbref
+		theme.spireway = spireway
+		table.insert(ret, theme)
+	end
+end
+return json.encode(ret)
+
+
 -- PLACEHOLDER: RHost Lua query to fetch all themes
 -- Should return JSON array of themes with: name, description, dbref
 ret = {}
