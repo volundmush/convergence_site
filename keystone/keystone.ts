@@ -42,18 +42,24 @@ export default config({
 
 			app.use(
 				'/admin/public/images',
-				express.static('/app/keystone/public/images', { index: false, redirect: false, lastModified: false })
+				(req, res, next) => {
+					console.log('[Static Images] Request:', req.method, req.url, 'Full path:', req.path);
+					express.static('/app/keystone/public/images', { index: false, redirect: false, lastModified: false })(req, res, next);
+				}
 			);
 			app.use(
 				'/admin/public/files',
-				express.static('/app/keystone/public/files', {
-					setHeaders(res) {
-						res.setHeader('Content-Type', 'application/octet-stream')
-					},
-					index: false,
-					redirect: false,
-					lastModified: false,
-				})
+				(req, res, next) => {
+					console.log('[Static Files] Request:', req.method, req.url, 'Full path:', req.path);
+					express.static('/app/keystone/public/files', {
+						setHeaders(res) {
+							res.setHeader('Content-Type', 'application/octet-stream')
+						},
+						index: false,
+						redirect: false,
+						lastModified: false,
+					})(req, res, next);
+				}
 			);
 
 			// Seed endpoint - POST /seed to run after system is up
