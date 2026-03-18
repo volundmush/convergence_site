@@ -40,18 +40,20 @@ export default config({
 			app.set('trust proxy', true);
 			app.use(cookieParser());
 
-			// Debug all requests
-			app.use((req, res, next) => {
-				console.log('[Keystone Debug] Request:', req.method, req.url, 'Path:', req.path);
-				next();
-			});
-
 			app.use(
 				'/admin/public/images',
-				(req, res, next) => {
-					console.log('[Static Images] Middleware hit - Request:', req.method, req.url, 'Full path:', req.path);
-					express.static('/app/keystone/public/images', { index: false, redirect: false, lastModified: false })(req, res, next);
-				}
+				express.static('/app/keystone/public/images', { index: false, redirect: false, lastModified: false })
+			);
+			app.use(
+				'/admin/public/files',
+				express.static('/app/keystone/public/files', {
+					setHeaders(res) {
+						res.setHeader('Content-Type', 'application/octet-stream')
+					},
+					index: false,
+					redirect: false,
+					lastModified: false,
+				})
 			);
 			app.use(
 				'/admin/public/files',
