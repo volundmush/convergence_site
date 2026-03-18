@@ -300,7 +300,10 @@ async function initializeHandlebars() {
 				case 'layout-area': return `<div>${childrenHtml}</div>`
 				case 'link': return `<a href="${escapeHtml(node.href || '')}">${childrenHtml}</a>`
 				case 'image': {
-					const src = escapeHtml(node.src || '')
+					let src = node.src || ''
+					// Normalize double slashes in the URL (but keep // for protocol)
+					src = src.replace(/([^:]\/)\/+/g, '$1')
+					src = escapeHtml(src)
 					const alt = escapeHtml(node.alt || '')
 					const title = node.title ? ` title="${escapeHtml(node.title)}"` : ''
 					return `<img src="${src}" alt="${alt}"${title} />`
@@ -314,7 +317,7 @@ async function initializeHandlebars() {
 				if (node.component === 'image') {
 					// The image relationship is stored as node.props.image which is an object with data property
 					const imageData = node.props?.image?.data
-					const imageUrl = imageData?.image?.url
+					let imageUrl = imageData?.image?.url
 					const alt = escapeHtml(node.props?.alt || '')
 					const caption = escapeHtml(node.props?.caption || '')
 					const float = node.props?.float || 'none'
@@ -322,6 +325,9 @@ async function initializeHandlebars() {
 					if (!imageUrl) {
 						return ''
 					}
+					
+					// Normalize double slashes in the URL (but keep // for protocol)
+					imageUrl = imageUrl.replace(/([^:]\/)\/+/g, '$1')
 					
 					const style = float === 'none'
 						? 'margin: 1rem 0; text-align: center;'
