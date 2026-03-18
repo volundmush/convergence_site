@@ -1164,6 +1164,39 @@ return json.encode(ret)
 		}
 	})/*)*/
 
+	router.get("/gapi/themes/list/", cachedGetRoute(async (ctx) => {
+		try {
+			const luaScript = `
+-- PLACEHOLDER: RHost Lua query to fetch all themes
+-- Should return JSON array of themes with: name, description, dbref
+ret = {}
+
+-- TODO: Implement actual theme fetching logic from RHost
+-- For now, return empty array
+return json.encode(ret)
+`
+			const themeData = await rhostLua(luaScript)
+			let themes = []
+			
+			try {
+				themes = JSON.parse(themeData)
+				if (!Array.isArray(themes)) {
+					themes = []
+				}
+			} catch (e) {
+				console.log('[/gapi/themes/list/] Failed to parse theme data:', e)
+				themes = []
+			}
+
+			ctx.response.status = 200
+			ctx.response.body = themes
+		} catch (error) {
+			await logError(error, "GET /gapi/themes/list")
+			ctx.response.status = 500
+			ctx.response.body = { error: "Failed to get themes" }
+		}
+	}))
+
 	router.get("/characters/:key/", async (ctx) => {
 		const dbref = `#${ctx.params.key}`
 
@@ -1290,6 +1323,7 @@ return json.encode(ret)
 		{ path: "/logs/", template: "/app/templates/pages/logs/index.hbs", errorContext: "Logs list page render" },
 		{ path: "/logs/upcoming/", template: "/app/templates/pages/logs/upcoming.hbs", errorContext: "Upcoming logs page render" },
 		{ path: "/factions/", template: "/app/templates/pages/factions/index.hbs", errorContext: "Factions list page render" },
+		{ path: "/themes/", template: "/app/templates/pages/themes/index.hbs", errorContext: "Themes list page render" },
 	]
 
 	// Helper function for rendering page routes

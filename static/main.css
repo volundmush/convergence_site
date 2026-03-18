@@ -1121,3 +1121,68 @@ main a, main a:active, main a:visited, main a:hover {
 	border-radius: 3px;
 	font-weight: 500;
 }
+
+/* Themes Page */
+.themes-container {
+	display: grid;
+	gap: 1rem;
+	max-width: 900px;
+	margin: 0 auto;
+}
+
+.themes-container .theme-card {
+	background: var(--primary-inner-bg);
+	border: 1px solid var(--primary-hi);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.themes-container .theme-card .theme-header {
+	background: linear-gradient(90deg, var(--secondary-bg), hsl(from var(--secondary-bg) h s calc(l + 5)));
+	color: var(--secondary-fg);
+	padding: 1rem;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	cursor: pointer;
+	user-select: none;
+}
+
+.themes-container .theme-card .theme-header h3 {
+	margin: 0;
+	flex-grow: 1;
+	color: var(--secondary-fg);
+}
+
+.themes-container .theme-card .theme-header .expand-toggle {
+	background: none;
+	border: none;
+	color: var(--secondary-fg);
+	cursor: pointer;
+	font-size: 1.2rem;
+	padding: 0.5rem;
+	transition: transform 0.2s ease;
+}
+
+.themes-container .theme-card .theme-header .expand-toggle:hover {
+	opacity: 0.8;
+}
+
+.themes-container .theme-card .theme-header .expand-toggle.collapsed {
+	transform: rotate(-90deg);
+}
+
+.themes-container .theme-card .theme-content {
+	padding: 1.5rem;
+	background: var(--primary-inner-bg);
+}
+
+.themes-container .theme-card .theme-content.collapsed {
+	display: none;
+}
+
+.themes-container .theme-card .theme-content .theme-description {
+	margin-bottom: 1.5rem;
+	color: var(--primary-fg);
+	line-height: 1.6;
+}

@@ -53,7 +53,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 	}
 
 	character.finger.sex = character.sex
-	character.finger.theme = character.theme
+	if(character.theme) {
+		const themeProcessedName = optionalANSI(character.theme.name)
+		const themeId = character.theme.objid ? character.theme.objid.split(':')[0].replace('#', '') : character.theme.id
+		character.finger.theme = `<a href="/themes/#theme-${themeId}">${themeProcessedName}</a>`
+	}
 	character.finger.factions = character.factions.map(fac => {
 		const processedName = optionalANSI(fac.name)
 		const factionId = fac.objid ? fac.objid.split(':')[0].replace('#', '') : fac.id
@@ -72,8 +76,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 		entryKey.classList.add("key")
 		entryKey.innerText = key
 		const entryValue = document.createElement("td")
-		// For factions, don't apply optionalANSI since it contains HTML links
-		if(key === "factions") {
+		// For factions and theme, don't apply optionalANSI since they contain HTML links
+		if(key === "factions" || key === "theme") {
 			entryValue.innerHTML = value
 		} else {
 			entryValue.innerHTML = optionalANSI(value)

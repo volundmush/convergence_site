@@ -1,0 +1,65 @@
+<!-- {"title": "Themes", "slug": "themes"} -->
+
+<h2>Themes</h2>
+
+<div class="themes-container" id="themes-container">
+	<p>Loading themes...</p>
+</div>
+
+<script>
+	async function loadThemes() {
+		try {
+			const res = await fetch('/gapi/themes/list/')
+			const themes = await res.json()
+			const container = document.getElementById('themes-container')
+			
+			if (!themes || themes.length === 0) {
+				container.innerHTML = '<p>No themes found.</p>'
+				return
+			}
+			
+			container.innerHTML = themes.map(theme => `
+				<div class="theme-card" id="theme-${theme.dbref.replace('#', '')}">
+					<div class="theme-header">
+						<h3>${theme.name}</h3>
+						<button class="expand-toggle collapsed" data-theme-id="${theme.dbref.replace('#', '')}">▼</button>
+					</div>
+					
+					<div class="theme-content collapsed" id="theme-content-${theme.dbref.replace('#', '')}">
+						<div class="theme-description">
+							<p>${theme.description}</p>
+						</div>
+					</div>
+				</div>
+			`).join('')
+			
+			// Event delegation for clicks
+			container.addEventListener('click', (e) => {
+				const toggle = e.target.closest('.expand-toggle')
+				if (!toggle) return
+				
+				const themeId = toggle.dataset.themeId
+				const content = document.getElementById(`theme-content-${themeId}`)
+				toggle.classList.toggle('collapsed')
+				content.classList.toggle('collapsed')
+			})
+			
+			// Auto-expand if linked via anchor
+			const hash = window.location.hash.slice(1)
+			if (hash.startsWith('theme-')) {
+				const themeId = hash.replace('theme-', '')
+				const toggle = document.querySelector(`[data-theme-id="${themeId}"]`)
+				const content = document.getElementById(`theme-content-${themeId}`)
+				if (toggle && content) {
+					toggle.classList.remove('collapsed')
+					content.classList.remove('collapsed')
+				}
+			}
+		} catch (error) {
+			console.error('Failed to load themes:', error)
+			document.getElementById('themes-container').innerHTML = '<p>Failed to load themes.</p>'
+		}
+	}
+	
+	document.addEventListener('DOMContentLoaded', loadThemes)
+</script>
