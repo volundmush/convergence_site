@@ -23,7 +23,7 @@ export default config({
 			type: 'image',
 			storagePath: '/app/keystone/public/images',
 			publicPath: '/admin/public/images',
-			generateUrl: (filename: string) => `/admin/public/images/${filename}`,
+			generateUrl: (filename: string) => `/admin/public/images/${filename}`.replace(/\/+/g, '/'),
 		},
 		publicPages: ['/no-access'],
 		files: {
@@ -31,7 +31,7 @@ export default config({
 			type: 'file',
 			storagePath: '/app/keystone/public/files',
 			publicPath: '/admin/public/files',
-			generateUrl: (filename: string) => `/admin/public/files/${filename}`,
+			generateUrl: (filename: string) => `/admin/public/files/${filename}`.replace(/\/+/g, '/'),
 		},
 	},
 	server: {
