@@ -1106,7 +1106,7 @@ ORDER BY s.scene_date_scheduled ASC
 		}
 	})
 
-	router.get("/gapi/factions/list/", /*cachedGetRoute(*/async (ctx) => {
+	router.get("/gapi/factions/list/", cachedGetRoute(async (ctx) => {
 		try {
 			const luaScript = `
 ret = {}
@@ -1162,7 +1162,7 @@ return json.encode(ret)
 			ctx.response.status = 500
 			ctx.response.body = { error: "Failed to get factions" }
 		}
-	})/*)*/
+	}))
 
 	router.get("/gapi/themes/list/", cachedGetRoute(async (ctx) => {
 		try {
