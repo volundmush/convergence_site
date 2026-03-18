@@ -1199,15 +1199,6 @@ for dbref in string.gmatch(themesRaw, "([^%s]+)") do
 	end
 end
 return json.encode(ret)
-
-
--- PLACEHOLDER: RHost Lua query to fetch all themes
--- Should return JSON array of themes with: name, description, dbref
-ret = {}
-
--- TODO: Implement actual theme fetching logic from RHost
--- For now, return empty array
-return json.encode(ret)
 `
 			const themeData = await rhostLua(luaScript)
 			let themes = []
