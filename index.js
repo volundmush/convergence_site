@@ -1207,7 +1207,7 @@ end
 return json.encode(ret)
 `
 			const themes = await rhostLua(luaScript)
-			var ret = factions
+			var ret = themes
 			
 			try {
 				if (!Array.isArray(themes)) {
