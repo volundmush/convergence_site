@@ -796,8 +796,13 @@ else
 		char.data[name] = category
 	end
 
-	themeref = rhost.strfunc("get", dbref .. "/game.theme")
-	char.theme = rhost.strfunc("name", themeref)
+	themeobjid = rhost.strfunc("get", dbref .. "/game.theme")
+	themedbref = string.gsub(themeobjid, ":.*", "")
+	char.theme = {
+		name = rhost.strfunc("name", themedbref),
+		objid = themeobjid,
+		dbref = themedbref
+	}
 
 	char.factions = {}
 	factionrefs = rhost.strfunc("get", dbref .. "/fac.memberships")
@@ -807,7 +812,8 @@ else
 		if not hidden and not private then
 			faction = {}
 			faction.name = rhost.strfunc("name", factionref)
-			faction.objid = factionref
+			faction.objid = rhost.strfunc("objid", factionref)
+			faction.dbref = factionref
 			table.insert(char.factions, faction)
 		end
 	end
