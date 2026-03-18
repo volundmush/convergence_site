@@ -1200,13 +1200,12 @@ for dbref in string.gmatch(themesRaw, "([^%s]+)") do
 end
 return json.encode(ret)
 `
-			const themeData = await rhostLua(luaScript)
-			let themes = []
+			const themes = await rhostLua(luaScript)
+			var ret = factions
 			
 			try {
-				themes = JSON.parse(themeData)
 				if (!Array.isArray(themes)) {
-					themes = []
+					ret = []
 				}
 			} catch (e) {
 				console.log('[/gapi/themes/list/] Failed to parse theme data:', e)
