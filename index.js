@@ -299,7 +299,7 @@ async function initializeHandlebars() {
 				case 'list-item': return `<li>${childrenHtml}</li>`
 				case 'layout': {
 					const gridCols = (node.layout || [1]).map(x => `${x}fr`).join(' ')
-					return `<div style="display: grid; grid-template-columns: ${gridCols};">${childrenHtml}</div>`
+					return `<div class="cms-layout" style="grid-template-columns: ${gridCols};">${childrenHtml}</div>`
 				}
 				case 'layout-area': return `<div>${childrenHtml}</div>`
 				case 'link': return `<a href="${escapeHtml(node.href || '')}">${childrenHtml}</a>`
@@ -333,15 +333,10 @@ async function initializeHandlebars() {
 					// Normalize double slashes in the URL (but keep // for protocol)
 					imageUrl = imageUrl.replace(/([^:]\/)\/+/g, '$1')
 					
-					const style = float === 'none'
-						? 'margin: 1rem 0; text-align: center;'
-						: float === 'left'
-							? 'float: left; margin: 0 1rem 1rem 0; max-width: 300px;'
-							: 'float: right; margin: 0 0 1rem 1rem; max-width: 300px;'
+					const floatClass = float === 'none' ? '' : ` float-${float}`
+					const captionHtml = caption ? `<p class="cms-image-caption">${caption}</p>` : ''
 					
-					const captionHtml = caption ? `<p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: #666; font-style: italic;">${caption}</p>` : ''
-					
-					return `<div style="${style}"><img src="${escapeHtml(imageUrl)}" alt="${alt}" style="max-width: 100%; height: auto; display: block; border-radius: 4px;" />${captionHtml}</div>`
+					return `<div class="cms-image-wrapper${floatClass}"><img src="${escapeHtml(imageUrl)}" alt="${alt}" />${captionHtml}</div>`
 				}
 				// For other component blocks, just render their children
 				return childrenHtml

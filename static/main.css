@@ -1186,3 +1186,40 @@ main a, main a:active, main a:visited, main a:hover {
 	color: var(--primary-fg);
 	line-height: 1.6;
 }
+
+/* Keystone Page Content Styles */
+.keystone-page .cms-layout {
+	display: grid;
+	gap: 1rem;
+}
+
+.keystone-page .cms-image-wrapper {
+	margin: 1rem 0;
+	text-align: center;
+}
+
+.keystone-page .cms-image-wrapper.float-left {
+	float: left;
+	margin: 0 1rem 1rem 0;
+	max-width: 300px;
+}
+
+.keystone-page .cms-image-wrapper.float-right {
+	float: right;
+	margin: 0 0 1rem 1rem;
+	max-width: 300px;
+}
+
+.keystone-page .cms-image-wrapper img {
+	max-width: 100%;
+	height: auto;
+	display: block;
+	border-radius: 4px;
+}
+
+.keystone-page .cms-image-caption {
+	margin: 0.5rem 0 0 0;
+	font-size: 0.875rem;
+	color: var(--primary-hi);
+	font-style: italic;
+}
