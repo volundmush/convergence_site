@@ -252,6 +252,10 @@ async function initializeHandlebars() {
 		return `${path}?v=${CACHEBUSTER}`
 	})
 
+	Handlebars.registerHelper("eq", (a, b) => {
+		return a === b
+	})
+
 	// Document renderer helper - converts Keystone document structure to HTML
 	Handlebars.registerHelper("renderDocument", (document) => {
 		if (!document || !Array.isArray(document)) return ""
