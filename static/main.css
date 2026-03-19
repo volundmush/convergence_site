@@ -1188,6 +1188,15 @@ main a, main a:active, main a:visited, main a:hover {
 }
 
 /* Keystone Page Content Styles */
+.keystone-page h1,
+.keystone-page h2,
+.keystone-page h3,
+.keystone-page h4,
+.keystone-page h5,
+.keystone-page h6 {
+	clear: both;
+}
+
 .keystone-page .cms-layout {
 	display: grid;
 	gap: 1rem;
