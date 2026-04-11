@@ -78,15 +78,20 @@ function loadPage(start = 0, desc = true) {
 			const sceneNumber = scene.scene_id
 			const title = scene.scene_title
 			const status = scene.scene_status
-			const players = []
+			const playersMap = new Map()
 
 			for(const player of scene.actors) {
-				players.push({
-					name: player.entity_name,
-					entity_id: player.entity_id,
-					entity_objid: player.entity_objid
-				})
+				const key = player.entity_objid || player.entity_id
+				if (!playersMap.has(key)) {
+					playersMap.set(key, {
+						name: player.entity_name,
+						entity_id: player.entity_id,
+						entity_objid: player.entity_objid
+					})
+				}
 			}
+			
+			const players = Array.from(playersMap.values())
 
 			const statusEmojiMap = {
 				"Scheduled": "⚪",
