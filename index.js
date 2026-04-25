@@ -89,14 +89,58 @@ function cachedPostRoute(handler) {
 	}
 }
 
+// MySQL connection pool
+const POOL_SIZE = 10
+const mysqlPool = []
+let poolInitialized = false
+
+async function initMysqlPool() {
+	if (poolInitialized) return
+	for (let i = 0; i < POOL_SIZE; i++) {
+		const client = await new Client().connect({
+			hostname: Deno.env.get("MYSQL_HOST"),
+			username: Deno.env.get("MYSQL_USER"),
+			password: Deno.env.get("MYSQL_PASS"),
+			db: Deno.env.get("MYSQL_DB")
+		})
+		mysqlPool.push({ client, inUse: false })
+	}
+	poolInitialized = true
+}
+
 async function mysql() {
-	const mysql = await new Client().connect({
-		hostname: Deno.env.get("MYSQL_HOST"),
-		username: Deno.env.get("MYSQL_USER"),
-		password: Deno.env.get("MYSQL_PASS"),
-		db: Deno.env.get("MYSQL_DB")
-	})
-	return mysql
+	// Initialize pool on first use
+	if (!poolInitialized) {
+		await initMysqlPool()
+	}
+	
+	// Find available connection
+	let poolItem = mysqlPool.find(item => !item.inUse)
+	
+	// If no available connection, wait up to 30 seconds
+	let waitCount = 0
+	const maxWaits = 300 // 30 seconds at 100ms intervals
+	while (!poolItem && waitCount < maxWaits) {
+		await new Promise(resolve => setTimeout(resolve, 100))
+		poolItem = mysqlPool.find(item => !item.inUse)
+		waitCount++
+	}
+	
+	if (!poolItem) {
+		throw new Error(`MySQL connection pool exhausted after 30 seconds (${POOL_SIZE} connections in use)`)
+	}
+	
+	poolItem.inUse = true
+	
+	// Return a wrapper that releases the connection when done
+	const client = poolItem.client
+	
+	client.close = async function() {
+		poolItem.inUse = false
+		// Don't actually close, just mark as available
+	}
+	
+	return client
 }
 
 function rhostbtoa(str) {
@@ -1400,6 +1444,11 @@ return json.encode(ret)
 
 	const port = 8000
 	console.log(`Starting server on port ${port}`)
+	
+	// Initialize MySQL connection pool
+	console.log(`Initializing MySQL connection pool with ${POOL_SIZE} connections...`)
+	await initMysqlPool()
+	console.log(`MySQL connection pool ready`)
 
 	await app.listen({ port })
 }
