@@ -143,6 +143,19 @@ async function mysql() {
 	return client
 }
 
+async function queryDB(sql, params = [], errorContext = "Database query") {
+	const client = await mysql()
+	try {
+		const result = await client.query(sql, params)
+		return result
+	} catch (error) {
+		console.error(`[${errorContext}] Database error:`, error)
+		throw error
+	} finally {
+		await client.close()
+	}
+}
+
 function rhostbtoa(str) {
 	return btoa(str.replace(/[^\x00-\x7F]/g, ''))
 }
@@ -659,13 +672,11 @@ async function main() {
 				return
 			}
 
-			const client = await mysql()
-
-		const sceneResult = await client.query(`
+			const sceneResult = await queryDB(`
 SELECT *
 FROM scene
 WHERE scene_id = ? AND scene_status != -1
-			`, [sceneKey])
+			`, [sceneKey], "GET /gapi/logs/get/:key")
 
 		if (!sceneResult || sceneResult.length === 0) {
 			ctx.response.status = 404
@@ -675,7 +686,7 @@ WHERE scene_id = ? AND scene_status != -1
 
 		const sceneData = sceneResult[0]
 
-		const poses = await client.query(`
+		const poses = await queryDB(`
 SELECT
   p.pose_id,
   p.pose_text,
@@ -692,7 +703,7 @@ LEFT JOIN actor a ON a.actor_id = ar.actor_id
 LEFT JOIN entity e ON e.entity_id = a.entity_id
 WHERE ch.scene_id = ?
 ORDER BY p.pose_date_created ASC
-			`, [sceneKey])
+			`, [sceneKey], "GET /gapi/logs/get/:key - poses")
 
 		const statusMap = {
 			"-1": "Deleted",
@@ -964,9 +975,7 @@ return '"' .. str .. '"'
 			const start = payload?.start || 0
 			const desc = payload?.desc ? "DESC" : "ASC"
 
-			const client = await mysql()
-
-			const scenes = await client.query(`
+			const scenes = await queryDB(`
 SELECT
   s.*,
   COALESCE(ax.actors, JSON_ARRAY()) AS actors
@@ -1020,7 +1029,7 @@ LEFT JOIN (
 ) ax
   ON ax.scene_id = s.scene_id
 ORDER BY s.scene_id ${desc};
-			`, [start])
+			`, [start], "POST /gapi/logs/list")
 			
 			const statusMap = {
 				"-1": "Deleted",
@@ -1048,9 +1057,8 @@ ORDER BY s.scene_id ${desc};
 	router.get("/gapi/logs/player/:objid", cachedGetRoute(async (ctx) => {
 		try {
 			const objid = ctx.params.objid
-			const client = await mysql()
 
-			const logs = await client.query(`
+			const logs = await queryDB(`
 SELECT DISTINCT
   s.scene_id,
   s.scene_title,
@@ -1066,7 +1074,7 @@ INNER JOIN entity e ON e.entity_id = a.entity_id
 			AND s.scene_status != -1
 			AND ch.channel_name = 'Actions'
 			ORDER BY s.scene_id DESC
-			`, [objid])
+			`, [objid], "GET /gapi/logs/player/:objid")
 
 			const formattedLogs = logs.map(log => ({
 				scene_id: log.scene_id,
@@ -1092,13 +1100,11 @@ INNER JOIN entity e ON e.entity_id = a.entity_id
 				return
 			}
 			
-			const client = await mysql()
-
-			const result = await client.query(`
+			const result = await queryDB(`
 SELECT COUNT(*) AS total
 FROM scene
 WHERE scene_status != -1
-			`)
+			`, [], "POST /gapi/logs/pagecount")
 
 			const total = result[0]?.total || 0
 			const pageCount = Math.ceil(total / 50)
@@ -1124,9 +1130,7 @@ WHERE scene_status != -1
 			}
 			const start = payload?.start || 0
 
-			const client = await mysql()
-
-			const scenes = await client.query(`
+			const scenes = await queryDB(`
 SELECT
   s.*,
   e.entity_name as creator_name,
@@ -1136,7 +1140,7 @@ LEFT JOIN scene_scheduled ss ON ss.scene_id = s.scene_id
 LEFT JOIN entity e ON e.entity_objid = ss.owner_objid
 WHERE s.scene_status = 0 AND s.scene_date_scheduled > NOW()
 ORDER BY s.scene_date_scheduled ASC
-			`)
+			`, [], "POST /gapi/logs/upcoming")
 
 			const statusMap = {
 				"-1": "Deleted",
