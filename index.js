@@ -143,10 +143,41 @@ async function mysql() {
 	return client
 }
 
-async function queryDB(sql, params = [], errorContext = "Database query") {
-	const client = await mysql()
+async function queryDB(sql, params = [], errorContext = "Database query", cacheTTL = 600) {
+	// Generate cache key from SQL and parameters
+	const cacheKey = getCacheKey('db', hashString(sql + JSON.stringify(params)))
+	
+	// Check cache first
+	const cached = await getCached(cacheKey)
+	if (cached) {
+		console.log(`[${errorContext}] Cache hit for query`)
+		return cached
+	}
+	
+	let client
+	try {
+		client = await mysql()
+	} catch (poolError) {
+		// Connection pool timed out, try to return stale cache and extend TTL
+		console.warn(`[${errorContext}] Connection pool timeout - attempting to return stale cache`)
+		const staleCache = await getCached(cacheKey)
+		if (staleCache) {
+			// Extend the cache TTL by 1 minute (60 seconds)
+			await setCached(cacheKey, staleCache, cacheTTL + 60)
+			console.log(`[${errorContext}] Returning stale cache and extended TTL by 60 seconds`)
+			return staleCache
+		}
+		// No stale cache available, throw the pool error
+		console.error(`[${errorContext}] Connection pool error and no stale cache available:`, poolError)
+		throw poolError
+	}
+	
 	try {
 		const result = await client.query(sql, params)
+		
+		// Cache the result
+		await setCached(cacheKey, result, cacheTTL)
+		
 		return result
 	} catch (error) {
 		console.error(`[${errorContext}] Database error:`, error)
@@ -672,11 +703,11 @@ async function main() {
 				return
 			}
 
-			const sceneResult = await queryDB(`
+		const sceneResult = await queryDB(`
 SELECT *
 FROM scene
 WHERE scene_id = ? AND scene_status != -1
-			`, [sceneKey], "GET /gapi/logs/get/:key")
+		`, [sceneKey], "GET /gapi/logs/get/:key")
 
 		if (!sceneResult || sceneResult.length === 0) {
 			ctx.response.status = 404
@@ -685,6 +716,9 @@ WHERE scene_id = ? AND scene_status != -1
 		}
 
 		const sceneData = sceneResult[0]
+
+		// Determine cache TTL based on scene status (1 = Active)
+		const queryCacheTTL = sceneData.scene_status === 1 ? 60 : 600
 
 		const poses = await queryDB(`
 SELECT
@@ -703,7 +737,7 @@ LEFT JOIN actor a ON a.actor_id = ar.actor_id
 LEFT JOIN entity e ON e.entity_id = a.entity_id
 WHERE ch.scene_id = ?
 ORDER BY p.pose_date_created ASC
-			`, [sceneKey], "GET /gapi/logs/get/:key - poses")
+		`, [sceneKey], "GET /gapi/logs/get/:key - poses", queryCacheTTL)
 
 		const statusMap = {
 			"-1": "Deleted",
