@@ -90,7 +90,7 @@ function cachedPostRoute(handler) {
 }
 
 // MySQL connection pool
-const POOL_SIZE = 10
+const POOL_SIZE = 50
 const mysqlPool = []
 let poolInitialized = false
 
