@@ -117,9 +117,9 @@ async function mysql() {
 	// Find available connection
 	let poolItem = mysqlPool.find(item => !item.inUse)
 	
-	// If no available connection, wait up to 30 seconds
+	// If no available connection, wait up to 5 seconds
 	let waitCount = 0
-	const maxWaits = 300 // 30 seconds at 100ms intervals
+	const maxWaits = 50 // 5 seconds at 100ms intervals
 	while (!poolItem && waitCount < maxWaits) {
 		await new Promise(resolve => setTimeout(resolve, 100))
 		poolItem = mysqlPool.find(item => !item.inUse)
@@ -127,7 +127,7 @@ async function mysql() {
 	}
 	
 	if (!poolItem) {
-		throw new Error(`MySQL connection pool exhausted after 30 seconds (${POOL_SIZE} connections in use)`)
+		throw new Error(`MySQL connection pool exhausted after 5 seconds (${POOL_SIZE} connections in use)`)
 	}
 	
 	poolItem.inUse = true
