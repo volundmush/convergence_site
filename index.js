@@ -1277,6 +1277,7 @@ for dbref in string.gmatch(themesRaw, "([^%s]+)") do
 		player.name = rhost.strfunc("name", pdbref)
 		player.cname = rhost.parseansi(rhost.strfunc("cname", pdbref))
 		player.dbref = pdbref
+		player.approved = rhost.strfunc("eval", "[hasflag(" .. pdbref .. ",WANDERER)]") == '0'
 		table.insert(players, player)
 	end
 

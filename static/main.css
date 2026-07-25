@@ -1154,6 +1154,13 @@ main a, main a:active, main a:visited, main a:hover {
 	color: var(--secondary-fg);
 }
 
+.themes-container .theme-card .theme-header .theme-count {
+	margin-right: 0.75rem;
+	opacity: 0.85;
+	font-size: 0.9rem;
+	white-space: nowrap;
+}
+
 .themes-container .theme-card .theme-header .expand-toggle {
 	background: none;
 	border: none;
