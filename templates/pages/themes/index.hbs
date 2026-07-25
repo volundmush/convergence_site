@@ -45,7 +45,8 @@
 		container.innerHTML = themes.map(theme => {
 			const themeId = theme.dbref.replace('#', '')
 			const isExpanded = expandedThemeId === themeId
-			const count = approvedCount(theme)
+			const members = (theme.members || []).filter(m => m.approved).sort((a, b) => a.name.localeCompare(b.name))
+			const count = members.length
 			return `
 			<div class="theme-card" id="theme-${themeId}" data-expanded="${isExpanded}">
 				<div class="theme-header">
@@ -57,6 +58,18 @@
 				<div class="theme-content ${isExpanded ? '' : 'collapsed'}" id="theme-content-${themeId}">
 					<div class="theme-description">
 						<p>${theme.description}</p>
+					</div>
+					<div class="theme-members">
+						<h4>Characters (${count})</h4>
+						<div class="members-list">
+							${members.length ? members.map(member => `
+								<div class="member-item">
+									<div class="member-name">
+										<a href="/characters/${member.dbref.replace('#', '')}/">${member.name}</a>
+									</div>
+								</div>
+							`).join('') : '<p class="no-members">No approved characters.</p>'}
+						</div>
 					</div>
 				</div>
 			</div>

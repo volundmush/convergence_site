@@ -1222,6 +1222,37 @@ main a, main a:active, main a:visited, main a:hover {
 	line-height: 1.6;
 }
 
+.themes-container .theme-card .theme-content .theme-members h4 {
+	margin: 0 0 0.75rem 0;
+	color: var(--primary-hi);
+	text-transform: uppercase;
+	font-size: 0.9rem;
+	letter-spacing: 0.05em;
+}
+
+.themes-container .theme-card .theme-content .members-list {
+	display: grid;
+	gap: 0.5rem;
+}
+
+.themes-container .theme-card .theme-content .members-list .member-item {
+	padding: 0.75rem;
+	background: var(--primary-bg);
+	border-left: 3px solid var(--primary-hi);
+	border-radius: 2px;
+}
+
+.themes-container .theme-card .theme-content .members-list .member-item .member-name {
+	font-weight: 500;
+	color: var(--primary-fg);
+}
+
+.themes-container .theme-card .theme-content .members-list .no-members {
+	margin: 0;
+	opacity: 0.7;
+	font-size: 0.9rem;
+}
+
 /* Keystone Page Content Styles */
 .keystone-page h1,
 .keystone-page h2,
