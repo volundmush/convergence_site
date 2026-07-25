@@ -652,7 +652,12 @@ async function main() {
 					body: JSON.stringify({ query })
 				})
 				const responseText = await response.text()
-				data = JSON.parse(responseText)
+				try {
+					data = JSON.parse(responseText)
+				} catch (e) {
+					console.warn(`[Keystone page fallback] Non-JSON GraphQL response (${response.status}):`, responseText.slice(0, 200))
+					throw new Error(`GraphQL returned non-JSON (${response.status})`)
+				}
 				await setCached(pageCacheKey, data, 600)
 			}
 

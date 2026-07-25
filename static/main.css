@@ -1123,6 +1123,34 @@ main a, main a:active, main a:visited, main a:hover {
 }
 
 /* Themes Page */
+.themes-sort {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	max-width: 900px;
+	margin: 0 auto 1rem;
+}
+
+.themes-sort-btn {
+	background: var(--primary-inner-bg);
+	border: 1px solid var(--primary-hi);
+	color: var(--primary-fg);
+	padding: 0.35rem 0.75rem;
+	border-radius: 3px;
+	cursor: pointer;
+	font-size: 0.9rem;
+}
+
+.themes-sort-btn:hover {
+	opacity: 0.85;
+}
+
+.themes-sort-btn.active {
+	background: var(--secondary-bg);
+	border-color: var(--secondary-bg);
+	color: var(--secondary-fg);
+}
+
 .themes-container {
 	display: grid;
 	gap: 1rem;

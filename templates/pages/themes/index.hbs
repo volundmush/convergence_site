@@ -2,51 +2,85 @@
 
 <h2>Themes</h2>
 
+<div class="themes-sort">
+	<span>Sort by:</span>
+	<button type="button" class="themes-sort-btn active" data-sort="players">Players</button>
+	<button type="button" class="themes-sort-btn" data-sort="name">Name</button>
+</div>
+
 <div class="themes-container" id="themes-container">
 	<p>Loading themes...</p>
 </div>
 
 <script>
+	let allThemes = []
+	let currentSort = 'players'
+
+	function approvedCount(theme) {
+		return (theme.members || []).filter(m => m.approved).length
+	}
+
+	function sortThemes(themes, sort) {
+		const sorted = [...themes]
+		if (sort === 'name') {
+			sorted.sort((a, b) => a.name.localeCompare(b.name))
+		} else {
+			sorted.sort((a, b) => approvedCount(b) - approvedCount(a) || a.name.localeCompare(b.name))
+		}
+		return sorted
+	}
+
+	function renderThemes() {
+		const container = document.getElementById('themes-container')
+		const themes = sortThemes(allThemes, currentSort)
+
+		if (!themes || themes.length === 0) {
+			container.innerHTML = '<p>No themes found.</p>'
+			return
+		}
+
+		const hash = window.location.hash.slice(1)
+		const expandedThemeId = hash.startsWith('theme-') ? hash.replace('theme-', '') : null
+
+		container.innerHTML = themes.map(theme => {
+			const themeId = theme.dbref.replace('#', '')
+			const isExpanded = expandedThemeId === themeId
+			const count = approvedCount(theme)
+			return `
+			<div class="theme-card" id="theme-${themeId}" data-expanded="${isExpanded}">
+				<div class="theme-header">
+					<h3>${theme.name}</h3>
+					<span class="theme-count">${count} character${count === 1 ? '' : 's'}</span>
+					<button class="expand-toggle ${isExpanded ? '' : 'collapsed'}" data-theme-id="${themeId}">▼</button>
+				</div>
+				
+				<div class="theme-content ${isExpanded ? '' : 'collapsed'}" id="theme-content-${themeId}">
+					<div class="theme-description">
+						<p>${theme.description}</p>
+					</div>
+				</div>
+			</div>
+		`
+		}).join('')
+	}
+
 	async function loadThemes() {
 		try {
 			const res = await fetch('/gapi/themes/list/')
-			const themes = await res.json()
+			allThemes = await res.json()
 			const container = document.getElementById('themes-container')
-			
-			if (!themes || themes.length === 0) {
+
+			if (!allThemes || allThemes.length === 0) {
 				container.innerHTML = '<p>No themes found.</p>'
 				return
 			}
-			
-			const hash = window.location.hash.slice(1)
-			const expandedThemeId = hash.startsWith('theme-') ? hash.replace('theme-', '') : null
-			
-			container.innerHTML = themes.map(theme => {
-				const themeId = theme.dbref.replace('#', '')
-				const isExpanded = expandedThemeId === themeId
-				const approvedCount = (theme.members || []).filter(m => m.approved).length
-				return `
-				<div class="theme-card" id="theme-${themeId}" data-expanded="${isExpanded}">
-					<div class="theme-header">
-						<h3>${theme.name}</h3>
-						<span class="theme-count">${approvedCount} character${approvedCount === 1 ? '' : 's'}</span>
-						<button class="expand-toggle ${isExpanded ? '' : 'collapsed'}" data-theme-id="${themeId}">▼</button>
-					</div>
-					
-					<div class="theme-content ${isExpanded ? '' : 'collapsed'}" id="theme-content-${themeId}">
-						<div class="theme-description">
-							<p>${theme.description}</p>
-						</div>
-					</div>
-				</div>
-			`
-			}).join('')
-			
-			// Event delegation for clicks
+
+			renderThemes()
+
 			container.addEventListener('click', (e) => {
 				const toggle = e.target.closest('.expand-toggle')
 				if (!toggle) return
-				
+
 				const themeId = toggle.dataset.themeId
 				const content = document.getElementById(`theme-content-${themeId}`)
 				const card = document.getElementById(`theme-${themeId}`)
@@ -54,11 +88,19 @@
 				content.classList.toggle('collapsed')
 				card.dataset.expanded = content.classList.contains('collapsed') ? 'false' : 'true'
 			})
+
+			document.querySelector('.themes-sort').addEventListener('click', (e) => {
+				const btn = e.target.closest('.themes-sort-btn')
+				if (!btn) return
+				currentSort = btn.dataset.sort
+				document.querySelectorAll('.themes-sort-btn').forEach(b => b.classList.toggle('active', b === btn))
+				renderThemes()
+			})
 		} catch (error) {
 			console.error('Failed to load themes:', error)
 			document.getElementById('themes-container').innerHTML = '<p>Failed to load themes.</p>'
 		}
 	}
-	
+
 	document.addEventListener('DOMContentLoaded', loadThemes)
 </script>
