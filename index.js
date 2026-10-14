@@ -51,8 +51,8 @@ function hashString(str) {
 function cachedGetRoute(handler) {
 	return async (ctx) => {
 		const cacheKey = getCacheKey('gapi', ctx.request.url.pathname)
-		let cached = await getCached(cacheKey)
-		if (cached) {
+		var cached = await getCached(cacheKey)
+		if (cached && !cached.error) {
 			ctx.response.body = cached
 			return
 		}
