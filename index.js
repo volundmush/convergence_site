@@ -1308,11 +1308,11 @@ return json.encode(ret)
 				}
 			} catch (e) {
 				console.log('[/gapi/themes/list/] Failed to parse theme data:', e)
-				themes = []
+				ret = []
 			}
 
 			ctx.response.status = 200
-			ctx.response.body = themes
+			ctx.response.body = ret
 		} catch (error) {
 			await logError(error, "GET /gapi/themes/list")
 			ctx.response.status = 500
