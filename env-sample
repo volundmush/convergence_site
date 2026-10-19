@@ -1,4 +1,6 @@
 RHOST_ENDPOINT=http://%2322222umicupcake@127.0.0.1:2061/
+RHOST_TIMEOUT_MS=10000
+DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/your-webhook-id/your-webhook-token
 MYSQL_HOST=127.0.0.1
 MYSQL_USER=rooty
 MYSQL_PASS=tooty

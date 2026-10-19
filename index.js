@@ -5,6 +5,7 @@ import * as jose from "https://deno.land/x/jose@v4.14.1/index.ts"
 import { createClient } from "npm:redis@^4.6.0"
 
 const rhost = Deno.env.get("RHOST_ENDPOINT") || "http://%2322222umicupcake@127.0.0.1:2061/"
+const DISCORD_WEBHOOK_URL = Deno.env.get("DISCORD_WEBHOOK_URL")
 const SERVER_START_TIME = Date.now()
 
 // KeyDB cache client
@@ -37,6 +38,35 @@ function getCacheKey(type, identifier) {
 	return `cache:${type}:${identifier}`
 }
 
+function getStaleKey(key) {
+	return `stale:${key}`
+}
+
+async function setCachedWithStale(key, value, ttlSeconds = 600, staleTtlSeconds = 86400) {
+	await setCached(key, value, ttlSeconds)
+	await setCached(getStaleKey(key), value, staleTtlSeconds)
+}
+
+async function getStaleCached(key) {
+	return await getCached(getStaleKey(key))
+}
+
+async function notifyDiscord(message) {
+	if (!DISCORD_WEBHOOK_URL) {
+		console.warn('notifyDiscord: DISCORD_WEBHOOK_URL not set')
+		return
+	}
+	try {
+		await fetch(DISCORD_WEBHOOK_URL, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ content: message.slice(0, 2000) }),
+		})
+	} catch (e) {
+		console.error('notifyDiscord error:', e)
+	}
+}
+
 function hashString(str) {
 	let hash = 0
 	for (let i = 0; i < str.length; i++) {
@@ -56,9 +86,19 @@ function cachedGetRoute(handler) {
 			ctx.response.body = cached
 			return
 		}
-		await handler(ctx)
-		if (ctx.response.body) {
-			await setCached(cacheKey, ctx.response.body, 600)
+
+		try {
+			await handler(ctx)
+			if (ctx.response.body) {
+				await setCachedWithStale(cacheKey, ctx.response.body, 600)
+			}
+		} catch (e) {
+			const stale = await getStaleCached(cacheKey) || await getCached(cacheKey)
+			if (stale) {
+				ctx.response.status = 200
+				ctx.response.body = stale
+			}
+			throw new Error(`${e}`)
 		}
 	}
 }
@@ -210,12 +250,8 @@ async function rhostExec(exec) {
 		}
 		return atob(response.headers.get('return'))
 	} catch(e) {
-		if(e.name !== 'TypeError' || !e.message.includes('fetch')) {
-			console.log('[rhostExec] ERROR', e)
-			return false
-		} else {
-			return this.rhostExec(exec)
-		}
+		console.log('[rhostExec] ERROR', e)
+		return false
 	}
 }
 
@@ -243,14 +279,9 @@ async function rhostLua(exec) {
 			}
 		}
 	} catch(e) {
-		if(e.name != 'AbortError') {
-			console.log('[rhostLua] ERROR', e)
-			return {
-				error: `${e}`
-			}
-		} else {
-			// console.log('[rhostLua] CONNRESET, retrying')
-			return this.rhostLua(exec)
+		console.log('[rhostLua] ERROR', e)
+		return {
+			error: `${e}`
 		}
 	}
 }
