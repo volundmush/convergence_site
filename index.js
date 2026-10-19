@@ -99,11 +99,23 @@ function cachedGetRoute(handler) {
 			}
 		} catch (e) {
 			const stale = await getStaleCached(cacheKey) || await getCached(cacheKey)
+			const staleServed = !!stale
 			if (stale) {
 				ctx.response.status = 200
 				ctx.response.body = stale
 			}
-			notifyDiscord(`${e}`)
+			const endpoint = ctx.request.url.pathname
+			const timestamp = new Date().toISOString()
+			const errorMsg = e?.message || `${e}`
+			const discordMsg = [
+				`**cachedGetRoute failure**`,
+				`Endpoint: \`${endpoint}\``,
+				`Error: ${errorMsg}`,
+				`Timestamp: ${timestamp}`,
+				`Stale served: ${staleServed ? 'yes' : 'no'}`,
+				cacheKey ? `Cache key: \`${cacheKey}\`` : null,
+			].filter(Boolean).join('\n')
+			notifyDiscord(discordMsg)
 			throw new Error(`${e}`)
 		}
 	}
