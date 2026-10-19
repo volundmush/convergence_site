@@ -89,6 +89,9 @@ function cachedGetRoute(handler) {
 
 		try {
 			await handler(ctx)
+			if (ctx.response.body?.error) {
+				throw new Error(`${ctx.response.body.error}`)
+			}
 			if (ctx.response.body) {
 				await setCachedWithStale(cacheKey, ctx.response.body, 600)
 			}
