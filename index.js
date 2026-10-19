@@ -52,16 +52,18 @@ async function getStaleCached(key) {
 }
 
 async function notifyDiscord(message) {
+	console.log('notifyDiscord: about to send:', message)
 	if (!DISCORD_WEBHOOK_URL) {
 		console.warn('notifyDiscord: DISCORD_WEBHOOK_URL not set')
 		return
 	}
 	try {
-		await fetch(DISCORD_WEBHOOK_URL, {
+		const res = await fetch(DISCORD_WEBHOOK_URL, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ content: message.slice(0, 2000) }),
 		})
+		console.log('notifyDiscord: fetch result:', res.status, res.statusText)
 	} catch (e) {
 		console.error('notifyDiscord error:', e)
 	}
