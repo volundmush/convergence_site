@@ -98,6 +98,7 @@ function cachedGetRoute(handler) {
 				ctx.response.status = 200
 				ctx.response.body = stale
 			}
+			notifyDiscord(`${e}`)
 			throw new Error(`${e}`)
 		}
 	}
