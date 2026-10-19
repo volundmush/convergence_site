@@ -116,7 +116,11 @@ function cachedGetRoute(handler) {
 				cacheKey ? `Cache key: \`${cacheKey}\`` : null,
 			].filter(Boolean).join('\n')
 			notifyDiscord(discordMsg)
-			throw new Error(`${e}`)
+			if (staleServed) {
+				return
+			} else {
+				throw new Error(`${e}`)
+			}
 		}
 	}
 }
