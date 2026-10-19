@@ -89,7 +89,7 @@ function cachedGetRoute(handler) {
 
 		try {
 			await handler(ctx)
-			if (ctx.response.body?.error) {
+			if (ctx.response.body?.error || (Array.isArray(ctx.response.body) && ctx.response.body.length === 0)) {
 				throw new Error(`${ctx.response.body.error}`)
 			}
 			if (ctx.response.body) {
@@ -865,13 +865,7 @@ for dbref in string.gmatch(playersRaw, "([^%s]+)") do
 end
 return json.encode(ret)
 `
-		var ret = []
-		try {
-			ret = await rhostLua(luaScript)
-		} catch(e) {
-			console.log("[/api/characters/get/] error:", e)
-			ret = []
-		}
+		const ret = await rhostLua(luaScript)
 
 		ctx.response.status = 200
 		ctx.response.body = ret
@@ -1277,19 +1271,9 @@ end
 return json.encode(ret)
 `
 			const factions = await rhostLua(luaScript)
-			var ret = factions
-			
-			try {
-				if (!Array.isArray(factions)) {
-					ret = []
-				}
-			} catch (e) {
-				console.log('[/gapi/factions/list/] Failed to parse faction data:', e)
-				ret = []
-			}
 
 			ctx.response.status = 200
-			ctx.response.body = ret
+			ctx.response.body = factions
 		} catch (error) {
 			await logError(error, "GET /gapi/factions/list")
 			ctx.response.status = 500
@@ -1335,19 +1319,9 @@ end
 return json.encode(ret)
 `
 			const themes = await rhostLua(luaScript)
-			var ret = themes
-			
-			try {
-				if (!Array.isArray(themes)) {
-					ret = []
-				}
-			} catch (e) {
-				console.log('[/gapi/themes/list/] Failed to parse theme data:', e)
-				ret = []
-			}
 
 			ctx.response.status = 200
-			ctx.response.body = ret
+			ctx.response.body = themes
 		} catch (error) {
 			await logError(error, "GET /gapi/themes/list")
 			ctx.response.status = 500
