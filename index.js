@@ -230,7 +230,7 @@ async function rhostLua(exec) {
 		})
 		const final = await response.text()
 
-		if(typeof final == "object") {
+		if(typeof final == "object" || typeof final == "array") {
 			return final
 		} else {
 			try {
