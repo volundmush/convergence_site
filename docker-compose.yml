@@ -104,6 +104,33 @@ services:
       - "traefik.http.routers.keystone-static-http.priority=30"
       - "traefik.http.services.keystone.loadbalancer.server.port=3000"
 
+  ursa:
+    build:
+      context: ./convergence
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./convergence/data:/app/data
+      - ./convergence/config:/app/config
+      - ./convergence/logs:/app/logs
+    ports:
+      - "0.0.0.0:10000:4201"
+    networks:
+      - internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ursa-https.rule=Host(`game.convergencemush.org`)"
+      - "traefik.http.routers.ursa-https.entrypoints=websecure"
+      - "traefik.http.routers.ursa-https.tls=true"
+      - "traefik.http.routers.ursa-https.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.ursa-http.rule=Host(`game.convergencemush.org`)"
+      - "traefik.http.routers.ursa-http.entrypoints=web"
+      - "traefik.http.services.ursa.loadbalancer.server.port=4203"
+
   dynamic-webpages:
     image: denoland/deno:alpine
     restart: unless-stopped
