@@ -1,0 +1,32 @@
+{
+  "server": {
+    "telnet": 4201,
+    "ws": 4202,
+    "http": 4203,
+    "db": "data/ursamu.db",
+    "counters": "data/counters.db",
+    "chans": "data/chans.db",
+    "mail": "data/mail.db",
+    "bboard": "data/bboard.db",
+    "corsOrigins": "https://convergencemush.org,https://www.convergencemush.org,https://game.convergencemush.org,https://ursa.convergencemush.org,http://localhost:3000,http://127.0.0.1:3000",
+    "maxConnectionsPerIp": 20,
+    "maxLoginAttempts": 10,
+    "loginWindowMs": 60000,
+    "plugins": []
+  },
+  "game": {
+    "name": "Convergence",
+    "description": "Convergence MUSH — collaborative storytelling and roleplay. Characters, factions, themes, and scene logs at convergencemush.org.",
+    "version": "1.0.0",
+    "text": {
+      "connect": "../text/default_connect.txt"
+    },
+    "playerStart": "1",
+    "layout": {
+      "header": "[center(%ch%cy%0%cn,%1,%cg=%cn)]",
+      "divider": "[center(%ch%cy%0%cn,%1,%cg-%cn)]",
+      "footer": "[repeat(%cg=%cn,%1)]"
+    }
+  },
+  "plugins": {}
+}

@@ -114,9 +114,9 @@ services:
     environment:
       - NODE_ENV=production
     volumes:
-      - ./convergence/data:/app/data
-      - ./convergence/config:/app/config
-      - ./convergence/logs:/app/logs
+      - ./data:/app/data
+      - ./config:/app/config
+      - ./logs:/app/logs
     ports:
       - "0.0.0.0:10000:4201"
     networks:
